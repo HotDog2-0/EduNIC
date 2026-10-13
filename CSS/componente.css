@@ -1,0 +1,192 @@
+/* Botones, cards, formularios, notificaciones */
+
+/* ----- Cards ----- */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.hero-card {
+    max-width: 500px;
+    margin: 3rem auto;
+    text-align: center;
+    padding: 2.5rem 2rem;
+}
+
+.hero-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.form-card {
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.form-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* ----- Botones ----- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    border: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    font-family: inherit;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary   { background-color: var(--primary-color);   color: #ffffff; }
+.btn-primary:hover { background-color: var(--primary-hover); }
+
+.btn-secondary { background-color: var(--secondary-color); color: #ffffff; }
+.btn-secondary:hover { background-color: var(--secondary-hover); }
+
+.btn-success   { background-color: var(--success-color);   color: #ffffff; }
+.btn-danger    { background-color: var(--danger-color);    color: #ffffff; }
+
+.btn-block {
+    width: 100%;
+}
+
+/* ----- Selector de rol ----- */
+.role-selector {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-role {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+    font-size: 1.05rem;
+    border-radius: var(--radius-lg);
+}
+
+.btn-role i {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+/* ----- Botón "Volver" ----- */
+.btn-back {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: var(--primary-color);
+}
+
+/* ----- Formularios ----- */
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    outline: none;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.form-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.form-hint {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background-color: #f0f9ff;
+    border-left: 3px solid var(--primary-color);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.form-hint strong {
+    color: var(--text-color);
+}
+
+/* ----- Notificaciones ----- */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-width: 320px;
+}
+
+.toast.success { background-color: var(--success-color); }
+.toast.error   { background-color: var(--danger-color); }

@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduNIC - Sistema de Gestión Educativa">
+    <title>EduNIC - Sistema de Gestión Educativa</title>
+
+    <!-- Iconos-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS modular -->
+    <link rel="stylesheet" href="CSS/base.css">
+    <link rel="stylesheet" href="CSS/layout.css">
+    <link rel="stylesheet" href="CSS/componente.css">
+    <link rel="stylesheet" href="CSS/responsive.css">
+
+    <!-- CSS de módulos -->
+    <link rel="stylesheet" href="CSS/modulos/carreras.css">
+    <link rel="stylesheet" href="CSS/modulos/estudiantes.css">
+    <link rel="stylesheet" href="CSS/modulos/temas.css">
+    <link rel="stylesheet" href="CSS/modulos/evaluaciones.css"
+</head>
+<body>
+
+    <!-- ENCABEZADO -->
+    <header class="main-header">
+        <div class="logo-container">
+            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+            <h1>EduNIC</h1>
+        </div>
+
+        <div id="session-info" class="session-info hidden">
+            <span id="user-display"></span>
+            <button id="btn-logout" class="btn btn-danger" type="button">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL-->
+    <main class="container">
+
+        <!-- VISTA 1: SELECCIÓN DE USUARIO (LANDING) -->
+        <section id="view-landing" class="view-section hidden">
+            <div class="card hero-card">
+                <h2>Bienvenido al Portal Educativo</h2>
+                <p class="hero-subtitle">Selecciona tu rol para acceder al sistema</p>
+
+                <div class="role-selector" role="group" aria-label="Selección de rol">
+                    <button type="button" class="btn btn-primary btn-role" id="select-profesor">
+                        <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+                        <span>Profesor</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-role" id="select-estudiante">
+                        <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
+                        <span>Estudiante</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 2: LOGIN DEL PROFESOR -->
+        <section id="view-login-profesor" class="view-section hidden">
+            <div class="card form-card">
+                <button class="btn-back" type="button" data-volver="view-landing">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </button>
+
+                <h2><i class="fa-solid fa-user-lock"></i> Inicio de Sesión - Profesor</h2>
+
+                <form id="form-login-profesor">
+                    <div class="form-group">
+                        <label for="prof-email">Correo Electrónico:</label>
+                        <input type="email" id="prof-email" required
+                               placeholder="profesor@escuela.com" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="prof-pass">Contraseña:</label>
+                        <input type="password" id="prof-pass" required
+                               placeholder="••••••••" autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                    </button>
+                </form>
+
+                <p class="form-hint">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Demo: <strong>profesor@escuela.com</strong> / <strong>123456</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- VISTA 3: ACCESO DEL ESTUDIANTE -->
+        <section id="view-login-estudiante" class="view-section hidden">
+            <div class="card form-card">
+                <button class="btn-back" type="button" data-volver="view-landing">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </button>
+
+                <h2><i class="fa-solid fa-key"></i> Acceso Estudiante</h2>
+                <p class="form-subtitle">Ingresa tu código único asignado por el docente:</p>
+
+                <form id="form-login-estudiante">
+                    <div class="form-group">
+                        <label for="student-code">Código Único:</label>
+                        <input type="text" id="student-code" required
+                               placeholder="Ej: EST-101" autocomplete="off"
+                               style="text-transform: uppercase;">
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-block">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                    </button>
+                </form>
+
+                <p class="form-hint">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Demo: <strong>EST-101</strong> o <strong>EST-102</strong>
+                </p>
+            </div>
+        </section>
+
+        <!-- VISTA 4: MIS CARRERAS (PANEL PRINCIPAL DEL PROFESOR) -->
+        <section id="view-mis-carreras" class="view-section hidden">
+
+            <div class="panel-header">
+                <h2>Mis Carreras</h2>
+                <p class="panel-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Selecciona una carrera para gestionar sus estudiantes, temas y evaluaciones.
+                </p>
+            </div>
+
+            <div class="carreras-toolbar">
+                <button class="btn btn-success" type="button" id="btn-nueva-carrera">
+                    <i class="fa-solid fa-plus"></i> Crear Nueva Carrera
+                </button>
+            </div>
+
+            <div id="lista-carreras" class="carreras-grid">
+                <!-- Tarjeta de prueba (será reemplazada con JS) -->
+                <article class="carrera-card">
+                    <div class="carrera-card-icon">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
+                    <div class="carrera-card-body">
+                        <span class="carrera-card-codigo">CAR-001</span>
+                        <h3>Ingeniería en Sistemas</h3>
+                        <p class="carrera-card-anio">
+                            <i class="fa-solid fa-calendar"></i>
+                            Primer Año
+                        </p>
+                    </div>
+                    <div class="carrera-card-actions">
+                        <button class="btn-icon btn-edit" type="button" title="Editar">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn-icon btn-delete" type="button" title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    <button class="carrera-card-open" type="button">
+                        Abrir Panel <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </article>
+
+                <article class="carrera-card">
+                    <div class="carrera-card-icon">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
+                    <div class="carrera-card-body">
+                        <span class="carrera-card-codigo">CAR-002</span>
+                        <h3>Medicina General</h3>
+                        <p class="carrera-card-anio">
+                            <i class="fa-solid fa-calendar"></i>
+                            Segundo Año
+                        </p>
+                    </div>
+                    <div class="carrera-card-actions">
+                        <button class="btn-icon btn-edit" type="button" title="Editar">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn-icon btn-delete" type="button" title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    <button class="carrera-card-open" type="button">
+                        Abrir Panel <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </article>
+            </div>
+
+        </section>
+
+        <!-- VISTA 5: PANEL DE UNA CARRERA -->
+        <section id="view-panel-carrera" class="view-section hidden">
+
+            <!-- Cabecera con nombre de la carrera -->
+            <div class="carrera-header">
+                <button class="btn-back" type="button" id="btn-volver-carreras">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a Mis Carreras
+                </button>
+
+                <div class="carrera-header-info">
+                    <span class="carrera-header-codigo" id="panel-carrera-codigo">CAR-001</span>
+                    <h2 class="carrera-header-nombre" id="panel-carrera-nombre">
+                        Ingeniería en Sistemas
+                    </h2>
+                    <p class="carrera-header-anio" id="panel-carrera-anio">
+                        <i class="fa-solid fa-calendar"></i> Primer Año
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navegación de pestañas del panel de la carrera -->
+            <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel de la carrera">
+                <button class="tab-btn active" type="button" data-tab="tab-estudiantes" role="tab">
+                    <i class="fa-solid fa-users"></i> Estudiantes
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-temas" role="tab">
+                    <i class="fa-solid fa-book"></i> Temas
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-evaluaciones" role="tab">
+                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-calificaciones" role="tab">
+                    <i class="fa-solid fa-chart-bar"></i> Calificaciones
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-asistente" role="tab">
+                    <i class="fa-solid fa-robot"></i> Asistente IA
+                </button>
+            </nav>
+
+            <!-- TAB 1: ESTUDIANTES -->
+            <div id="tab-estudiantes" class="tab-content active" role="tabpanel">
+
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-user-plus"></i>
+                        Registrar Nuevo Estudiante
+                    </h3>
+
+                    <form id="form-registrar-estudiante" autocomplete="off">
+                        <div class="form-group">
+                            <label for="new-student-name">Nombre Completo:</label>
+                            <input type="text" id="new-student-name" required
+                                   placeholder="Ej: María González Rodríguez" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new-student-codigo">
+                                Código Único
+                                <span class="label-hint">(se genera automáticamente)</span>
+                            </label>
+                            <input type="text" id="new-student-codigo" readonly
+                                   placeholder="EST-XXX" class="input-readonly">
+                        </div>
+
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-plus"></i>
+                            Registrar Estudiante
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-file-import"></i>
+                        Importar Estudiantes desde Archivo
+                    </h3>
+
+                    <p class="form-subtitle">
+                        Sube un archivo CSV o TXT con un estudiante por línea.
+                        <br>
+                        <strong>Formato:</strong> <code>Nombre Completo</code> (una línea por estudiante).
+                    </p>
+
+                    <div class="upload-area" id="upload-area">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p>Arrastra tu archivo aquí o</p>
+                        <label for="file-input" class="btn btn-secondary">
+                            <i class="fa-solid fa-folder-open"></i>
+                            Seleccionar Archivo
+                        </label>
+                        <input type="file" id="file-input" accept=".csv,.txt" hidden>
+                        <p class="upload-info">
+                            Formatos permitidos: <strong>.csv</strong> y <strong>.txt</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header-row">
+                        <h3>
+                            <i class="fa-solid fa-list-check"></i>
+                            Estudiantes Registrados
+                        </h3>
+                        <span class="badge" id="contador-estudiantes">0 estudiantes</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="tabla-estudiantes">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Código</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-estudiantes">
+                                <!-- Filas con JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+             <!-- TAB 2: TEMAS -->
+            <div id="tab-temas" class="tab-content hidden" role="tabpanel">
+
+                <!-- Toolbar superior -->
+                <div class="temas-toolbar">
+                    <div>
+                        <h3 class="temas-titulo">
+                            <i class="fa-solid fa-book"></i>
+                            Módulos y Temas
+                        </h3>
+                        <p class="form-subtitle">
+                            Organiza el contenido por unidades y publica temas con material de apoyo.
+                        </p>
+                    </div>
+                    <button class="btn btn-success" type="button" id="btn-nuevo-modulo">
+                        <i class="fa-solid fa-folder-plus"></i> Crear Nuevo Módulo
+                    </button>
+                </div>
+
+                <!-- Contenedor del acordeón de módulos -->
+                <div id="lista-modulos" class="modulos-lista">
+                    <!-- Se llena con JS -->
+                    <p class="text-muted text-center">Cargando módulos...</p>
+                </div>
+
+            </div>
+
+                        <!-- TAB 3: EVALUACIONES -->
+            <div id="tab-evaluaciones" class="tab-content hidden" role="tabpanel">
+
+                <div class="temas-toolbar">
+                    <div>
+                        <h3 class="temas-titulo">
+                            <i class="fa-solid fa-file-pen"></i>
+                            Evaluaciones
+                        </h3>
+                        <p class="form-subtitle">
+                            Crea evaluaciones con preguntas de selección múltiple, V/F y respuesta corta.
+                        </p>
+                    </div>
+                    <button class="btn btn-success" type="button" id="btn-nueva-evaluacion">
+                        <i class="fa-solid fa-plus"></i> Crear Nueva Evaluación
+                    </button>
+                </div>
+
+                <div id="lista-evaluaciones" class="modulos-lista">
+                    <p class="text-muted text-center">Cargando evaluaciones...</p>
+                </div>
+
+            </div>
+            <!-- TAB 4: CALIFICACIONES -->
+            <div id="tab-calificaciones" class="tab-content hidden" role="tabpanel">
+
+                <div class="temas-toolbar">
+                    <div>
+                        <h3 class="temas-titulo">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            Calificaciones
+                        </h3>
+                        <p class="form-subtitle">
+                            Consulta las notas de tus estudiantes y califica las respuestas pendientes.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="resultados-filtros" id="calificaciones-filtros">
+                    <button class="filtro-btn active" type="button" data-filtro="todas">
+                        <i class="fa-solid fa-list"></i> Todas
+                    </button>
+                    <button class="filtro-btn" type="button" data-filtro="pendientes">
+                        <i class="fa-solid fa-clock"></i> Con pendientes
+                    </button>
+                    <button class="filtro-btn" type="button" data-filtro="sin-respuestas">
+                        <i class="fa-solid fa-inbox"></i> Sin respuestas
+                    </button>
+                    <button class="filtro-btn" type="button" data-filtro="con-respuestas">
+                        <i class="fa-solid fa-check"></i> Con respuestas
+                    </button>
+                </div>
+
+                <!-- Lista de evaluaciones -->
+                <div id="lista-calificaciones" class="modulos-lista">
+                    <p class="text-muted text-center">Cargando calificaciones...</p>
+                </div>
+
+            </div>
+
+            <!-- TAB 5: ASISTENTE IA -->
+            <div id="tab-asistente" class="tab-content hidden" role="tabpanel">
+                <div class="card">
+                    <h3><i class="fa-solid fa-robot"></i> Asistente IA</h3>
+                    <p class="text-muted">Próximamente: chat con asistente de IA.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- VISTA: CALIFICACIONES DE UNA EVALUACIÓN
+        (dedicada, pantalla completa)-->
+        <section id="view-calificaciones-evaluacion" class="view-section hidden">
+
+            <div class="carrera-header">
+                <button class="btn-back" type="button" id="btn-volver-calificaciones">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a Calificaciones
+                </button>
+
+                <div class="carrera-header-info">
+                    <span class="carrera-header-codigo" id="calif-eval-codigo">EVAL-001</span>
+                    <h2 class="carrera-header-nombre" id="calif-eval-titulo">
+                        Título de la Evaluación
+                    </h2>
+                    <p class="carrera-header-anio" id="calif-eval-modulo">
+                        <i class="fa-solid fa-folder"></i> Módulo
+                    </p>
+                </div>
+            </div>
+
+            <!-- Resumen estadístico -->
+            <div class="card">
+                <h3>
+                    <i class="fa-solid fa-chart-simple"></i>
+                    Resumen
+                </h3>
+
+                <div class="resultados-resumen">
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-total">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="calif-stat-total">0</div>
+                            <div class="resultado-stat-etiqueta">Respondieron</div>
+                        </div>
+                    </div>
+
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-promedio">
+                            <i class="fa-solid fa-percent"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="calif-stat-promedio">0%</div>
+                            <div class="resultado-stat-etiqueta">Promedio</div>
+                        </div>
+                    </div>
+
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-aprobadas">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="calif-stat-aprobadas">0</div>
+                            <div class="resultado-stat-etiqueta">Aprobados</div>
+                        </div>
+                    </div>
+
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-reprobadas">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="calif-stat-reprobadas">0</div>
+                            <div class="resultado-stat-etiqueta">Reprobados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de respuestas -->
+            <div class="card">
+                <div class="card-header-row">
+                    <h3>
+                        <i class="fa-solid fa-list-check"></i>
+                        Respuestas de Estudiantes
+                    </h3>
+                    <span class="badge" id="calif-contador">0 respuestas</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="tabla-estudiantes">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Estudiante</th>
+                                <th>Código</th>
+                                <th>Nota</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-calificaciones-eval">
+                            <!-- Se llena con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- VISTA 6: PANEL DEL ESTUDIANTE -->
+        <section id="view-panel-estudiante" class="view-section hidden">
+
+            <!-- Cabecera del estudiante -->
+            <div class="carrera-header">
+                <div class="carrera-header-info">
+                    <span class="carrera-header-codigo" id="estudiante-codigo">EST-101</span>
+                    <h2 class="carrera-header-nombre" id="estudiante-nombre">
+                        Nombre del Estudiante
+                    </h2>
+                    <p class="carrera-header-anio" id="estudiante-carrera">
+                        <i class="fa-solid fa-graduation-cap"></i> Carrera
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pestañas -->
+            <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel del estudiante">
+                <button class="tab-btn active" type="button" data-tab="tab-est-temas" role="tab">
+                    <i class="fa-solid fa-book-reader"></i> Mis Temas
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-est-evaluaciones" role="tab">
+                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-est-resultados" role="tab">
+                    <i class="fa-solid fa-chart-line"></i> Mis Resultados
+                </button>
+            </nav>
+
+            <!-- TAB 1: TEMAS -->
+            <div id="tab-est-temas" class="tab-content active" role="tabpanel">
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-book-reader"></i>
+                        Temas de la Carrera
+                    </h3>
+                    <p class="form-subtitle">
+                        Aquí encontrarás todo el material de estudio publicado por tu profesor.
+                    </p>
+
+                    <div id="est-lista-modulos" class="modulos-lista">
+                        <p class="text-muted text-center">Cargando temas...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: EVALUACIONES -->
+            <div id="tab-est-evaluaciones" class="tab-content hidden" role="tabpanel">
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-file-pen"></i>
+                        Evaluaciones Disponibles
+                    </h3>
+                    <p class="form-subtitle">
+                        Aquí puedes ver las evaluaciones publicadas por tu profesor y responderlas.
+                    </p>
+
+                    <div id="est-lista-evaluaciones" class="modulos-lista">
+                        <p class="text-muted text-center">Cargando evaluaciones...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: MIS RESULTADOS -->
+            <div id="tab-est-resultados" class="tab-content hidden" role="tabpanel">
+
+                <!-- Resumen -->
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Resumen
+                    </h3>
+                    <p class="form-subtitle">
+                        Un vistazo rápido a tu rendimiento en las evaluaciones.
+                    </p>
+
+                    <div class="resultados-resumen">
+                        <div class="resultado-stat">
+                            <div class="resultado-stat-icono icono-total">
+                                <i class="fa-solid fa-file-pen"></i>
+                            </div>
+                            <div class="resultado-stat-info">
+                                <div class="resultado-stat-valor" id="stat-total">0</div>
+                                <div class="resultado-stat-etiqueta">Evaluaciones</div>
+                            </div>
+                        </div>
+
+                        <div class="resultado-stat">
+                            <div class="resultado-stat-icono icono-aprobadas">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="resultado-stat-info">
+                                <div class="resultado-stat-valor" id="stat-aprobadas">0</div>
+                                <div class="resultado-stat-etiqueta">Aprobadas</div>
+                            </div>
+                        </div>
+
+                        <div class="resultado-stat">
+                            <div class="resultado-stat-icono icono-reprobadas">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </div>
+                            <div class="resultado-stat-info">
+                                <div class="resultado-stat-valor" id="stat-reprobadas">0</div>
+                                <div class="resultado-stat-etiqueta">Reprobadas</div>
+                            </div>
+                        </div>
+
+                        <div class="resultado-stat">
+                            <div class="resultado-stat-icono icono-promedio">
+                                <i class="fa-solid fa-percent"></i>
+                            </div>
+                            <div class="resultado-stat-info">
+                                <div class="resultado-stat-valor" id="stat-promedio">0%</div>
+                                <div class="resultado-stat-etiqueta">Promedio</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de resultados -->
+                <div class="card">
+                    <div class="card-header-row">
+                        <h3>
+                            <i class="fa-solid fa-list-check"></i>
+                            Historial de Evaluaciones
+                        </h3>
+                        <span class="badge" id="contador-resultados">0 resultados</span>
+                    </div>
+
+                    <p class="form-subtitle">
+                        Aquí ves todas las evaluaciones que has respondido.
+                    </p>
+
+                    <!-- Filtros -->
+                    <div class="resultados-filtros" id="resultados-filtros">
+                        <button class="filtro-btn active" type="button" data-filtro="todas">
+                            <i class="fa-solid fa-list"></i> Todas
+                        </button>
+                        <button class="filtro-btn" type="button" data-filtro="aprobadas">
+                            <i class="fa-solid fa-circle-check"></i> Aprobadas
+                        </button>
+                        <button class="filtro-btn" type="button" data-filtro="reprobadas">
+                            <i class="fa-solid fa-circle-xmark"></i> Reprobadas
+                        </button>
+                        <button class="filtro-btn" type="button" data-filtro="pendientes">
+                            <i class="fa-solid fa-clock"></i> Pendientes
+                        </button>
+                    </div>
+
+                    <div id="est-lista-resultados" class="resultados-lista">
+                        <p class="text-muted text-center">Cargando resultados...</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+        <!-- MODAL: CREAR / EDITAR MÓDULO -->
+    <div id="modal-modulo" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-modulo-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-modulo-titulo">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    <span id="modal-modulo-titulo-texto">Nuevo Módulo</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-modulo" autocomplete="off">
+                    <div class="form-group">
+                        <label for="modulo-nombre">Nombre del Módulo / Unidad:</label>
+                        <input type="text" id="modulo-nombre" required
+                               placeholder="Ej: Estadística, Diseño Web, Base de Datos..."
+                               autocomplete="off">
+                    </div>
+                    <p class="form-hint">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        Un módulo agrupa varios temas relacionados.
+                    </p>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-modulo">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ELIMINAR MÓDULO (DOBLE CONFIRMACIÓN) -->
+    <div id="modal-eliminar-modulo" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-eliminar-modulo-titulo" aria-modal="true">
+            <div class="modal-header modal-header-danger">
+                <h3 id="modal-eliminar-modulo-titulo">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Eliminar Módulo
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="modal-warning">
+                    Estás a punto de eliminar el módulo
+                    <strong id="eliminar-modulo-nombre">—</strong>.
+                    <br>
+                    Se borrarán <strong>todos sus temas y materiales de apoyo</strong>.
+                    <br>
+                    <strong>Esta acción no se puede deshacer.</strong>
+                </p>
+
+                <div class="form-group">
+                    <label for="confirmar-eliminar-modulo">
+                        Escribe el nombre exacto del módulo para confirmar:
+                    </label>
+                    <input type="text" id="confirmar-eliminar-modulo" autocomplete="off"
+                           placeholder="Nombre exacto del módulo">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" type="button" id="btn-confirmar-eliminar-modulo" disabled>
+                    <i class="fa-solid fa-trash"></i> Eliminar Definitivamente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREAR / EDITAR TEMA -->
+    <div id="modal-tema" class="modal-overlay hidden">
+        <div class="modal modal-lg" role="dialog" aria-labelledby="modal-tema-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-tema-titulo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span id="modal-tema-titulo-texto">Nuevo Tema</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-tema" autocomplete="off">
+
+                    <div class="form-group">
+                        <label for="tema-titulo">Título del Tema:</label>
+                        <input type="text" id="tema-titulo" required
+                               placeholder="Ej: Fundamentos de HTML5" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tema-descripcion">Descripción / Explicación:</label>
+                        <textarea id="tema-descripcion" rows="4" required
+                                  placeholder="Escribe aquí la teoría o explicación del tema..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tema-ejemplo">Ejemplo Práctico:</label>
+                        <textarea id="tema-ejemplo" rows="3" required
+                                  placeholder="Ejemplo resuelto para el alumno..."></textarea>
+                    </div>
+
+                    <div class="recursos-section">
+                        <div class="recursos-header">
+                            <h4>
+                                <i class="fa-solid fa-paperclip"></i>
+                                Material de Apoyo
+                                <span class="label-hint">(opcional)</span>
+                            </h4>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-recurso">
+                                <i class="fa-solid fa-plus"></i> Añadir Recurso
+                            </button>
+                        </div>
+
+                        <div id="lista-recursos-tema" class="recursos-lista">
+                            <!-- Se llena con JS -->
+                            <p class="text-muted text-center recursos-vacio">
+                                No hay recursos añadidos todavía.
+                            </p>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-tema">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Tema
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: AÑADIR RECURSO (MATERIAL DE APOYO)-->
+    <div id="modal-recurso" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-recurso-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-recurso-titulo">
+                    <i class="fa-solid fa-paperclip"></i>
+                    Añadir Material de Apoyo
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-recurso" autocomplete="off">
+
+                    <!-- Selector de tipo -->
+                    <div class="form-group">
+                        <label>Tipo de Recurso:</label>
+                        <div class="tipo-recurso-selector">
+                            <label class="tipo-opcion">
+                                <input type="radio" name="tipo-recurso" value="enlace" checked>
+                                <span class="tipo-opcion-contenido">
+                                    <i class="fa-solid fa-link"></i>
+                                    <strong>Enlace / URL</strong>
+                                    <small>Video, sitio web, PDF en la nube...</small>
+                                </span>
+                            </label>
+
+                            <label class="tipo-opcion">
+                                <input type="radio" name="tipo-recurso" value="pdf">
+                                <span class="tipo-opcion-contenido">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <strong>Subir PDF</strong>
+                                    <small>Archivo local (máx 500 KB)</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sección: enlace -->
+                    <div id="recurso-seccion-enlace">
+                        <div class="form-group">
+                            <label for="recurso-titulo">Título del Recurso:</label>
+                            <input type="text" id="recurso-titulo" 
+                                   placeholder="Ej: Video: Cómo calcular la media" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recurso-url">URL:</label>
+                            <input type="url" id="recurso-url" 
+                                   placeholder="https://..." autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- Sección: PDF -->
+                    <div id="recurso-seccion-pdf" class="hidden">
+                        <div class="form-group">
+                            <label for="recurso-titulo-pdf">Título del Recurso:</label>
+                            <input type="text" id="recurso-titulo-pdf" 
+                                   placeholder="Ej: Guía de Estadística" autocomplete="off">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recurso-archivo">Archivo PDF:</label>
+                            <input type="file" id="recurso-archivo" accept=".pdf">
+                            <p class="form-hint">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Tamaño máximo: <strong>500 KB</strong>
+                            </p>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-recurso">
+                    <i class="fa-solid fa-plus"></i> Añadir Recurso
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREAR / EDITAR CARRERA -->
+    <div id="modal-carrera" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-carrera-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-carrera-titulo">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span id="modal-carrera-titulo-texto">Nueva Carrera</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-carrera" autocomplete="off">
+                    <div class="form-group">
+                        <label for="carrera-nombre">Nombre de la Carrera:</label>
+                        <input type="text" id="carrera-nombre" required
+                               placeholder="Ej: Ingeniería en Sistemas" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carrera-anio">Año:</label>
+                        <select id="carrera-anio" required>
+                            <option value="">-- Selecciona un año --</option>
+                            <option value="Primer Año">Primer Año</option>
+                            <option value="Segundo Año">Segundo Año</option>
+                            <option value="Tercer Año">Tercer Año</option>
+                            <option value="Cuarto Año">Cuarto Año</option>
+                            <option value="Quinto Año">Quinto Año</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-carrera">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ELIMINAR CARRERA (DOBLE CONFIRMACIÓN) -->
+    <div id="modal-eliminar-carrera" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-eliminar-titulo" aria-modal="true">
+            <div class="modal-header modal-header-danger">
+                <h3 id="modal-eliminar-titulo">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Eliminar Carrera
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="modal-warning">
+                    Estás a punto de eliminar la carrera
+                    <strong id="eliminar-carrera-nombre">—</strong>.
+                    <br>
+                    Se borrarán <strong>todos sus estudiantes, temas y evaluaciones</strong>.
+                    <br>
+                    <strong>Esta acción no se puede deshacer.</strong>
+                </p>
+
+                <div class="form-group">
+                    <label for="confirmar-eliminar">
+                        Escribe el nombre exacto de la carrera para confirmar:
+                    </label>
+                    <input type="text" id="confirmar-eliminar" autocomplete="off"
+                           placeholder="Nombre exacto de la carrera">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" type="button" id="btn-confirmar-eliminar" disabled>
+                    <i class="fa-solid fa-trash"></i> Eliminar Definitivamente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR ESTUDIANTE -->
+    <div id="modal-editar-estudiante" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-editar-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-editar-titulo">
+                    <i class="fa-solid fa-pen"></i> Editar Estudiante
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-editar-estudiante" autocomplete="off">
+                    <div class="form-group">
+                        <label for="edit-student-name">Nombre Completo:</label>
+                        <input type="text" id="edit-student-name" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-student-codigo">Código Único:</label>
+                        <input type="text" id="edit-student-codigo" readonly class="input-readonly">
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-editar-estudiante">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIONES -->
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <!-- PUNTO DE ENTRADA -->
+    <script type="module" src="JS/app.js"></script>
+
+        <!-- MODAL: CREAR / EDITAR EVALUACIÓN -->
+    <div id="modal-evaluacion" class="modal-overlay hidden">
+        <div class="modal modal-xl" role="dialog" aria-labelledby="modal-evaluacion-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-evaluacion-titulo">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <span id="modal-evaluacion-titulo-texto">Nueva Evaluación</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-evaluacion" autocomplete="off">
+
+                    <div class="form-group">
+                        <label for="eval-titulo">Título de la Evaluación:</label>
+                        <input type="text" id="eval-titulo" required
+                               placeholder="Ej: Examen Parcial I" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-descripcion">
+                            Descripción
+                            <span class="label-hint">(opcional)</span>
+                        </label>
+                        <textarea id="eval-descripcion" rows="2"
+                                  placeholder="Ej: Evaluación de los temas 1 al 3..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-puntaje-minimo">Puntaje mínimo para aprobar (%):</label>
+                        <input type="number" id="eval-puntaje-minimo" 
+                               min="0" max="100" value="60" required>
+                        <p class="form-hint">
+                            <i class="fa-solid fa-circle-info"></i>
+                            Por defecto <strong>60%</strong>. Puedes cambiarlo según el criterio de la carrera.
+                        </p>
+                    </div>
+
+                    <!-- Builder de preguntas -->
+                    <div class="preguntas-section">
+                        <div class="preguntas-header">
+                            <h4>
+                                <i class="fa-solid fa-list-ol"></i>
+                                Preguntas
+                                <span class="badge-preguntas" id="contador-preguntas-builder">0</span>
+                            </h4>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-pregunta">
+                                <i class="fa-solid fa-plus"></i> Añadir Pregunta
+                            </button>
+                        </div>
+
+                        <div id="preguntas-container" class="preguntas-container">
+                            <p class="text-muted text-center preguntas-vacio">
+                                No hay preguntas todavía. Añade la primera.
+                            </p>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-evaluacion">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ELIMINAR EVALUACIÓN (DOBLE CONFIRMACIÓN)-->
+    <div id="modal-eliminar-evaluacion" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-eliminar-evaluacion-titulo" aria-modal="true">
+            <div class="modal-header modal-header-danger">
+                <h3 id="modal-eliminar-evaluacion-titulo">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Eliminar Evaluación
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="modal-warning">
+                    Estás a punto de eliminar la evaluación
+                    <strong id="eliminar-evaluacion-nombre">—</strong>.
+                    <br>
+                    Se borrarán <strong>todas sus preguntas y respuestas de estudiantes</strong>.
+                    <br>
+                    <strong>Esta acción no se puede deshacer.</strong>
+                </p>
+
+                <div class="form-group">
+                    <label for="confirmar-eliminar-evaluacion">
+                        Escribe el título exacto de la evaluación para confirmar:
+                    </label>
+                    <input type="text" id="confirmar-eliminar-evaluacion" autocomplete="off"
+                           placeholder="Título exacto">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" type="button" id="btn-confirmar-eliminar-evaluacion" disabled>
+                    <i class="fa-solid fa-trash"></i> Eliminar Definitivamente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: VER PREGUNTAS DE UNA EVALUACIÓN-->
+    <div id="modal-ver-evaluacion" class="modal-overlay hidden">
+        <div class="modal modal-lg" role="dialog" aria-labelledby="modal-ver-evaluacion-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-ver-evaluacion-titulo">
+                    <i class="fa-solid fa-eye"></i>
+                    <span id="modal-ver-evaluacion-nombre">Ver Evaluación</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="ver-evaluacion-info">
+                    <p id="ver-evaluacion-descripcion" class="ver-evaluacion-descripcion"></p>
+                    <p class="ver-evaluacion-meta">
+                        <span>
+                            <i class="fa-solid fa-list-ol"></i>
+                            <strong id="ver-evaluacion-total">0</strong> preguntas
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-check-circle"></i>
+                            Mínimo para aprobar:
+                            <strong id="ver-evaluacion-minimo">60</strong>%
+                        </span>
+                    </p>
+                </div>
+
+                <div id="ver-evaluacion-preguntas" class="ver-evaluacion-preguntas">
+                    <!-- Se llena con JS -->
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-cerrar-modal>
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!--  MODAL: RESPONDER EVALUACIÓN (QUIZ) -->
+    <div id="modal-quiz" class="modal-overlay hidden">
+        <div class="modal modal-xl" role="dialog" aria-labelledby="modal-quiz-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-quiz-titulo">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span id="modal-quiz-nombre">Evaluación</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar" id="btn-cerrar-quiz">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Barra de progreso -->
+                <div class="quiz-progreso">
+                    <div class="quiz-progreso-texto">
+                        <span>Pregunta <strong id="quiz-num-actual">1</strong> de <strong id="quiz-num-total">1</strong></span>
+                        <span id="quiz-progreso-porcentaje">0%</span>
+                    </div>
+                    <div class="quiz-progreso-barra">
+                        <div class="quiz-progreso-relleno" id="quiz-progreso-relleno"></div>
+                    </div>
+                </div>
+
+                <!-- Contenedor de preguntas de la página actual -->
+                <div id="quiz-preguntas-container" class="quiz-preguntas-container">
+                    <!-- Se llena con JS -->
+                </div>
+
+            </div>
+
+            <div class="modal-footer quiz-footer">
+                <button class="btn btn-secondary" type="button" id="btn-quiz-anterior">
+                    <i class="fa-solid fa-arrow-left"></i> Anterior
+                </button>
+                <button class="btn btn-primary" type="button" id="btn-quiz-siguiente">
+                    Siguiente <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button class="btn btn-success hidden" type="button" id="btn-quiz-enviar">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar Respuestas
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <!--  MODAL: CALIFICAR RESPUESTAS PENDIENTES -->
+    <div id="modal-calificar" class="modal-overlay hidden">
+        <div class="modal modal-xl" role="dialog" aria-labelledby="modal-calificar-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-calificar-titulo">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span id="modal-calificar-nombre">Calificar respuestas pendientes</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-subtitle" style="margin-bottom: 1rem;">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Marca cada respuesta corta como <strong>Correcta</strong> o <strong>Incorrecta</strong>.
+                    El puntaje se recalculará automáticamente.
+                </div>
+
+                <div id="calificar-preguntas-container">
+                    <!-- Se llena con JS -->
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-cerrar-modal>
+                    <i class="fa-solid fa-check"></i> Listo
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

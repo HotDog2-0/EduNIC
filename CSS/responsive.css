@@ -1,0 +1,38 @@
+/* Ajustes para móvil y tablet */
+
+@media (max-width: 600px) {
+
+    .main-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+
+    .logo-container h1 {
+        font-size: 1.2rem;
+    }
+
+    .hero-card {
+        margin: 1.5rem auto;
+        padding: 2rem 1.25rem;
+    }
+
+    .hero-card h2 {
+        font-size: 1.35rem;
+    }
+
+    .role-selector {
+        flex-direction: column;
+    }
+
+    .btn-role {
+        padding: 1.25rem 1rem;
+    }
+
+    .toast {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        max-width: none;
+    }
+}

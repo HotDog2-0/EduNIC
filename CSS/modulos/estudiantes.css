@@ -1,0 +1,294 @@
+/* Estilos específicos del módulo de Estudiantes
+   (Panel del profesor) */
+
+/* ----- Pestañas (tabs) ----- */
+.tabs-nav {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.tabs-nav::-webkit-scrollbar {
+    height: 6px;
+}
+
+.tabs-nav::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
+}
+
+.tab-btn {
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.tab-content {
+    animation: fadeIn 0.2s ease-in;
+}
+
+/* ----- Encabezado de card con contador ----- */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.badge {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ----- Etiqueta auxiliar en labels ----- */
+.label-hint {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ----- Input de solo lectura ----- */
+.input-readonly {
+    background-color: #f1f5f9;
+    color: var(--text-muted);
+    cursor: not-allowed;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ----- Área de subida de archivos ----- */
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    padding: 2rem 1rem;
+    text-align: center;
+    transition: border-color 0.2s, background-color 0.2s;
+    background-color: #f8fafc;
+}
+
+.upload-area:hover,
+.upload-area.dragover {
+    border-color: var(--primary-color);
+    background-color: #eff6ff;
+}
+
+.upload-area i.fa-cloud-arrow-up {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+}
+
+.upload-area p {
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.upload-info {
+    font-size: 0.8rem !important;
+    margin-top: 0.75rem !important;
+}
+
+/* ----- Tabla de estudiantes ----- */
+.tabla-estudiantes {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-estudiantes th,
+.tabla-estudiantes td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.tabla-estudiantes th {
+    background-color: #f8fafc;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.tabla-estudiantes tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.tabla-estudiantes .text-center {
+    text-align: center;
+}
+
+/* ----- Botones de acción (editar / eliminar) ----- */
+.btn-icon {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
+    margin: 0 0.15rem;
+}
+
+.btn-icon:hover {
+    transform: translateY(-1px);
+}
+
+.btn-icon:active {
+    transform: scale(0.95);
+}
+
+.btn-edit:hover {
+    background-color: #eff6ff;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-delete:hover {
+    background-color: #fef2f2;
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+/* ----- Modal (ventana emergente) ----- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+    padding: 1rem;
+    animation: fadeIn 0.15s ease-in;
+}
+
+.modal {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.2s ease-out;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+    background-color: #f1f5f9;
+    color: var(--danger-color);
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* ----- Responsive específico del módulo ----- */
+@media (max-width: 600px) {
+    .card-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tabla-estudiantes th,
+    .tabla-estudiantes td {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+}

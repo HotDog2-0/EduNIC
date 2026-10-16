@@ -1,0 +1,266 @@
+# GUÍA DE DISEÑO — EduNIC
+
+> Guía para trabajar en el diseño visual del proyecto **sin romper la funcionalidad**.
+
+
+## Tu rol
+
+Puedes cambiar **colores, tipografía, tamaños, espaciados, sombras, bordes, distribución y layout**. La idea es mejorar el aspecto visual sin tocar la lógica.
+
+
+## LO QUE SÍ PUEDES TOCAR
+
+### 1. Todo el CSS
+
+Cualquier archivo `.css` es tuyo. Puedes:
+
+- Cambiar **colores** (variables CSS, backgrounds, text).
+- Cambiar **tipografías** (font-family, tamaños, pesos).
+- Cambiar **tamaños** (ancho, alto, padding, margin).
+- Cambiar **bordes** (radius, color, grosor).
+- Cambiar **sombras**.
+- Cambiar **layouts** con Flexbox y Grid.
+- Reorganizar el **orden visual** de bloques (siempre que se vean todos).
+- Añadir **animaciones y transiciones**.
+- Rediseñar **botones, cards, tablas, modales, formularios**.
+
+**Archivos disponibles:**
+
+```
+css/
+├── base.css              ← variables globales (colores, tipografía)
+├── layout.css            ← header, contenedor, secciones
+├── componentes.css       ← botones, cards, forms, toast
+├── responsive.css        ← media queries
+└── modulos/
+    ├── carreras.css
+    ├── estudiantes.css
+    ├── temas.css
+    └── evaluaciones.css
+```
+
+
+### 2. El texto visible
+
+Puedes cambiar textos que se ven en pantalla:
+
+- Títulos: "Mis Carreras", "Panel del Profesor".
+- Subtítulos, placeholders, mensajes.
+- Textos de botones ("Ingresar", "Guardar", "Responder").
+
+ **Pero avisa** si cambias mucho, porque algunos textos también están escritos en el JS.
+
+
+### 3. Las clases CSS
+
+Puedes **agregar** clases nuevas a los elementos:
+
+```html
+<!-- Antes -->
+<button class="btn btn-primary">Guardar</button>
+
+<!-- Después -->
+<button class="btn btn-primary mi-boton-personalizado">Guardar</button>
+```
+
+Solo ten cuidado de **no quitar las existentes**.
+
+
+### 4. Iconos
+
+Puedes cambiar cualquier ícono de FontAwesome. Están como:
+
+```html
+<i class="fa-solid fa-graduation-cap"></i>
+```
+
+Cambia `fa-graduation-cap` por otro de [fontawesome.com/icons](https://fontawesome.com/icons).
+
+
+### 5. Distribución dentro de una sección
+
+Puedes mover bloques **dentro de la misma sección**. Ejemplo: cambiar el orden de los botones en el modal, o mover el resumen arriba/abajo.
+
+
+## ❌ LO QUE **NO DEBES TOCAR**
+
+### 1. Los `id` de los elementos
+
+Son identificadores únicos que usa el JavaScript para encontrar elementos. **Si los cambias, el JS truena.**
+
+**Ejemplos que NO debes cambiar:**
+
+```html
+<div id="lista-carreras">              ❌
+<button id="btn-nueva-carrera">        ❌
+<div id="modal-quiz">                  ❌
+<tbody id="tbody-estudiantes">         ❌
+<section id="view-landing">            ❌
+```
+
+> **Regla simple:** si dice `id="..."`, **no lo toques**.
+
+---
+
+### 2. Los atributos `data-*`
+
+Son datos que usa el JavaScript para saber qué hacer.
+
+**Ejemplos que NO debes cambiar:**
+
+```html
+<button data-accion="editar">          ❌
+<button data-id="car-1">               ❌
+<button data-tab="tab-temas">          ❌
+<button data-volver="view-landing">    ❌
+```
+
+> **Regla simple:** si dice `data-...`, **no lo toques**.
+
+
+### 3. Las clases con función específica
+
+Algunas clases no son decorativas: le dicen al JS qué mostrar u ocultar.
+
+**NO quites estas clases:**
+
+```
+.hidden         → oculta elementos
+.active         → marca pestaña/sección activa
+.expandido      → módulo expandido en acordeón
+.view-section   → identifica vistas (secciones)
+.tab-content    → identifica pestañas
+.tab-btn        → botones de pestañas
+.modulo-item    → módulos en acordeón
+.modulo-header  → cabecera clickeable del módulo
+.carrera-card   → tarjetas de carrera
+.tema-card      → tarjetas de tema
+.evaluacion-item, .evaluacion-estudiante → items de evaluación
+.resultado-item → items de resultados
+.btn, .btn-icon, .btn-back → botones funcionales
+.form-group     → agrupador de inputs
+.modal-overlay  → fondo del modal
+.modal, .modal-body, .modal-header, .modal-footer → partes del modal
+.toast          → notificación
+```
+
+**Puedes agregar clases adicionales**, pero **no quitar las existentes**.
+
+
+### 4. El HTML de los `data-tab`
+
+En las pestañas:
+
+```html
+<button class="tab-btn" data-tab="tab-temas">Temas</button>
+<div id="tab-temas" class="tab-content">...</div>
+```
+
+Los `data-tab` y los `id="tab-..."` deben **coincidir exactamente**. Si cambias uno, cambia el otro, pero **avisa primero**.
+
+
+### 5. La estructura básica de los formularios
+
+Los `<input>`, `<select>`, `<textarea>` tienen `id` que el JS necesita. **No los quites ni renombres.**
+
+**Puedes cambiar:**
+
+- El `placeholder`.
+- El texto de las `<label>`.
+- El orden de los campos.
+
+**No puedes cambiar:**
+
+- El `id` de cada campo.
+- El `name` de los radios/checkboxes.
+- El `type` (email, text, password, etc.).
+
+
+### 6. El orden de las secciones principales
+
+Las vistas están así:
+
+```html
+<section id="view-landing">...</section>
+<section id="view-login-profesor">...</section>
+<section id="view-login-estudiante">...</section>
+<section id="view-mis-carreras">...</section>
+<section id="view-panel-carrera">...</section>
+<section id="view-calificaciones-evaluacion">...</section>
+<section id="view-panel-estudiante">...</section>
+```
+
+**No cambies su orden ni las elimines.** El JS las muestra/oculta por su `id`.
+
+
+### 7. Los modales
+
+Los modales al final del `<body>` deben quedarse ahí:
+
+```html
+<div id="modal-carrera">...</div>
+<div id="modal-eliminar-carrera">...</div>
+<div id="modal-editar-estudiante">...</div>
+<div id="modal-modulo">...</div>
+<div id="modal-eliminar-modulo">...</div>
+<div id="modal-tema">...</div>
+<div id="modal-recurso">...</div>
+<div id="modal-evaluacion">...</div>
+<div id="modal-eliminar-evaluacion">...</div>
+<div id="modal-ver-evaluacion">...</div>
+<div id="modal-quiz">...</div>
+<div id="modal-calificar">...</div>
+<div id="toast"></div>
+```
+
+**No los muevas ni los borres.**
+
+
+### 8. El `<script>` al final
+
+```html
+<script type="module" src="js/app.js"></script>
+```
+
+**No lo toques ni lo muevas.**
+
+
+### 9. La carpeta `js/`
+
+En general, **no toques el JavaScript**. Si necesitas que algo cambie de comportamiento, avisa.
+
+> **Única excepción:** si ves un texto escrito directamente en un `innerHTML` de algún JS (por ejemplo, un mensaje de error), puedes cambiarlo, pero **avisa**.
+
+
+## RECOMENDACIONES PARA EMPEZAR
+
+1. **Empieza por `base.css`** → cambia la paleta de colores y la tipografía. Con eso cambia TODO el sitio.
+
+2. **Luego `layout.css`** → ajusta el header, el ancho del contenedor, la distribución general.
+
+3. **Después `componentes.css`** → rediseña botones, cards, tablas, modales.
+
+4. **Al final los `modulos/*.css`** → ajustes específicos de cada sección.
+
+5. **Prueba cada cambio** con Live Server en el navegador.
+
+6. **Usa DevTools (F12)** para inspeccionar qué clase controla cada elemento.
+
+
+## SI ALGO SE ROMPE
+
+Si al cambiar algo el sistema deja de funcionar:
+
+1. **Ctrl + Z** hasta que vuelva a funcionar.
+2. Si no sabes qué rompió, avisa con:
+   - Qué archivo tocaste.
+   - Qué intentabas cambiar.
+   - Qué dejó de funcionar.
+
+## RECURSOS ÚTILES
+
+- **Paletas de colores:** [coolors.co](https://coolors.co/)
+- **Iconos:** [fontawesome.com/icons](https://fontawesome.com/icons)
+- **Tipografías:** [fonts.google.com](https://fonts.google.com/)
+- **Inspiración de UI:** [dribbble.com](https://dribbble.com/), [behance.net](https://www.behance.net/)
+- **Documentación CSS:** [developer.mozilla.org](https://developer.mozilla.org/es/docs/Web/CSS)

@@ -292,3 +292,130 @@
         width: 100%;
     }
 }
+
+/* BLOQUE DE INFO DE LA PLANTILLA CSV
+   Muestra las reglas de formato al usuario */
+
+.plantilla-info {
+    background: #eff6ff;
+    border-left: 3px solid var(--primary-color);
+    border-radius: var(--radius);
+    padding: 1rem 1.15rem;
+    margin-top: 1.25rem;
+}
+
+.plantilla-info-titulo {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.plantilla-info-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.plantilla-info-lista li {
+    padding: 0.2rem 0 0.2rem 1.15rem;
+    position: relative;
+    line-height: 1.4;
+}
+
+/* Viñeta personalizada azul */
+.plantilla-info-lista li::before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: 700;
+    position: absolute;
+    left: 0.35rem;
+}
+
+.plantilla-info-ejemplo {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.plantilla-info-ejemplo code {
+    display: inline-block;
+    background: #ffffff;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    font-family: 'Courier New', monospace;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin: 0.1rem 0;
+}
+
+/* ----- Botón pequeño (reutilizable) ----- */
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .card-header-row .btn-sm {
+        width: 100%;
+    }
+
+    .plantilla-info {
+        padding: 0.85rem;
+    }
+}
+
+/* ACCIONES EN LA CABECERA DEL CARD
+   Botones "Pegar lista" y "Descargar plantilla" */
+
+.card-header-acciones {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* MODAL: PEGAR LISTA DE ESTUDIANTES */
+
+#pegar-lista-textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 180px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#pegar-lista-textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card-header-acciones {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .card-header-acciones .btn {
+        width: 100%;
+    }
+}

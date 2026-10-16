@@ -5,7 +5,9 @@ import {
     mostrarNotificacion,
     escaparHTML,
     normalizar,
-    dataURLtoBlobURL 
+    dataURLtoBlobURL,
+    detectarVideo,
+    abrirModalVideo
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
 import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
@@ -292,20 +294,46 @@ function renderizarTemaEstudiante(t) {
 function renderizarRecursoChipEstudiante(r) {
     const esPDF = r.tipo === 'pdf';
 
-    const url = esPDF
-        ? (r.dataURL ? dataURLtoBlobURL(r.dataURL) : '#')
-        : (r.url || '#');
+    // ----- PDF -----
+    if (esPDF) {
+        const url = r.dataURL ? dataURLtoBlobURL(r.dataURL) : '#';
+        return `
+            <a class="recurso-chip tipo-pdf"
+               href="${url}"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="${escaparHTML(r.titulo)}">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
+            </a>
+        `;
+    }
 
-    const icono = esPDF ? 'fa-file-pdf' : 'fa-link';
-    const clase = esPDF ? 'tipo-pdf' : 'tipo-enlace';
+    // ----- Enlace o video -----
+    const url = r.url || '#';
+    const video = detectarVideo(url);
+
+    if (video) {
+        return `
+            <button class="recurso-chip tipo-video"
+                    type="button"
+                    data-video-url="${escaparHTML(video.embedURL)}"
+                    data-video-titulo="${escaparHTML(r.titulo)}"
+                    data-video-original="${escaparHTML(video.urlOriginal)}"
+                    title="${escaparHTML(r.titulo)}">
+                <i class="fa-solid fa-circle-play"></i>
+                <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
+            </button>
+        `;
+    }
 
     return `
-        <a class="recurso-chip ${clase}"
+        <a class="recurso-chip tipo-enlace"
            href="${url}"
            target="_blank"
            rel="noopener noreferrer"
            title="${escaparHTML(r.titulo)}">
-            <i class="fa-solid ${icono}"></i>
+            <i class="fa-solid fa-link"></i>
             <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
         </a>
     `;

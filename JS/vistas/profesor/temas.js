@@ -9,7 +9,9 @@ import {
     escaparHTML,
     normalizar,
     limpiarNombre,
-    dataURLtoBlobURL   
+    dataURLtoBlobURL,
+    detectarVideo,        
+    abrirModalVideo       
 } from '../../utils.js';
 
 /* CONSTANTES*/
@@ -162,23 +164,61 @@ function renderizarTemaHTML(t) {
     `;
 }
 
+/**
+ * Renderiza un chip de recurso (enlace, PDF o video).
+ * 
+ * - Si es PDF → genera blob URL y lo abre en pestaña nueva.
+ * - Si es video (YouTube/Vimeo) → lo abre en modal embebido.
+ * - Si es enlace normal → lo abre en pestaña nueva.
+ * 
+ * @param {Object} r - Objeto del recurso
+ * @returns {string} HTML del chip
+ */
 function renderizarRecursoChip(r) {
     const esPDF = r.tipo === 'pdf';
 
-    const url = esPDF
-        ? (r.dataURL ? dataURLtoBlobURL(r.dataURL) : '#')
-        : (r.url || '#');
+    // ----- PDF -----
+    if (esPDF) {
+        const url = r.dataURL ? dataURLtoBlobURL(r.dataURL) : '#';
+        return `
+            <a class="recurso-chip tipo-pdf"
+               href="${url}"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="${escaparHTML(r.titulo)}">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
+            </a>
+        `;
+    }
 
-    const icono = esPDF ? 'fa-file-pdf' : 'fa-link';
-    const clase = esPDF ? 'tipo-pdf' : 'tipo-enlace';
+    // ----- Enlace o video -----
+    const url = r.url || '#';
+    const video = detectarVideo(url);
 
+    // Si es video → botón que abre el modal embebido
+    if (video) {
+        return `
+            <button class="recurso-chip tipo-video"
+                    type="button"
+                    data-video-url="${escaparHTML(video.embedURL)}"
+                    data-video-titulo="${escaparHTML(r.titulo)}"
+                    data-video-original="${escaparHTML(video.urlOriginal)}"
+                    title="${escaparHTML(r.titulo)}">
+                <i class="fa-solid fa-circle-play"></i>
+                <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
+            </button>
+        `;
+    }
+
+    // Enlace normal
     return `
-        <a class="recurso-chip ${clase}"
+        <a class="recurso-chip tipo-enlace"
            href="${url}"
            target="_blank"
            rel="noopener noreferrer"
            title="${escaparHTML(r.titulo)}">
-            <i class="fa-solid ${icono}"></i>
+            <i class="fa-solid fa-link"></i>
             <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
         </a>
     `;
@@ -791,4 +831,22 @@ function renderizarRecursosEnModal() {
         recursosDelTemaEnEdicion = recursosDelTemaEnEdicion.filter(r => r.id !== id);
         renderizarRecursosEnModal();
     };
+}
+
+/**
+ * Listener delegado para abrir videos en el modal embebido.
+ */
+function conectarAperturaVideos() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-video-url]');
+        if (!btn) return;
+
+        e.preventDefault();
+
+        const embedURL = btn.dataset.videoUrl;
+        const titulo = btn.dataset.videoTitulo;
+        const urlOriginal = btn.dataset.videoOriginal;
+
+        abrirModalVideo(embedURL, titulo, urlOriginal);
+    });
 }

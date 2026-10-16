@@ -265,10 +265,20 @@
                 </div>
 
                 <div class="card">
+                <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-file-import"></i>
                         Importar Estudiantes desde Archivo
                     </h3>
+                    <div class="card-header-acciones">
+                    <button class="btn btn-secondary btn-sm" type="button" id="btn-pegar-lista">
+                        <i class="fa-solid fa-clipboard"></i> Pegar lista
+                    </button>
+                    <button class="btn btn-secondary btn-sm" type="button" id="btn-descargar-plantilla">
+                        <i class="fa-solid fa-download"></i> Descargar plantilla
+                    </button>
+                    </div>
+                </div> 
 
                     <p class="form-subtitle">
                         Sube un archivo CSV o TXT con un estudiante por línea.
@@ -1039,13 +1049,7 @@
         </div>
     </div>
 
-    <!-- NOTIFICACIONES -->
-    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
-
-    <!-- PUNTO DE ENTRADA -->
-    <script type="module" src="JS/app.js"></script>
-
-        <!-- MODAL: CREAR / EDITAR EVALUACIÓN -->
+    <!-- MODAL: CREAR / EDITAR EVALUACIÓN -->
     <div id="modal-evaluacion" class="modal-overlay hidden">
         <div class="modal modal-xl" role="dialog" aria-labelledby="modal-evaluacion-titulo" aria-modal="true">
             <div class="modal-header">
@@ -1287,3 +1291,98 @@
 
 </body>
 </html>
+
+    <!-- MODAL: PEGAR LISTA DE ESTUDIANTES
+        Permite agregar varios estudiantes de una vez
+        pegando sus nombres directamente en un textarea. -->
+    <div id="modal-pegar-lista" class="modal-overlay hidden">
+        <div class="modal modal-lg" role="dialog" aria-labelledby="modal-pegar-lista-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-pegar-lista-titulo">
+                    <i class="fa-solid fa-paste"></i>
+                    Pegar lista de estudiantes
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="form-subtitle">
+                    Escribe o pega los nombres, <strong>uno por línea</strong>.
+                    Los códigos únicos se generarán automáticamente.
+                </p>
+
+                <div class="form-group">
+                    <textarea
+                        id="pegar-lista-textarea"
+                        rows="10"
+                        placeholder="María González Rodríguez&#10;Carlos Pérez López&#10;Ana Martínez Silva"
+                        autocomplete="off"></textarea>
+                    <p class="form-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span id="pegar-lista-contador">0 estudiantes detectados</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="button" id="btn-confirmar-pegar-lista" disabled>
+                    <i class="fa-solid fa-plus"></i> Agregar Estudiantes
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <!-- MODAL: REPRODUCTOR DE VIDEO EMBEBIDO
+         Se muestra cuando el usuario hace clic en un
+         enlace de YouTube o Vimeo. Reproduce el video
+         dentro de la app sin abrir pestaña nueva. -->
+    <div id="modal-video" class="modal-overlay hidden">
+        <div class="modal modal-xl" role="dialog" aria-labelledby="modal-video-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-video-titulo">
+                    <i class="fa-solid fa-circle-play"></i>
+                    <span id="modal-video-nombre">Video</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body modal-video-body">
+                <div class="video-container">
+                    <iframe
+                        id="video-iframe"
+                        src=""
+                        title="Reproductor de video"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a id="video-enlace-externo"
+                   class="btn btn-secondary"
+                   href="#"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir en el sitio original
+                </a>
+                <button class="btn btn-primary" type="button" data-cerrar-modal>
+                    <i class="fa-solid fa-check"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIONES -->
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <!-- PUNTO DE ENTRADA -->
+    <script type="module" src="JS/app.js"></script>

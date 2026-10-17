@@ -22,6 +22,7 @@ import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
 import { cerrarModalVideo } from './utils.js';
 import { abrirModalVideo } from './utils.js';
 import { inicializarRegistro } from './vistas/estudiante/registro.js';
+import { inicializarAsistente } from './vistas/profesor/asistente.js';
 
 function iniciarApp() {
     console.log('EduNIC - Iniciando');
@@ -38,6 +39,7 @@ function iniciarApp() {
     inicializarQuiz();
     inicializarCalificaciones();
     inicializarRegistro();
+    inicializarAsistente();
 
     configurarBotonesVolver();
     configurarPestanas('view-panel-carrera');

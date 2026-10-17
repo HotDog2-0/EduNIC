@@ -9,6 +9,11 @@ import {
     limpiarNombre
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
+import { cargarEstudiantesDeCarrera } from './estudiantes.js';
+import { cargarModulosDeCarrera } from './temas.js';
+import { cargarEvaluacionesDeCarrera } from './evaluaciones.js';
+import { cargarCalificacionesDeCarrera } from './calificaciones.js';
+import { cargarAsistenteDeCarrera } from './asistente.js';
 
 /* ESTADO INTERNO */
 
@@ -359,12 +364,6 @@ function eliminarDatosDeCarrera(idCarrera) {
 }
 
 /* ABRIR PANEL DE UNA CARRERA */
-
-import { cargarEstudiantesDeCarrera } from './estudiantes.js';
-import { cargarModulosDeCarrera } from './temas.js';
-import { cargarEvaluacionesDeCarrera } from './evaluaciones.js';
-import { cargarCalificacionesDeCarrera } from './calificaciones.js';
-
 function abrirPanelCarrera(id) {
     const c = carreras.find(x => x.id === id);
     if (!c) return;
@@ -383,6 +382,7 @@ function abrirPanelCarrera(id) {
     cargarModulosDeCarrera(c.id);
     cargarEvaluacionesDeCarrera(c.id);
     cargarCalificacionesDeCarrera(c.id);
+    cargarAsistenteDeCarrera(c.id);
 
     mostrarVista('view-panel-carrera');
 }

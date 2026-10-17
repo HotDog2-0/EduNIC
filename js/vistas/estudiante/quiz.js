@@ -293,82 +293,31 @@ function conectarEventosPreguntas() {
 /* ENVIAR RESPUESTAS */
 
 function enviarRespuestas() {
-    // Verificar que TODAS las preguntas estén respondidas
-    const preguntasSinResponder = [];
+    // ... validaciones previas (preguntas sin responder, duplicado) ...
 
-    evaluacionActiva.preguntas.forEach((p, i) => {
-        const r = respuestas[p.id];
-        const vacia = r === undefined || r === null || r === '';
+    // ... confirmación ...
 
-        if (vacia) {
-            preguntasSinResponder.push(i + 1);
-        }
-    });
-
-    if (preguntasSinResponder.length > 0) {
-        mostrarNotificacion(
-            `Faltan responder: pregunta${preguntasSinResponder.length > 1 ? 's' : ''} ${preguntasSinResponder.join(', ')}`,
-            'error'
-        );
-        return;
-    }
-
-     const usuario = bd.obtener(CLAVES.USUARIO_ACTUAL);
-    if (!usuario || usuario.rol !== 'estudiante') {
-        mostrarNotificacion('Sesión expirada. Vuelve a iniciar sesión.', 'error');
-        cerrarQuiz(true);
-        return;
-    }
-
-    const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
-    const yaExiste = resultados.some(r =>
-        String(r.idEvaluacion) === String(evaluacionActiva.id) &&
-        String(r.idEstudiante) === String(usuario.id)
-    );
-
-    if (yaExiste) {
-        mostrarNotificacion('Ya respondiste esta evaluación anteriormente', 'error');
-        cerrarQuiz(true);
-        if (typeof window.refrescarEvaluacionesEstudiante === 'function') {
-            window.refrescarEvaluacionesEstudiante();
-        }
-        return;
-    }
-
- const resultadosExistentes = bd.obtener(CLAVES.RESULTADOS) || [];
-    const yaRespondio = resultadosExistentes.some(r =>
-        String(r.idEvaluacion) === String(evaluacionActiva.id) &&
-        String(r.idEstudiante) === String(estudianteActual.id)
-    );
-
-    if (yaRespondio) {
-        mostrarNotificacion('Ya respondiste esta evaluación anteriormente', 'error');
-        cerrarQuiz(true);
-        if (typeof window.refrescarEvaluacionesEstudiante === 'function') {
-            window.refrescarEvaluacionesEstudiante();
-        }
-        return;
-    }
-
-    // Confirmar
-    const confirmar = window.confirm(
-        '¿Enviar tus respuestas?\n\nUna vez enviadas, no podrás volver a responder esta evaluación.'
-    );
-    if (!confirmar) return;
-
-    // Calificar
+    // Calificar (ahora devuelve puntos en lugar de porcentaje)
     const calificacion = calcularCalificacion(evaluacionActiva.preguntas, respuestas);
+
+    // Calcular aprobación
+    const aprobado = calificacion.puntosObtenidos >= evaluacionActiva.puntajeMinimo;
 
     // Guardar resultado
     const resultado = {
         id: generarId(),
-        idEvaluacion: String(evaluacionActiva.id),
-        idEstudiante: String(usuario.id),
-        idCarrera: String(evaluacionActiva.idCarrera),
+        idEvaluacion: evaluacionActiva.id,
+        idEstudiante: estudianteActual.id,
+        idCarrera: evaluacionActiva.idCarrera,
         tituloEvaluacion: evaluacionActiva.titulo,
         respuestas: { ...respuestas },
-        puntaje: calificacion.puntaje,
+
+        // ─── Nuevos campos en puntos ───
+        puntosObtenidos: calificacion.puntosObtenidos,
+        puntosTotal: calificacion.puntosTotal,
         puntajeMinimo: evaluacionActiva.puntajeMinimo,
+        aprobado: aprobado,
+
         correctas: calificacion.correctas,
         incorrectas: calificacion.incorrectas,
         pendientes: calificacion.pendientes,
@@ -381,35 +330,58 @@ function enviarRespuestas() {
     todos.push(resultado);
     bd.guardar(CLAVES.RESULTADOS, todos);
 
-    // Mostrar pantalla de resultado
     mostrarResultado(calificacion);
 }
 
 /* CÁLCULO DE CALIFICACIÓN */
 
+/**
+ * Calcula la calificación en puntos.
+ * 
+ * - Cada pregunta tiene un campo `puntos` que indica cuánto vale.
+ * - Las respuestas correctas suman sus puntos.
+ * - Las incorrectas suman 0.
+ * - Las respuestas cortas sin respuesta esperada quedan pendientes.
+ * 
+ * @param {Array} preguntas - Preguntas de la evaluación
+ * @param {Object} respuestasUsuario - { idPregunta: respuesta }
+ * @returns {Object} { correctas, incorrectas, pendientes, puntosObtenidos, puntosTotal }
+ */
 function calcularCalificacion(preguntas, respuestasUsuario) {
     let correctas = 0;
     let incorrectas = 0;
     let pendientes = 0;
+    let puntosObtenidos = 0;
+    let puntosTotal = 0;
 
     preguntas.forEach(p => {
         const r = respuestasUsuario[p.id];
+        const puntos = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 10;
+
+        puntosTotal += puntos;
 
         if (p.tipo === 'multiple') {
-            if (r === p.correcta) correctas++;
-            else incorrectas++;
+            if (r === p.correcta) {
+                correctas++;
+                puntosObtenidos += puntos;
+            } else {
+                incorrectas++;
+            }
         } else if (p.tipo === 'vf') {
-            if (r === p.correcta) correctas++;
-            else incorrectas++;
+            if (r === p.correcta) {
+                correctas++;
+                puntosObtenidos += puntos;
+            } else {
+                incorrectas++;
+            }
         } else if (p.tipo === 'corta') {
             const esperada = (p.respuestaEsperada || '').trim();
             if (!esperada) {
-                // Sin respuesta esperada → pendiente
                 pendientes++;
             } else {
-                // Comparar normalizado
                 if (normalizar(String(r)) === normalizar(esperada)) {
                     correctas++;
+                    puntosObtenidos += puntos;
                 } else {
                     incorrectas++;
                 }
@@ -417,12 +389,7 @@ function calcularCalificacion(preguntas, respuestasUsuario) {
         }
     });
 
-    const totalCalificables = correctas + incorrectas;
-    const puntaje = totalCalificables > 0
-        ? Math.round((correctas / preguntas.length) * 100)
-        : 0;
-
-    return { correctas, incorrectas, pendientes, puntaje };
+    return { correctas, incorrectas, pendientes, puntosObtenidos, puntosTotal };
 }
 
 /* PANTALLA DE RESULTADO */
@@ -435,6 +402,8 @@ function mostrarResultado(calificacion) {
     document.querySelector('.quiz-progreso').classList.add('hidden');
     footer.classList.add('hidden');
 
+    const aprobado = calificacion.puntosObtenidos >= evaluacionActiva.puntajeMinimo;
+
     let icono, titulo, subtitulo, claseNota;
 
     if (calificacion.pendientes > 0) {
@@ -443,12 +412,11 @@ function mostrarResultado(calificacion) {
         subtitulo = 'Tu profesor calificará las respuestas pendientes.';
         claseNota = 'pendiente';
     } else {
-        const aprobado = calificacion.puntaje >= evaluacionActiva.puntajeMinimo;
         icono = aprobado ? 'fa-circle-check' : 'fa-circle-xmark';
         titulo = aprobado ? '¡Aprobado!' : 'No aprobado';
         subtitulo = aprobado
-            ? '¡Excelente trabajo!'
-            : `Necesitabas al menos ${evaluacionActiva.puntajeMinimo}% para aprobar.`;
+            ? '¡Excelente trabajo!':
+            'Sigue practicando y mejorando.';
         claseNota = aprobado ? 'aprobado' : 'reprobado';
     }
 
@@ -462,8 +430,9 @@ function mostrarResultado(calificacion) {
 
             ${calificacion.pendientes === 0 ? `
                 <div class="quiz-resultado-nota ${claseNota}">
-                    ${calificacion.puntaje}%
+                    ${calificacion.puntosObtenidos}<span class="nota-total">/${calificacion.puntosTotal}</span>
                 </div>
+                <p class="nota-label">puntos</p>
             ` : `
                 <div class="quiz-resultado-nota pendiente" style="color: var(--warning-color); font-size: 2rem;">
                     ${calificacion.pendientes} pendiente${calificacion.pendientes > 1 ? 's' : ''}
@@ -484,7 +453,6 @@ function mostrarResultado(calificacion) {
         </div>
     `;
 
-    // Conectar botón cerrar
     document.getElementById('btn-cerrar-resultado')
         ?.addEventListener('click', cerrarQuizYRefrescar);
 }

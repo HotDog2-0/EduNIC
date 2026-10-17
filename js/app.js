@@ -21,6 +21,7 @@ import { resetearPanelEstudiante } from './vistas/estudiante/panelEstudiante.js'
 import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
 import { cerrarModalVideo } from './utils.js';
 import { abrirModalVideo } from './utils.js';
+import { inicializarRegistro } from './vistas/estudiante/registro.js';
 
 function iniciarApp() {
     console.log('EduNIC - Iniciando');
@@ -36,6 +37,7 @@ function iniciarApp() {
     inicializarPanelEstudiante();
     inicializarQuiz();
     inicializarCalificaciones();
+    inicializarRegistro();
 
     configurarBotonesVolver();
     configurarPestanas('view-panel-carrera');

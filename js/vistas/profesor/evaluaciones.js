@@ -34,14 +34,14 @@ let preguntasEnEdicion = [];
 /* PUNTO DE ENTRADA */
 
 export function inicializarEvaluaciones() {
-    console.log('📝 Módulo Evaluaciones: inicializando...');
+    console.log('Módulo Evaluaciones: iniciando');
 
     conectarBotonNuevaEvaluacion();
     conectarModalEvaluacion();
     conectarModalEliminar();
     conectarModalVer();
 
-    console.log('✅ Módulo Evaluaciones: listo');
+    console.log('Módulo Evaluaciones: listo');
 }
 
 /**
@@ -128,7 +128,7 @@ function renderizarEvaluacionItem(e) {
                     </span>
                     <span>
                         <i class="fa-solid fa-check-circle"></i>
-                        Mínimo: ${e.puntajeMinimo}%
+                        Mínimo: ${e.puntajeMinimo} puntos
                     </span>
                 </div>
             </div>
@@ -216,6 +216,14 @@ function conectarModalEvaluacion() {
         e.preventDefault();
         guardarEvaluacion();
     });
+
+    // conectar el input de puntaje mínimo
+    const inputMinimo = document.getElementById('eval-puntaje-minimo');
+    if (inputMinimo) {
+        inputMinimo.addEventListener('input', () => {
+            validarInputPuntajeMinimo();
+        });
+    }
 }
 
 function abrirModalCrear(idModulo) {
@@ -223,6 +231,7 @@ function abrirModalCrear(idModulo) {
         mostrarNotificacion('No hay carrera activa', 'error');
         return;
     }
+    
 
     evaluacionEditandoId = null;
     preguntasEnEdicion = [];
@@ -230,12 +239,13 @@ function abrirModalCrear(idModulo) {
     document.getElementById('modal-evaluacion-titulo-texto').textContent = 'Nueva Evaluación';
     document.getElementById('eval-titulo').value = '';
     document.getElementById('eval-descripcion').value = '';
-    document.getElementById('eval-puntaje-minimo').value = 60;
+    document.getElementById('eval-puntaje-minimo').value = 10;
 
     // Guardar el módulo activo del builder
     document.getElementById('modal-evaluacion').dataset.idModulo = idModulo;
 
     renderizarBuilderPreguntas();
+    actualizarTotalPuntos(); 
 
     document.getElementById('modal-evaluacion').classList.remove('hidden');
     setTimeout(() => document.getElementById('eval-titulo').focus(), 100);
@@ -246,7 +256,13 @@ function abrirModalEditar(idEval) {
     if (!ev) return;
 
     evaluacionEditandoId = idEval;
-    preguntasEnEdicion = (ev.preguntas || []).map(p => ({ ...p }));
+
+    // Copiar preguntas asegurando que tengan puntos
+    preguntasEnEdicion = (ev.preguntas || []).map(p => ({
+        ...p,
+        puntos: (typeof p.puntos === 'number' && p.puntos > 0) ? p.puntos : 10
+    }));
+
 
     document.getElementById('modal-evaluacion-titulo-texto').textContent = 'Editar Evaluación';
     document.getElementById('eval-titulo').value = ev.titulo;
@@ -256,6 +272,7 @@ function abrirModalEditar(idEval) {
     document.getElementById('modal-evaluacion').dataset.idModulo = ev.idModulo;
 
     renderizarBuilderPreguntas();
+    actualizarTotalPuntos();
 
     document.getElementById('modal-evaluacion').classList.remove('hidden');
     setTimeout(() => document.getElementById('eval-titulo').focus(), 100);
@@ -278,8 +295,28 @@ function guardarEvaluacion() {
         mostrarNotificacion('El título no puede estar vacío', 'error');
         return;
     }
-    if (isNaN(puntajeMinimo) || puntajeMinimo < 0 || puntajeMinimo > 100) {
-        mostrarNotificacion('El puntaje mínimo debe estar entre 0 y 100', 'error');
+        // Validación del puntaje mínimo
+    if (isNaN(puntajeMinimo) || puntajeMinimo < 1) {
+        mostrarNotificacion('El puntaje mínimo debe ser al menos 1 punto', 'error');
+        return;
+    }
+
+    if (puntajeMinimo > 100) {
+        mostrarNotificacion('El puntaje mínimo no puede superar los 100 puntos', 'error');
+        return;
+    }
+
+    // Validar contra el total de puntos de las preguntas
+    const totalPuntos = preguntasEnEdicion.reduce((sum, p) => {
+        const puntos = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 0;
+        return sum + puntos;
+    }, 0);
+
+    if (totalPuntos > 0 && puntajeMinimo > totalPuntos) {
+        mostrarNotificacion(
+            `El puntaje mínimo (${puntajeMinimo}) no puede ser mayor que el total de la evaluación (${totalPuntos} puntos)`,
+            'error'
+        );
         return;
     }
     if (preguntasEnEdicion.length === 0) {
@@ -379,12 +416,13 @@ function renderizarBuilderPreguntas() {
                 No hay preguntas todavía. Añade la primera.
             </p>
         `;
+        actualizarTotalPuntos();   // ← NUEVO
         return;
     }
 
     cont.innerHTML = preguntasEnEdicion.map((p, i) => renderizarPreguntaBuilder(p, i)).join('');
 
-    // Reconectar eventos
+    // Reconectar eventos (los existentes + el nuevo)
     cont.querySelectorAll('[data-tipo]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -437,10 +475,39 @@ function renderizarBuilderPreguntas() {
             preguntasEnEdicion[idx].respuestaEsperada = input.value;
         });
     });
+
+    // ─── NUEVO: input de puntos ───
+    cont.querySelectorAll('[data-pregunta-puntos]').forEach(input => {
+        input.addEventListener('input', () => {
+            const idx = parseInt(input.dataset.preguntaPuntos, 10);
+            let valor = parseInt(input.value, 10);
+
+            // Validación: mínimo 1, sin decimales
+            if (isNaN(valor) || valor < 1) {
+                valor = 1;
+            }
+
+            preguntasEnEdicion[idx].puntos = valor;
+            actualizarTotalPuntos();
+        });
+
+        // Al perder el foco, asegurar que el input refleje el valor guardado
+        input.addEventListener('blur', () => {
+            const idx = parseInt(input.dataset.preguntaPuntos, 10);
+            const p = preguntasEnEdicion[idx];
+            if (p && p.puntos) {
+                input.value = p.puntos;
+            }
+        });
+    });
+
+    // Actualizar el total al final de renderizar
+    actualizarTotalPuntos();
 }
 
 function renderizarPreguntaBuilder(p, i) {
     const tipoActual = p.tipo || TIPOS.MULTIPLE;
+    const puntosActuales = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 10;
 
     return `
         <div class="pregunta-builder" data-idx="${i}">
@@ -479,6 +546,20 @@ function renderizarPreguntaBuilder(p, i) {
                 </div>
 
                 ${renderizarCamposSegunTipo(p, i, tipoActual)}
+
+                <div class="pregunta-puntos">
+                    <label for="puntos-${i}">
+                        <i class="fa-solid fa-star"></i>
+                        Puntos:
+                    </label>
+                    <input type="number"
+                           id="puntos-${i}"
+                           min="1"
+                           step="1"
+                           value="${puntosActuales}"
+                           data-pregunta-puntos="${i}">
+                    <span class="pregunta-puntos-hint">Cuánto vale esta pregunta</span>
+                </div>
             </div>
         </div>
     `;
@@ -574,7 +655,8 @@ function agregarPregunta() {
             { texto: '' },
             { texto: '' }
         ],
-        correcta: 0
+        correcta: 0,
+        puntos: 10
     });
 
     renderizarBuilderPreguntas();
@@ -618,6 +700,10 @@ function validarPregunta(p, numero) {
         return `La pregunta ${numero} no tiene texto`;
     }
 
+    if (typeof p.puntos !== 'number' || isNaN(p.puntos) || p.puntos < 1) {
+        return `La pregunta ${numero} debe tener al menos 1 punto`;
+    }
+
     if (p.tipo === TIPOS.MULTIPLE) {
         const opciones = p.opciones || [];
         if (opciones.length !== 4) {
@@ -644,7 +730,8 @@ function limpiarPregunta(p) {
     const base = {
         id: p.id,
         tipo: p.tipo,
-        texto: p.texto.trim()
+        texto: p.texto.trim(),
+        puntos: p.puntos
     };
 
     if (p.tipo === TIPOS.MULTIPLE) {
@@ -659,34 +746,47 @@ function limpiarPregunta(p) {
     return base;
 }
 
-/* MODAL ELIMINAR */
+/* MODAL ELIMINAR EVALUACIÓN */
 
+/**
+ * Conecta el modal de eliminar evaluación:
+ * - Botones de cerrar
+ * - Clic fuera del modal
+ * - ESC
+ * - Input de confirmación (habilitar el botón de eliminar)
+ * - Botón de confirmar eliminación
+ */
 function conectarModalEliminar() {
     const modal       = document.getElementById('modal-eliminar-evaluacion');
     const input       = document.getElementById('confirmar-eliminar-evaluacion');
     const btnEliminar = document.getElementById('btn-confirmar-eliminar-evaluacion');
     if (!modal || !input || !btnEliminar) return;
 
+    // Cerrar con botones [data-cerrar-modal]
     modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
         b.addEventListener('click', cerrarModalEliminar);
     });
 
+    // Cerrar al hacer clic fuera
     modal.addEventListener('click', (e) => {
         if (e.target === modal) cerrarModalEliminar();
     });
 
+    // Cerrar con ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
             cerrarModalEliminar();
         }
     });
 
+    // Habilitar el botón solo cuando el texto coincide
     input.addEventListener('input', () => {
         const ev = evaluaciones.find(x => x.id === evaluacionEliminandoId);
         if (!ev) return;
         btnEliminar.disabled = input.value.trim() !== ev.titulo;
     });
 
+    // Confirmar eliminación
     btnEliminar.addEventListener('click', confirmarEliminar);
 }
 
@@ -823,4 +923,127 @@ function renderizarPreguntaVer(p, i) {
             ${opcionesHTML}
         </div>
     `;
+}
+
+/**
+ * Calcula el total de puntos de todas las preguntas en edición
+ * y actualiza el contador visual.
+ * 
+ * - Verde: total = 100
+ * - Amarillo: total < 100 (aviso)
+ * - Rojo: total > 100 (error)
+ * 
+ * Además, actualiza el hint del puntaje mínimo y lo revalida
+ * para asegurarse de que no supera el total.
+ * 
+ * @returns {number} El total de puntos
+ */
+function actualizarTotalPuntos() {
+    const total = preguntasEnEdicion.reduce((sum, p) => {
+        const puntos = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 0;
+        return sum + puntos;
+    }, 0);
+
+    const elValor = document.getElementById('preguntas-total-valor');
+    const elBadge = document.getElementById('preguntas-total-badge');
+
+    if (elValor) {
+        elValor.textContent = total;
+    }
+
+    if (elBadge) {
+        elBadge.classList.remove('ok', 'aviso', 'error');
+        elBadge.textContent = '';
+
+        if (total === 0) {
+            // Sin preguntas, no mostrar badge
+        } else if (total === 100) {
+            elBadge.textContent = '✓ Correcto';
+            elBadge.classList.add('ok');
+        } else if (total < 100) {
+            elBadge.textContent = `Faltan ${100 - total}`;
+            elBadge.classList.add('aviso');
+        } else {
+            elBadge.textContent = `+${total - 100} extra`;
+            elBadge.classList.add('error');
+        }
+    }
+
+    // Actualizar el hint del puntaje mínimo
+    actualizarHintPuntajeMinimo(total);
+
+    return total;
+}
+
+/**
+ * Actualiza el texto de ayuda del input de puntaje mínimo
+ * según el total de puntos actual.
+ * 
+ * También revalida que el mínimo no supere el total.
+ * 
+ * @param {number} totalPuntos - Total de puntos de las preguntas
+ */
+function actualizarHintPuntajeMinimo(totalPuntos) {
+    const hint = document.getElementById('eval-puntaje-minimo-hint');
+    const input = document.getElementById('eval-puntaje-minimo');
+    if (!hint || !input) return;
+
+    if (totalPuntos === 0) {
+        hint.innerHTML = `
+            Mínimo <strong>1 punto</strong> · Máximo <strong>100 puntos</strong>.
+        `;
+        return;
+    }
+
+    // El mínimo máximo efectivo es min(100, totalPuntos)
+    const maxEfectivo = Math.min(100, totalPuntos);
+
+    hint.innerHTML = `
+        Mínimo <strong>1 punto</strong> · 
+        Máximo efectivo: <strong>${maxEfectivo} puntos</strong> 
+        (el total de la evaluación).
+    `;
+
+    // Actualizar el atributo max del input
+    input.max = maxEfectivo;
+
+    // Si el valor actual supera el máximo, ajustarlo
+    const valorActual = parseInt(input.value, 10);
+    if (!isNaN(valorActual) && valorActual > maxEfectivo) {
+        input.value = maxEfectivo;
+    }
+
+    // Validar el input (feedback visual)
+    validarInputPuntajeMinimo();
+}
+
+/**
+ * Valida el input del puntaje mínimo y le pone feedback visual
+ * si hay algún error.
+ */
+function validarInputPuntajeMinimo() {
+    const input = document.getElementById('eval-puntaje-minimo');
+    if (!input) return;
+
+    const valor = parseInt(input.value, 10);
+    const total = preguntasEnEdicion.reduce((sum, p) => {
+        const puntos = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 0;
+        return sum + puntos;
+    }, 0);
+
+    let hayError = false;
+
+    if (isNaN(valor) || valor < 1) {
+        hayError = true;
+    } else if (total > 0 && valor > total) {
+        hayError = true;
+    }
+
+    if (hayError) {
+        input.style.borderColor = 'var(--danger-color)';
+        input.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.15)';
+    } else {
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+    }
 }

@@ -10,16 +10,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- CSS modular -->
-    <link rel="stylesheet" href="CSS/base.css">
-    <link rel="stylesheet" href="CSS/layout.css">
-    <link rel="stylesheet" href="CSS/componente.css">
-    <link rel="stylesheet" href="CSS/responsive.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/componente.css">
+    <link rel="stylesheet" href="css/responsive.css">
 
     <!-- CSS de módulos -->
-    <link rel="stylesheet" href="CSS/modulos/carreras.css">
-    <link rel="stylesheet" href="CSS/modulos/estudiantes.css">
-    <link rel="stylesheet" href="CSS/modulos/temas.css">
-    <link rel="stylesheet" href="CSS/modulos/evaluaciones.css"
+    <link rel="stylesheet" href="css/modulos/carreras.css">
+    <link rel="stylesheet" href="css/modulos/estudiantes.css">
+    <link rel="stylesheet" href="css/modulos/temas.css">
+    <link rel="stylesheet" href="css/modulos/evaluaciones.css">
 </head>
 <body>
 
@@ -57,6 +57,16 @@
                         <span>Estudiante</span>
                     </button>
                 </div>
+                <!-- Separador -->
+                <div class="landing-divider">
+                    <span>¿Aún no tienes cuenta?</span>
+                </div>
+
+                <!-- Botón de auto-registro -->
+                <button type="button" class="btn btn-secondary btn-block" id="select-registro">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Registrarme con código de clase
+                </button>
             </div>
         </section>
 
@@ -118,6 +128,125 @@
                     <i class="fa-solid fa-circle-info"></i>
                     Demo: <strong>EST-101</strong> o <strong>EST-102</strong>
                 </p>
+            </div>
+        </section>
+
+            <!-- VISTA: REGISTRO DE ESTUDIANTE
+            El estudiante ingresa un código de clase
+            para registrarse sin que el profesor lo haga. -->
+        <section id="view-registro-estudiante" class="view-section hidden">
+            <div class="card form-card">
+                <button class="btn-back" type="button" data-volver="view-landing">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </button>
+
+                <h2><i class="fa-solid fa-user-plus"></i> Registro de Estudiante</h2>
+                <p class="form-subtitle">
+                    Ingresa el código de clase que te dio tu profesor para unirte a su grupo.
+                </p>
+
+                <!-- Formulario en 2 pasos -->
+                <form id="form-registro-estudiante" autocomplete="off">
+
+                    <!-- PASO 1: Código de clase -->
+                    <div id="registro-paso-1">
+                        <div class="form-group">
+                            <label for="registro-codigo-clase">Código de Clase:</label>
+                            <input
+                                type="text"
+                                id="registro-codigo-clase"
+                                required
+                                placeholder="Ej: CLS-A3F9X2"
+                                autocomplete="off"
+                                style="text-transform: uppercase;">
+                            <p class="form-hint">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Pídele a tu profesor el código de clase de tu carrera.
+                            </p>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-block" id="btn-verificar-codigo">
+                            <i class="fa-solid fa-check"></i> Verificar Código
+                        </button>
+                    </div>
+
+                    <!-- PASO 2: Nombre del estudiante (oculto hasta validar código) -->
+                    <div id="registro-paso-2" class="hidden">
+
+                        <!-- Info de la carrera encontrada -->
+                        <div class="registro-carrera-info">
+                            <div class="registro-carrera-icono">
+                                <i class="fa-solid fa-book-bookmark"></i>
+                            </div>
+                            <div class="registro-carrera-datos">
+                                <span class="registro-carrera-label">Te unirás a:</span>
+                                <strong id="registro-carrera-nombre">Carrera</strong>
+                                <span id="registro-carrera-anio" class="text-muted">Año</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registro-nombre">Tu Nombre Completo:</label>
+                            <input
+                                type="text"
+                                id="registro-nombre"
+                                required
+                                placeholder="Ej: María González Rodríguez"
+                                autocomplete="off">
+                            <p class="form-hint">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Escribe tu nombre tal como aparece en la lista del profesor.
+                            </p>
+                        </div>
+
+                        <div class="registro-botones">
+                            <button type="button" class="btn btn-secondary" id="btn-registro-volver">
+                                <i class="fa-solid fa-arrow-left"></i> Cambiar código
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-solid fa-user-plus"></i> Registrarme
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PASO 3: Éxito (oculto hasta completar el registro) -->
+                    <div id="registro-paso-3" class="hidden">
+                        <div class="registro-exito">
+                            <div class="registro-exito-icono">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+
+                            <h3 class="registro-exito-titulo">¡Registro exitoso!</h3>
+                            <p class="registro-exito-subtitulo">
+                                Ya eres parte de la clase. Guarda tu código único,
+                                lo necesitarás para iniciar sesión.
+                            </p>
+
+                            <div class="registro-codigo-caja">
+                                <span class="registro-codigo-label">Tu código único</span>
+                                <span class="registro-codigo-valor" id="registro-codigo-asignado">EST-XXX</span>
+
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-copiar-codigo-estudiante">
+                                    <i class="fa-solid fa-copy"></i> Copiar código
+                                </button>
+                            </div>
+
+                            <div class="registro-codigo-aviso">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <div>
+                                    <strong>Importante:</strong> anota tu código.
+                                    Lo necesitarás cada vez que quieras entrar al sistema.
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-block margin-top" id="btn-ir-a-login">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                Ir a Iniciar Sesión
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
             </div>
         </section>
 
@@ -210,6 +339,28 @@
                     <p class="carrera-header-anio" id="panel-carrera-anio">
                         <i class="fa-solid fa-calendar"></i> Primer Año
                     </p>
+                </div>
+                                <!-- Código de clase para auto-registro -->
+                <div class="codigo-clase-bloque">
+                    <div class="codigo-clase-info">
+                        <span class="codigo-clase-label">
+                            <i class="fa-solid fa-key"></i>
+                            Código de clase
+                        </span>
+                        <span class="codigo-clase-valor" id="panel-codigo-clase">CLS-XXXXXX</span>
+                    </div>
+
+                    <div class="codigo-clase-acciones">
+                        <button class="btn btn-secondary btn-sm" type="button" id="btn-copiar-codigo" title="Copiar código">
+                            <i class="fa-solid fa-copy"></i> Copiar
+                        </button>
+                        <button class="btn btn-secondary btn-sm" type="button" id="btn-compartir-codigo" title="Copiar mensaje de invitación">
+                            <i class="fa-solid fa-share-nodes"></i> Compartir
+                        </button>
+                        <button class="btn btn-warning btn-sm" type="button" id="btn-regenerar-codigo" title="Generar uno nuevo (invalida el anterior)">
+                            <i class="fa-solid fa-rotate"></i> Regenerar
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -416,12 +567,61 @@
 
             </div>
 
-            <!-- TAB 5: ASISTENTE IA -->
+            <!-- TAB 5: ASISTENTE IA
+            Chat con IA (Gemini) para análisis del grupo -->
             <div id="tab-asistente" class="tab-content hidden" role="tabpanel">
-                <div class="card">
-                    <h3><i class="fa-solid fa-robot"></i> Asistente IA</h3>
-                    <p class="text-muted">Próximamente: chat con asistente de IA.</p>
+
+                <div class="card asistente-card">
+                    <div class="asistente-header">
+                        <h3>
+                            <i class="fa-solid fa-robot"></i>
+                            Asistente IA
+                        </h3>
+                        <p class="form-subtitle">
+                            Pregúntame sobre tu grupo, pídeme ideas para clases o redacta mensajes.
+                        </p>
+                    </div>
+
+                    <!-- Botones rápidos -->
+                    <div class="asistente-acciones-rapidas">
+                        <button class="btn btn-secondary btn-sm" type="button" data-accion-ia="resumen">
+                            <i class="fa-solid fa-chart-simple"></i> Resumen de mi grupo
+                        </button>
+                        <button class="btn btn-secondary btn-sm" type="button" data-accion-ia="refuerzo">
+                            <i class="fa-solid fa-user-graduate"></i> ¿Quién necesita refuerzo?
+                        </button>
+                        <button class="btn btn-secondary btn-sm" type="button" data-accion-ia="ideas">
+                            <i class="fa-solid fa-lightbulb"></i> Ideas para mi clase
+                        </button>
+                        <button class="btn btn-secondary btn-sm" type="button" data-accion-ia="mensaje">
+                            <i class="fa-solid fa-pen"></i> Redactar mensaje
+                        </button>
+                    </div>
+
+                    <!-- Historial de chat -->
+                    <div id="asistente-mensajes" class="asistente-mensajes">
+                        <div class="asistente-bienvenida">
+                            <div class="asistente-bienvenida-icono">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <p>¡Hola! Soy tu asistente. Puedo ayudarte a analizar el rendimiento de tu grupo, darte ideas para clases o redactar mensajes para tus estudiantes.</p>
+                            <p class="text-muted">Prueba con un botón rápido o escríbeme algo.</p>
+                        </div>
+                    </div>
+
+                    <!-- Input para escribir -->
+                    <div class="asistente-input-container">
+                        <textarea
+                            id="asistente-input"
+                            rows="1"
+                            placeholder="Escribe tu pregunta aquí..."
+                            autocomplete="off"></textarea>
+                        <button class="btn btn-primary" type="button" id="btn-asistente-enviar">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
         </section>
@@ -466,10 +666,10 @@
 
                     <div class="resultado-stat">
                         <div class="resultado-stat-icono icono-promedio">
-                            <i class="fa-solid fa-percent"></i>
+                            <i class="fa-solid fa-star"></i>
                         </div>
                         <div class="resultado-stat-info">
-                            <div class="resultado-stat-valor" id="calif-stat-promedio">0%</div>
+                            <div class="resultado-stat-valor" id="stat-promedio">—</div>
                             <div class="resultado-stat-etiqueta">Promedio</div>
                         </div>
                     </div>
@@ -636,10 +836,10 @@
 
                         <div class="resultado-stat">
                             <div class="resultado-stat-icono icono-promedio">
-                                <i class="fa-solid fa-percent"></i>
+                                <i class="fa-solid fa-star"></i>
                             </div>
                             <div class="resultado-stat-info">
-                                <div class="resultado-stat-valor" id="stat-promedio">0%</div>
+                                <div class="resultado-stat-valor" id="calif-stat-promedio">—</div>
                                 <div class="resultado-stat-etiqueta">Promedio</div>
                             </div>
                         </div>
@@ -1051,75 +1251,83 @@
 
     <!-- MODAL: CREAR / EDITAR EVALUACIÓN -->
     <div id="modal-evaluacion" class="modal-overlay hidden">
-        <div class="modal modal-xl" role="dialog" aria-labelledby="modal-evaluacion-titulo" aria-modal="true">
-            <div class="modal-header">
-                <h3 id="modal-evaluacion-titulo">
-                    <i class="fa-solid fa-file-pen"></i>
-                    <span id="modal-evaluacion-titulo-texto">Nueva Evaluación</span>
-                </h3>
-                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
+            <div class="modal modal-xl" role="dialog" aria-labelledby="modal-evaluacion-titulo" aria-modal="true">
+                <div class="modal-header">
+                    <h3 id="modal-evaluacion-titulo">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <span id="modal-evaluacion-titulo-texto">Nueva Evaluación</span>
+                    </h3>
+                    <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
 
-            <div class="modal-body">
-                <form id="form-evaluacion" autocomplete="off">
+                <div class="modal-body">
+                    <form id="form-evaluacion" autocomplete="off">
 
-                    <div class="form-group">
-                        <label for="eval-titulo">Título de la Evaluación:</label>
-                        <input type="text" id="eval-titulo" required
-                               placeholder="Ej: Examen Parcial I" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="eval-descripcion">
-                            Descripción
-                            <span class="label-hint">(opcional)</span>
-                        </label>
-                        <textarea id="eval-descripcion" rows="2"
-                                  placeholder="Ej: Evaluación de los temas 1 al 3..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="eval-puntaje-minimo">Puntaje mínimo para aprobar (%):</label>
-                        <input type="number" id="eval-puntaje-minimo" 
-                               min="0" max="100" value="60" required>
-                        <p class="form-hint">
-                            <i class="fa-solid fa-circle-info"></i>
-                            Por defecto <strong>60%</strong>. Puedes cambiarlo según el criterio de la carrera.
-                        </p>
-                    </div>
-
-                    <!-- Builder de preguntas -->
-                    <div class="preguntas-section">
-                        <div class="preguntas-header">
-                            <h4>
-                                <i class="fa-solid fa-list-ol"></i>
-                                Preguntas
-                                <span class="badge-preguntas" id="contador-preguntas-builder">0</span>
-                            </h4>
-                            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-pregunta">
-                                <i class="fa-solid fa-plus"></i> Añadir Pregunta
-                            </button>
+                        <div class="form-group">
+                            <label for="eval-titulo">Título de la Evaluación:</label>
+                            <input type="text" id="eval-titulo" required
+                                placeholder="Ej: Examen Parcial I" autocomplete="off">
                         </div>
 
-                        <div id="preguntas-container" class="preguntas-container">
-                            <p class="text-muted text-center preguntas-vacio">
-                                No hay preguntas todavía. Añade la primera.
+                        <div class="form-group">
+                            <label for="eval-descripcion">
+                                Descripción
+                                <span class="label-hint">(opcional)</span>
+                            </label>
+                            <textarea id="eval-descripcion" rows="2"
+                                    placeholder="Ej: Evaluación de los temas 1 al 3..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eval-puntaje-minimo">Puntaje mínimo para aprobar (puntos):</label>
+                            <input type="number" id="eval-puntaje-minimo" 
+                                min="1" max="100" value="10" required>
+                            <p class="form-hint">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span id="eval-puntaje-minimo-hint">
+                                    Mínimo <strong>1 punto</strong> · Máximo <strong>100 puntos</strong>.
+                                </span>
                             </p>
                         </div>
-                    </div>
 
-                </form>
-            </div>
+                        <!-- Builder de preguntas -->
+                        <div class="preguntas-section">
+                            <div class="preguntas-header">
+                                <div class="preguntas-header-info">
+                                    <h4>
+                                        <i class="fa-solid fa-list-ol"></i>
+                                        Preguntas
+                                        <span class="badge-preguntas" id="contador-preguntas-builder">0</span>
+                                    </h4>
+                                    <div class="preguntas-total" id="preguntas-total">
+                                        <span class="preguntas-total-label">Total:</span>
+                                        <strong id="preguntas-total-valor">0</strong>
+                                        <span>puntos</span>
+                                        <span class="preguntas-total-badge" id="preguntas-total-badge"></span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-pregunta">
+                                    <i class="fa-solid fa-plus"></i> Añadir Pregunta
+                                </button>
+                            </div>
 
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-cerrar-modal>
-                    Cancelar
-                </button>
-                <button class="btn btn-primary" type="submit" form="form-evaluacion">
-                    <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
-                </button>
+                            <div id="preguntas-container" class="preguntas-container">
+                                <p class="text-muted text-center preguntas-vacio">
+                                    No hay preguntas todavía. Añade la primera.
+                                </p>
+                            </div>
+                        </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                        Cancelar
+                    </button>
+                    <button class="btn btn-primary" type="submit" form="form-evaluacion">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1191,7 +1399,7 @@
                         <span>
                             <i class="fa-solid fa-check-circle"></i>
                             Mínimo para aprobar:
-                            <strong id="ver-evaluacion-minimo">60</strong>%
+                            <strong id="ver-evaluacion-minimo">10</strong> puntos
                         </span>
                     </p>
                 </div>
@@ -1289,10 +1497,7 @@
         </div>
     </div>
 
-</body>
-</html>
-
-    <!-- MODAL: PEGAR LISTA DE ESTUDIANTES
+     <!-- MODAL: PEGAR LISTA DE ESTUDIANTES
         Permite agregar varios estudiantes de una vez
         pegando sus nombres directamente en un textarea. -->
     <div id="modal-pegar-lista" class="modal-overlay hidden">
@@ -1384,5 +1589,8 @@
     <!-- NOTIFICACIONES -->
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <!-- PUNTO DE ENTRADA -->
-    <script type="module" src="JS/app.js"></script>
+    <!-- PUNTO DE ENTRADA-->
+    <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

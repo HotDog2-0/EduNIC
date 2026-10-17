@@ -1545,3 +1545,112 @@
         min-width: 100%;
     }
 }
+
+/* CONTADOR DE TOTAL DE PUNTOS EN EL BUILDER */
+
+.preguntas-header-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.preguntas-total {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.preguntas-total-label {
+    font-weight: 600;
+}
+
+.preguntas-total strong {
+    color: var(--text-color);
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.preguntas-total-badge {
+    display: none;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 0.35rem;
+}
+
+.preguntas-total-badge.aviso {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.preguntas-total-badge.ok {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.preguntas-total-badge.error {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* CAMPO DE PUNTOS POR PREGUNTA */
+
+.pregunta-puntos {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border-color);
+}
+
+.pregunta-puntos label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.pregunta-puntos label i {
+    color: var(--primary-color);
+}
+
+.pregunta-puntos input[type="number"] {
+    width: 80px;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-family: inherit;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-color);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pregunta-puntos input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.pregunta-puntos-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    font-style: italic;
+}

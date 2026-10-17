@@ -131,9 +131,13 @@ function renderizarEvalItem(ev) {
 
     // Clase del promedio
     let clasePromedio = '';
-    if (stats.totalRespondieron > 0) {
-        if (stats.promedio < ev.puntajeMinimo) clasePromedio = 'bajo';
-        else if (stats.promedio >= 80) clasePromedio = 'alto';
+    if (stats.contCalificadas > 0 && stats.promedioTotal > 0) {
+        // Comparar proporcionalmente: (promedioPuntos / promedioTotal) vs (minimo / total)
+        const proporcion = stats.promedioPuntos / stats.promedioTotal;
+        const proporcionMinimo = ev.puntajeMinimo / stats.promedioTotal;
+        
+        if (proporcion < proporcionMinimo) clasePromedio = 'bajo';
+        else if (proporcion >= 0.8) clasePromedio = 'alto';
     }
 
     return `
@@ -149,10 +153,10 @@ function renderizarEvalItem(ev) {
                         <i class="fa-solid fa-users"></i>
                         ${stats.totalRespondieron} / ${estudiantesCarrera.length} respondieron
                     </span>
-                    ${stats.totalRespondieron > 0 ? `
+                    ${stats.contCalificadas > 0 ? `
                         <span>
-                            <i class="fa-solid fa-percent"></i>
-                            Promedio: <strong class="calif-promedio ${clasePromedio}">${stats.promedio}%</strong>
+                            <i class="fa-solid fa-star"></i>
+                            Promedio: <strong class="calif-promedio ${clasePromedio}">${stats.promedioPuntos}/${stats.promedioTotal}</strong>
                         </span>
                     ` : ''}
                     ${tienePendientes ? `
@@ -189,30 +193,43 @@ function calcularStatsEvaluacion(idEvaluacion) {
     let pendientes = 0;
     let aprobados = 0;
     let reprobados = 0;
-    let sumaPuntajes = 0;
+    let sumaPuntos = 0;
+    let sumaTotales = 0;
     let contCalificadas = 0;
 
     deEsta.forEach(r => {
         if (r.estado === 'pendiente') {
             pendientes++;
         } else {
-            sumaPuntajes += r.puntaje;
+            const puntos = typeof r.puntosObtenidos === 'number' ? r.puntosObtenidos : 0;
+            const total = typeof r.puntosTotal === 'number' ? r.puntosTotal : 0;
+
+            sumaPuntos += puntos;
+            sumaTotales += total;
             contCalificadas++;
 
-            // Buscar la evaluación para saber el puntaje mínimo
-            const ev = evaluacionesCarrera.find(e => e.id === idEvaluacion);
-            const minimo = ev?.puntajeMinimo ?? 60;
-
-            if (r.puntaje >= minimo) aprobados++;
+            if (r.aprobado) aprobados++;
             else reprobados++;
         }
     });
 
-    const promedio = contCalificadas > 0
-        ? Math.round(sumaPuntajes / contCalificadas)
-        : 0;
+    // Promedio en puntos (proporcional)
+    let promedioPuntos = 0;
+    let promedioTotal = 0;
+    if (contCalificadas > 0) {
+        promedioPuntos = Math.round(sumaPuntos / contCalificadas);
+        promedioTotal = Math.round(sumaTotales / contCalificadas);
+    }
 
-    return { totalRespondieron, pendientes, aprobados, reprobados, promedio };
+    return { 
+        totalRespondieron, 
+        pendientes, 
+        aprobados, 
+        reprobados, 
+        promedioPuntos,
+        promedioTotal,
+        contCalificadas
+    };
 }
 
 /* FILTROS */
@@ -299,7 +316,14 @@ function renderizarResumenEvaluacion() {
     const stats = calcularStatsEvaluacion(evaluacionActiva.id);
 
     document.getElementById('calif-stat-total').textContent = stats.totalRespondieron;
-    document.getElementById('calif-stat-promedio').textContent = `${stats.promedio}%`;
+    
+    const promedioEl = document.getElementById('calif-stat-promedio');
+    if (stats.contCalificadas > 0) {
+        promedioEl.textContent = `${stats.promedioPuntos}/${stats.promedioTotal}`;
+    } else {
+        promedioEl.textContent = '—';
+    }
+    
     document.getElementById('calif-stat-aprobadas').textContent = stats.aprobados;
     document.getElementById('calif-stat-reprobadas').textContent = stats.reprobados;
 }
@@ -357,13 +381,12 @@ function renderizarFilaRespuesta(r, indice) {
         notaClase = 'pendiente';
         notaTexto = '—';
     } else {
-        const aprobado = r.puntaje >= evaluacionActiva.puntajeMinimo;
+        const aprobado = r.aprobado;
         estadoClase = aprobado ? 'aprobado' : 'reprobado';
         estadoTexto = aprobado ? 'Aprobado' : 'Reprobado';
         notaClase = aprobado ? 'aprobado' : 'reprobado';
-        notaTexto = `${r.puntaje}%`;
+        notaTexto = `${r.puntosObtenidos}/${r.puntosTotal}`;
     }
-
     const puedeCalificar = r.estado === 'pendiente';
 
     return `
@@ -580,40 +603,61 @@ function recalcularResultado(r) {
     let correctas = 0;
     let incorrectas = 0;
     let pendientes = 0;
+    let puntosObtenidos = 0;
+    let puntosTotal = 0;
 
     const calificaciones = r.calificacionesManuales || {};
 
     ev.preguntas.forEach(p => {
         const respuesta = r.respuestas?.[p.id];
+        const puntos = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 10;
+
+        puntosTotal += puntos;
 
         if (p.tipo === 'multiple') {
-            if (respuesta === p.correcta) correctas++;
-            else incorrectas++;
+            if (respuesta === p.correcta) {
+                correctas++;
+                puntosObtenidos += puntos;
+            } else {
+                incorrectas++;
+            }
         } else if (p.tipo === 'vf') {
-            if (respuesta === p.correcta) correctas++;
-            else incorrectas++;
+            if (respuesta === p.correcta) {
+                correctas++;
+                puntosObtenidos += puntos;
+            } else {
+                incorrectas++;
+            }
         } else if (p.tipo === 'corta') {
             const esperada = (p.respuestaEsperada || '').trim();
 
             if (esperada) {
-                // Auto-calificable
-                if (normalizar(String(respuesta)) === normalizar(esperada)) correctas++;
-                else incorrectas++;
+                if (normalizar(String(respuesta)) === normalizar(esperada)) {
+                    correctas++;
+                    puntosObtenidos += puntos;
+                } else {
+                    incorrectas++;
+                }
             } else {
                 // Depende de calificación manual
-                if (calificaciones[p.id] === true) correctas++;
-                else if (calificaciones[p.id] === false) incorrectas++;
-                else pendientes++;
+                if (calificaciones[p.id] === true) {
+                    correctas++;
+                    puntosObtenidos += puntos;
+                } else if (calificaciones[p.id] === false) {
+                    incorrectas++;
+                } else {
+                    pendientes++;
+                }
             }
         }
     });
 
-    const total = ev.preguntas.length;
-    const puntaje = Math.round((correctas / total) * 100);
-
-    r.puntaje = puntaje;
+    // Actualizar campos
+    r.puntosObtenidos = puntosObtenidos;
+    r.puntosTotal = puntosTotal;
     r.correctas = correctas;
     r.incorrectas = incorrectas;
     r.pendientes = pendientes;
+    r.aprobado = puntosObtenidos >= ev.puntajeMinimo;
     r.estado = pendientes > 0 ? 'pendiente' : 'calificada';
 }

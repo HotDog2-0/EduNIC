@@ -44,6 +44,29 @@ function calcularSiguienteCodigo() {
     if (numeros.length === 0) return 'CAR-001';
 
     return `CAR-${String(Math.max(...numeros) + 1).padStart(3, '0')}`;
+
+    /**
+ * Genera un código único de clase para compartir con estudiantes.
+ * 
+ * Formato: CLS-XXXXXX
+ *   - CLS-  → prefijo fijo
+ *   - XXXXXX → 6 caracteres aleatorios (letras mayúsculas y números)
+ * 
+ * El código se usa para que los estudiantes se auto-registren
+ * sin que el profesor tenga que agregarlos manualmente.
+ * 
+ * @returns {string} Ej: "CLS-A3F9X2"
+ */
+function generarCodigoClase() {
+    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
+    // Se omiten I, O, 0, 1 para evitar confusión visual
+    
+    let codigo = 'CLS-';
+    for (let i = 0; i < 6; i++) {
+        codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return codigo;
+}
 }
 
 /* RENDERIZADO DE TARJETAS*/
@@ -228,7 +251,9 @@ function guardarCarrera() {
             id: generarId(),
             nombre,
             anio,
-            codigo: calcularSiguienteCodigo()
+            codigo: calcularSiguienteCodigo(),
+            codigoClase: generarCodigoClase(),
+            creado: new Date().toISOString(),
         };
         carreras.push(nueva);
         guardarYRefrescar();
@@ -351,6 +376,9 @@ function abrirPanelCarrera(id) {
     document.getElementById('panel-carrera-anio').innerHTML =
         `<i class="fa-solid fa-calendar"></i> ${escaparHTML(c.anio)}`;
 
+        rellenarCodigoClase(c);
+        conectarBotonesCodigoClase(c);
+
     cargarEstudiantesDeCarrera(c.id);
     cargarModulosDeCarrera(c.id);
     cargarEvaluacionesDeCarrera(c.id);
@@ -376,4 +404,159 @@ function conectarBotonVolverCarreras() {
 function guardarYRefrescar() {
     bd.guardar(CLAVES.CARRERAS, carreras);
     renderizarTarjetas();
+}
+
+/* CÓDIGO DE CLASE (AUTO-REGISTRO) */
+
+/**
+ * Rellena el bloque del código de clase en el panel de la carrera.
+ * 
+ * @param {Object} carrera - Objeto de la carrera activa
+ */
+function rellenarCodigoClase(carrera) {
+    const el = document.getElementById('panel-codigo-clase');
+    if (el) {
+        el.textContent = carrera.codigoClase || 'CLS-XXXXXX';
+    }
+}
+
+/**
+ * Copia el código de clase al portapapeles.
+ * 
+ * @param {string} codigo - Código a copiar
+ */
+async function copiarCodigoClase(codigo) {
+    try {
+        await navigator.clipboard.writeText(codigo);
+        mostrarNotificacion('Código copiado al portapapeles');
+    } catch (e) {
+        // Fallback para navegadores sin clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = codigo;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            mostrarNotificacion('Código copiado al portapapeles');
+        } catch (err) {
+            mostrarNotificacion('No se pudo copiar el código', 'error');
+        }
+        document.body.removeChild(textarea);
+    }
+}
+
+/**
+ * Copia un mensaje de invitación con el código de clase.
+ * Listo para pegar en WhatsApp, correo, etc.
+ * 
+ * @param {Object} carrera - Objeto de la carrera activa
+ */
+async function compartirCodigoClase(carrera) {
+    const mensaje = 
+        `¡Hola! Te invito a unirte a mi clase en EduNIC.\n\n` +
+        `Carrera: ${carrera.nombre} — ${carrera.anio}\n` +
+        `Código de clase: ${carrera.codigoClase}\n\n` +
+        `Ingresa a la plataforma, selecciona "Estudiante" y usa el ` +
+        `código de clase para registrarte. ¡Nos vemos en clase!`;
+
+    try {
+        await navigator.clipboard.writeText(mensaje);
+        mostrarNotificacion('Mensaje de invitación copiado');
+    } catch (e) {
+        mostrarNotificacion('No se pudo copiar el mensaje', 'error');
+    }
+}
+
+/**
+ * Regenera el código de clase de la carrera activa.
+ * El código anterior queda inválido.
+ * 
+ * @param {Object} carrera - Objeto de la carrera activa
+ */
+function regenerarCodigoClase(carrera) {
+    const confirmar = window.confirm(
+        '¿Regenerar el código de clase?\n\n' +
+        'El código anterior dejará de funcionar. Los estudiantes ' +
+        'que no se hayan registrado todavía con ese código ya no podrán hacerlo.'
+    );
+    if (!confirmar) return;
+
+    // Generar código nuevo
+    const nuevoCodigo = generarCodigoClase();
+    carrera.codigoClase = nuevoCodigo;
+
+    // Guardar cambios
+    const todas = bd.obtener(CLAVES.CARRERAS) || [];
+    const idx = todas.findIndex(c => c.id === carrera.id);
+    if (idx !== -1) {
+        todas[idx].codigoClase = nuevoCodigo;
+        bd.guardar(CLAVES.CARRERAS, todas);
+    }
+
+    // Actualizar la variable local
+    const local = carreras.find(c => c.id === carrera.id);
+    if (local) local.codigoClase = nuevoCodigo;
+
+    // Refrescar UI
+    rellenarCodigoClase(carrera);
+    mostrarNotificacion('Nuevo código generado');
+}
+
+/**
+ * Conecta los botones del bloque de código de clase.
+ * Se llama cada vez que se abre una carrera.
+ * 
+ * @param {Object} carrera - Objeto de la carrera activa
+ */
+function conectarBotonesCodigoClase(carrera) {
+    // Botón copiar
+    const btnCopiar = document.getElementById('btn-copiar-codigo');
+    if (btnCopiar) {
+        // Clonar y reemplazar para eliminar listeners previos
+        const nuevo = btnCopiar.cloneNode(true);
+        btnCopiar.parentNode.replaceChild(nuevo, btnCopiar);
+        nuevo.addEventListener('click', () => copiarCodigoClase(carrera.codigoClase));
+    }
+
+    // Botón compartir
+    const btnCompartir = document.getElementById('btn-compartir-codigo');
+    if (btnCompartir) {
+        const nuevo = btnCompartir.cloneNode(true);
+        btnCompartir.parentNode.replaceChild(nuevo, btnCompartir);
+        nuevo.addEventListener('click', () => compartirCodigoClase(carrera));
+    }
+
+    // Botón regenerar
+    const btnRegenerar = document.getElementById('btn-regenerar-codigo');
+    if (btnRegenerar) {
+        const nuevo = btnRegenerar.cloneNode(true);
+        btnRegenerar.parentNode.replaceChild(nuevo, btnRegenerar);
+        nuevo.addEventListener('click', () => regenerarCodigoClase(carrera));
+    }
+}
+
+/* GENERACIÓN DE CÓDIGOS */
+/**
+ * Genera un código único de clase para compartir con estudiantes.
+ * 
+ * Formato: CLS-XXXXXX
+ *   - CLS-  → prefijo fijo
+ *   - XXXXXX → 6 caracteres aleatorios
+ * 
+ * Se omiten las letras I, O y los números 0, 1
+ * para evitar confusión visual (I/1, O/0).
+ * 
+ * @returns {string} Ej: "CLS-A3F9X2"
+ */
+function generarCodigoClase() {
+    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let codigo = 'CLS-';
+
+    for (let i = 0; i < 6; i++) {
+        codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+
+    return codigo;
 }

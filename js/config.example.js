@@ -23,5 +23,5 @@ export const CONFIG = {
     GEMINI_API_KEY: 'TU_API_KEY_AQUI',
     
     // Modelo de Gemini a usar
-    GEMINI_MODEL: 'gemini-2.5-flash'
+    GEMINI_MODEL: 'gemini-3.5-flash-lite'
 };

@@ -190,3 +190,31 @@
 
 .toast.success { background-color: var(--success-color); }
 .toast.error   { background-color: var(--danger-color); }
+
+/* SEPARADOR EN LA LANDING
+   "¿Aún no tienes cuenta?" */
+
+.landing-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.landing-divider::before,
+.landing-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.landing-divider span {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}

@@ -6,7 +6,9 @@ import {
     generarId,
     escaparHTML,
     normalizar,
-    limpiarNombre
+    limpiarNombre,
+    detectarVideo,
+    abrirModalVideo
 } from '../../utils.js';
 
 /* ESTADO INTERNO */
@@ -16,13 +18,26 @@ let idCarreraActiva = null;
 let estudianteEditandoId = null;   
 
 /* PUNTO DE ENTRADA */
-
+/**
+ * Inicializa el módulo de Estudiantes.
+ * Se llama una sola vez desde app.js.
+ * 
+ * Responsabilidades:
+ * - Conectar el formulario de registro manual
+ * - Conectar el input de nombre (para preview del código)
+ * - Conectar la subida de archivos CSV/TXT
+ * - Conectar la descarga de la plantilla
+ * - Conectar el modal "Pegar lista"
+ * - Conectar el modal de edición
+ */
 export function inicializarEstudiantes() {
     console.log('Módulo Estudiantes: iniciando');
 
     conectarFormularioRegistro();
     conectarInputNombre();
     conectarSubidaArchivo();
+    conectarDescargarPlantilla();
+    conectarModalPegarLista();   
     conectarModalEdicion();
 
     console.log('Módulo Estudiantes: listo');
@@ -455,4 +470,189 @@ function importarNombres(nombres) {
     bd.guardar(CLAVES.ESTUDIANTES, todos);
 
     return { agregados, duplicados };
+}
+
+/* PLANTILLA CSV DESCARGABLE */
+
+/**
+ * Conecta el botón "Descargar plantilla".
+ * Genera y descarga un CSV de ejemplo con el formato esperado.
+ */
+function conectarDescargarPlantilla() {
+    const btn = document.getElementById('btn-descargar-plantilla');
+    if (!btn) return;
+
+    btn.addEventListener('click', descargarPlantilla);
+}
+
+/**
+ * Genera un archivo CSV de ejemplo y lo descarga.
+ * 
+ * El archivo incluye un BOM UTF-8 al inicio para que
+ * Excel y otras hojas de cálculo muestren correctamente
+ * los acentos y caracteres especiales (á, é, í, ó, ú, ñ).
+ * 
+ * El formato es simple: una columna "nombre" con
+ * una fila por estudiante.
+ */
+function descargarPlantilla() {
+    // Contenido de la plantilla (encabezado + ejemplos)
+    const contenido = [
+        'Nombre del estudiante',
+        'María González Rodríguez',
+        'Carlos Pérez López',
+        'Ana Martínez Silva'
+    ].join('\n');
+
+    // BOM UTF-8 (\uFEFF) + contenido, para compatibilidad con Excel
+    const blob = new Blob(['\uFEFF' + contenido], {
+        type: 'text/csv;charset=utf-8;'
+    });
+
+    // Crear un enlace temporal y simular el clic para descargar
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'plantilla-estudiantes.csv';
+
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+
+    // Liberar la memoria del blob
+    URL.revokeObjectURL(url);
+
+    mostrarNotificacion('Plantilla descargada');
+}
+
+/* PEGAR LISTA EN MASA (MODAL) */
+/**
+ * Conecta el botón "Pegar lista" y su modal.
+ * Permite agregar varios estudiantes escribiendo
+ * o pegando sus nombres directamente en un textarea.
+ */
+function conectarModalPegarLista() {
+    const btnAbrir = document.getElementById('btn-pegar-lista');
+    const modal = document.getElementById('modal-pegar-lista');
+    const textarea = document.getElementById('pegar-lista-textarea');
+    const contador = document.getElementById('pegar-lista-contador');
+    const btnConfirmar = document.getElementById('btn-confirmar-pegar-lista');
+
+    if (!modal || !textarea || !contador || !btnConfirmar) return;
+
+    // Abrir modal
+    btnAbrir?.addEventListener('click', () => {
+        textarea.value = '';
+        actualizarContadorPegarLista(0);
+        btnConfirmar.disabled = true;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => textarea.focus(), 100);
+    });
+
+    // Cerrar modal (botones [data-cerrar-modal] + click fuera + ESC)
+    modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
+        b.addEventListener('click', () => cerrarModalPegarLista());
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) cerrarModalPegarLista();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            cerrarModalPegarLista();
+        }
+    });
+
+    // Actualizar contador en vivo mientras el usuario escribe
+    textarea.addEventListener('input', () => {
+        const cantidad = contarNombresPegados(textarea.value);
+        actualizarContadorPegarLista(cantidad);
+        btnConfirmar.disabled = cantidad === 0;
+    });
+
+    // Confirmar y agregar
+    btnConfirmar.addEventListener('click', () => {
+        const nombres = extraerNombresDeLista(textarea.value);
+        if (nombres.length === 0) {
+            mostrarNotificacion('No hay nombres válidos', 'error');
+            return;
+        }
+        importarNombresEnMasa(nombres);
+        cerrarModalPegarLista();
+    });
+}
+
+/**
+ * Cierra el modal de "Pegar lista".
+ */
+function cerrarModalPegarLista() {
+    document.getElementById('modal-pegar-lista')?.classList.add('hidden');
+}
+
+/**
+ * Cuenta cuántos nombres válidos hay en el textarea.
+ * Un nombre válido = línea con al menos 2 caracteres.
+ * 
+ * @param {string} texto - Contenido del textarea
+ * @returns {number}
+ */
+function contarNombresPegados(texto) {
+    return extraerNombresDeLista(texto).length;
+}
+
+/**
+ * Extrae los nombres válidos del texto pegado.
+ * Cada línea se considera un nombre.
+ * Ignora líneas vacías o demasiado cortas.
+ * 
+ * @param {string} texto - Contenido del textarea
+ * @returns {string[]} Lista de nombres limpios
+ */
+function extraerNombresDeLista(texto) {
+    return texto
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(l => l.length > 1)
+        .map(l => limpiarNombre(l));
+}
+
+/**
+ * Actualiza el contador visual del modal.
+ * 
+ * @param {number} cantidad
+ */
+function actualizarContadorPegarLista(cantidad) {
+    const el = document.getElementById('pegar-lista-contador');
+    if (!el) return;
+
+    el.textContent = cantidad === 1
+        ? '1 estudiante detectado'
+        : `${cantidad} estudiantes detectados`;
+}
+
+/**
+ * Importa en masa los nombres pegados en el modal.
+ * Reutiliza la misma lógica que la importación por archivo.
+ * 
+ * @param {string[]} nombres
+ */
+function importarNombresEnMasa(nombres) {
+    const { agregados, duplicados } = importarNombres(nombres);
+
+    // Refrescar la tabla y el preview del código
+    renderizarTabla();
+    actualizarCodigoPreview();
+
+    // Notificar resultado
+    if (agregados > 0) {
+        let msg = `${agregados} estudiante${agregados !== 1 ? 's' : ''} agregado${agregados !== 1 ? 's' : ''}`;
+        if (duplicados > 0) {
+            msg += ` (${duplicados} duplicado${duplicados !== 1 ? 's' : ''} omitido${duplicados !== 1 ? 's' : ''})`;
+        }
+        mostrarNotificacion(msg);
+    } else {
+        mostrarNotificacion('Todos los nombres ya estaban registrados', 'error');
+    }
 }

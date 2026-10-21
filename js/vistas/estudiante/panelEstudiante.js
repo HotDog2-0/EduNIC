@@ -5,7 +5,9 @@ import {
     mostrarNotificacion,
     escaparHTML,
     normalizar,
-    dataURLtoBlobURL 
+    dataURLtoBlobURL,
+    detectarVideo,
+    abrirModalVideo
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
 import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
@@ -292,20 +294,46 @@ function renderizarTemaEstudiante(t) {
 function renderizarRecursoChipEstudiante(r) {
     const esPDF = r.tipo === 'pdf';
 
-    const url = esPDF
-        ? (r.dataURL ? dataURLtoBlobURL(r.dataURL) : '#')
-        : (r.url || '#');
+    // ----- PDF -----
+    if (esPDF) {
+        const url = r.dataURL ? dataURLtoBlobURL(r.dataURL) : '#';
+        return `
+            <a class="recurso-chip tipo-pdf"
+               href="${url}"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="${escaparHTML(r.titulo)}">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
+            </a>
+        `;
+    }
 
-    const icono = esPDF ? 'fa-file-pdf' : 'fa-link';
-    const clase = esPDF ? 'tipo-pdf' : 'tipo-enlace';
+    // ----- Enlace o video -----
+    const url = r.url || '#';
+    const video = detectarVideo(url);
+
+    if (video) {
+        return `
+            <button class="recurso-chip tipo-video"
+                    type="button"
+                    data-video-url="${escaparHTML(video.embedURL)}"
+                    data-video-titulo="${escaparHTML(r.titulo)}"
+                    data-video-original="${escaparHTML(video.urlOriginal)}"
+                    title="${escaparHTML(r.titulo)}">
+                <i class="fa-solid fa-circle-play"></i>
+                <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
+            </button>
+        `;
+    }
 
     return `
-        <a class="recurso-chip ${clase}"
+        <a class="recurso-chip tipo-enlace"
            href="${url}"
            target="_blank"
            rel="noopener noreferrer"
            title="${escaparHTML(r.titulo)}">
-            <i class="fa-solid ${icono}"></i>
+            <i class="fa-solid fa-link"></i>
             <span class="recurso-chip-texto">${escaparHTML(r.titulo)}</span>
         </a>
     `;
@@ -415,29 +443,31 @@ function renderizarEvaluacionEstudiante(ev) {
         const estaPendiente = miResultado.estado === 'pendiente';
 
         if (estaCalificada) {
-            const aprobado = miResultado.puntaje >= ev.puntajeMinimo;
-            contenidoDerecho = `
-                <div class="evaluacion-estudiante-resultado">
-                    <div class="evaluacion-nota ${aprobado ? 'aprobado' : 'reprobado'}">
-                        ${miResultado.puntaje}%
-                    </div>
-                    <div class="evaluacion-estado-texto">
-                        ${aprobado ? 'Aprobado' : 'Reprobado'}
-                    </div>
+        const aprobado = miResultado.aprobado;
+        contenidoDerecho = `
+            <div class="evaluacion-estudiante-resultado">
+                <div class="evaluacion-nota ${aprobado ? 'aprobado' : 'reprobado'}">
+                    ${miResultado.puntosObtenidos}/${miResultado.puntosTotal}
                 </div>
-            `;
-        } else if (estaPendiente) {
-            contenidoDerecho = `
-                <div class="evaluacion-estudiante-resultado">
-                    <div class="evaluacion-nota pendiente">
-                        <i class="fa-solid fa-clock"></i> Pendiente
-                    </div>
-                    <div class="evaluacion-estado-texto">
-                        Esperando calificación
-                    </div>
+                <div class="evaluacion-estado-texto">
+                    ${aprobado ? 'Aprobado' : 'Reprobado'}
                 </div>
-            `;
-        }
+            </div>
+        `;
+    }
+        
+    else if (estaPendiente) {
+        contenidoDerecho = `
+            <div class="evaluacion-estudiante-resultado">
+                <div class="evaluacion-nota pendiente">
+                    <i class="fa-solid fa-clock"></i> Pendiente
+                </div>
+                <div class="evaluacion-estado-texto">
+                    Esperando calificación
+                </div>
+            </div>
+        `;
+    }
     } else {
         // No respondida: botón de responder
         contenidoDerecho = `
@@ -468,7 +498,7 @@ function renderizarEvaluacionEstudiante(ev) {
                     </span>
                     <span>
                         <i class="fa-solid fa-check-circle"></i>
-                        Mínimo: ${ev.puntajeMinimo}%
+                        Mínimo: ${ev.puntajeMinimo} puntos
                     </span>
                 </div>
             </div>
@@ -578,34 +608,46 @@ function calcularResumenResultados(resultados) {
     let aprobadas = 0;
     let reprobadas = 0;
     let pendientes = 0;
-    let sumaCalificadas = 0;
+    let sumaPuntos = 0;
+    let sumaTotales = 0;
     let contCalificadas = 0;
 
     resultados.forEach(r => {
         if (r.estado === 'pendiente') {
             pendientes++;
         } else {
-            // Calificada
-            const aprobado = r.puntaje >= r.puntajeMinimo;
-            if (aprobado) aprobadas++;
+            if (r.aprobado) aprobadas++;
             else reprobadas++;
-            sumaCalificadas += r.puntaje;
+            
+            const p = typeof r.puntosObtenidos === 'number' ? r.puntosObtenidos : 0;
+            const t = typeof r.puntosTotal === 'number' ? r.puntosTotal : 0;
+            sumaPuntos += p;
+            sumaTotales += t;
             contCalificadas++;
         }
     });
 
-    const promedio = contCalificadas > 0
-        ? Math.round(sumaCalificadas / contCalificadas)
+    const promedioPuntos = contCalificadas > 0
+        ? Math.round(sumaPuntos / contCalificadas)
+        : 0;
+    const promedioTotal = contCalificadas > 0
+        ? Math.round(sumaTotales / contCalificadas)
         : 0;
 
-    return { total, aprobadas, reprobadas, pendientes, promedio };
+    return { total, aprobadas, reprobadas, pendientes, promedioPuntos, promedioTotal };
 }
 
 function actualizarResumen(r) {
     document.getElementById('stat-total').textContent = r.total;
     document.getElementById('stat-aprobadas').textContent = r.aprobadas;
     document.getElementById('stat-reprobadas').textContent = r.reprobadas;
-    document.getElementById('stat-promedio').textContent = `${r.promedio}%`;
+    
+    const promedioEl = document.getElementById('stat-promedio');
+    if (r.promedioTotal > 0) {
+        promedioEl.textContent = `${r.promedioPuntos}/${r.promedioTotal}`;
+    } else {
+        promedioEl.textContent = '—';
+    }
 }
 
 /**
@@ -619,15 +661,11 @@ function filtrarResultados(resultados, filtro) {
     }
 
     if (filtro === 'aprobadas') {
-        return resultados.filter(r =>
-            r.estado !== 'pendiente' && r.puntaje >= r.puntajeMinimo
-        );
+    return resultados.filter(r => r.estado !== 'pendiente' && r.aprobado);
     }
 
     if (filtro === 'reprobadas') {
-        return resultados.filter(r =>
-            r.estado !== 'pendiente' && r.puntaje < r.puntajeMinimo
-        );
+        return resultados.filter(r => r.estado !== 'pendiente' && !r.aprobado);
     }
 
     return resultados;
@@ -642,7 +680,7 @@ function renderizarResultadoItem(r) {
     if (r.estado === 'pendiente') {
         estadoVisual = 'pendiente';
     } else {
-        estadoVisual = r.puntaje >= r.puntajeMinimo ? 'aprobado' : 'reprobado';
+        estadoVisual = r.aprobado ? 'aprobado' : 'reprobado';
     }
 
     // Buscar el módulo para mostrarlo
@@ -705,7 +743,7 @@ function renderizarResultadoItem(r) {
             <div class="resultado-item-nota">
                 ${estadoVisual === 'pendiente'
                     ? `<div class="resultado-nota-valor pendiente">—</div>`
-                    : `<div class="resultado-nota-valor ${estadoVisual}">${r.puntaje}%</div>`
+                    : `<div class="resultado-nota-valor ${estadoVisual}">${r.puntosObtenidos}/${r.puntosTotal}</div>`
                 }
                 <div class="resultado-nota-estado ${estadoVisual}">
                     ${etiquetaEstado}

@@ -19,6 +19,10 @@ import { mostrarNotificacion } from './utils.js';
 import { inicializarQuiz } from './vistas/estudiante/quiz.js';
 import { resetearPanelEstudiante } from './vistas/estudiante/panelEstudiante.js';
 import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
+import { cerrarModalVideo } from './utils.js';
+import { abrirModalVideo } from './utils.js';
+import { inicializarRegistro } from './vistas/estudiante/registro.js';
+import { inicializarAsistente } from './vistas/profesor/asistente.js';
 
 function iniciarApp() {
     console.log('EduNIC - Iniciando');
@@ -34,10 +38,15 @@ function iniciarApp() {
     inicializarPanelEstudiante();
     inicializarQuiz();
     inicializarCalificaciones();
+    inicializarRegistro();
+    inicializarAsistente();
 
     configurarBotonesVolver();
     configurarPestanas('view-panel-carrera');
     configurarPestanas('view-panel-estudiante');
+    configurarCierreModalVideo();
+    configurarAperturaVideos();      
+    configurarCierreModalVideo();
 
     // Login del profesor (temporal)
     const formProfesor = document.getElementById('form-login-profesor');
@@ -128,3 +137,54 @@ function resetearPestanas(idContenedor) {
 }
 
 document.addEventListener('DOMContentLoaded', iniciarApp);
+
+/**
+ * Configura el cierre del modal de video.
+ * Se conecta una sola vez al arrancar la app.
+ */
+function configurarCierreModalVideo() {
+    const modal = document.getElementById('modal-video');
+    if (!modal) return;
+
+    // Botones [data-cerrar-modal]
+    modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
+        b.addEventListener('click', cerrarModalVideo);
+    });
+
+    // Click fuera del modal
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) cerrarModalVideo();
+    });
+
+    // Tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            cerrarModalVideo();
+        }
+    });
+}
+
+/* MODAL DE VIDEO EMBEBIDO
+   Listener global para abrir videos de YouTube/Vimeo
+   dentro de la app. Se conecta una sola vez. */
+
+/**
+ * Escucha los clics en cualquier elemento con [data-video-url]
+ * y abre el modal de video embebido.
+ * 
+ * Funciona tanto para el panel del profesor como para el del estudiante.
+ */
+function configurarAperturaVideos() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-video-url]');
+        if (!btn) return;
+
+        e.preventDefault();
+
+        const embedURL = btn.dataset.videoUrl;
+        const titulo = btn.dataset.videoTitulo;
+        const urlOriginal = btn.dataset.videoOriginal;
+
+        abrirModalVideo(embedURL, titulo, urlOriginal);
+    });
+}

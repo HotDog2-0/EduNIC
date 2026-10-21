@@ -292,3 +292,290 @@
         width: 100%;
     }
 }
+
+/* BLOQUE DE INFO DE LA PLANTILLA CSV
+   Muestra las reglas de formato al usuario */
+
+.plantilla-info {
+    background: #eff6ff;
+    border-left: 3px solid var(--primary-color);
+    border-radius: var(--radius);
+    padding: 1rem 1.15rem;
+    margin-top: 1.25rem;
+}
+
+.plantilla-info-titulo {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.plantilla-info-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+    color: var(--text-color);
+}
+
+.plantilla-info-lista li {
+    padding: 0.2rem 0 0.2rem 1.15rem;
+    position: relative;
+    line-height: 1.4;
+}
+
+/* Viñeta personalizada azul */
+.plantilla-info-lista li::before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: 700;
+    position: absolute;
+    left: 0.35rem;
+}
+
+.plantilla-info-ejemplo {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.plantilla-info-ejemplo code {
+    display: inline-block;
+    background: #ffffff;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    font-family: 'Courier New', monospace;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin: 0.1rem 0;
+}
+
+/* ----- Botón pequeño (reutilizable) ----- */
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .card-header-row .btn-sm {
+        width: 100%;
+    }
+
+    .plantilla-info {
+        padding: 0.85rem;
+    }
+}
+
+/* ACCIONES EN LA CABECERA DEL CARD
+   Botones "Pegar lista" y "Descargar plantilla" */
+
+.card-header-acciones {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* MODAL: PEGAR LISTA DE ESTUDIANTES */
+
+#pegar-lista-textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 180px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#pegar-lista-textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card-header-acciones {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .card-header-acciones .btn {
+        width: 100%;
+    }
+}
+
+/* VISTA DE REGISTRO DE ESTUDIANTE
+   (auto-registro con código de clase) */
+
+.registro-carrera-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #eff6ff;
+    border-left: 3px solid var(--primary-color);
+    border-radius: var(--radius);
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.5rem;
+}
+
+.registro-carrera-icono {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.registro-carrera-datos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.registro-carrera-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.registro-carrera-datos strong {
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.registro-botones {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.registro-botones .btn {
+    flex: 1;
+}
+
+/* Pantalla de éxito tras el registro */
+.registro-exito {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.registro-exito-icono {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--success-color), #15803d);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+    animation: popIn 0.4s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.registro-exito-titulo {
+    color: var(--success-color);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.registro-exito-subtitulo {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.registro-codigo-caja {
+    background: #f0fdf4;
+    border: 2px dashed var(--success-color);
+    border-radius: var(--radius);
+    padding: 1.5rem 1rem;
+    margin: 1.5rem 0;
+}
+
+.registro-codigo-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.registro-codigo-valor {
+    font-family: 'Courier New', monospace;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--success-color);
+    letter-spacing: 2px;
+    user-select: all;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.registro-codigo-aviso {
+    background: #fef3c7;
+    border-left: 3px solid var(--warning-color);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: #92400e;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.registro-codigo-aviso i {
+    color: var(--warning-color);
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .registro-botones {
+        flex-direction: column-reverse;
+    }
+
+    .registro-botones .btn {
+        width: 100%;
+    }
+
+    .registro-codigo-valor {
+        font-size: 1.5rem;
+    }
+}

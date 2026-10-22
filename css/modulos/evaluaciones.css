@@ -1698,3 +1698,38 @@
 .pregunta-puntos input[type="number"] {
     -moz-appearance: textfield;
 }
+
+/* Personalización de la barra de desplazamiento (Scrollbar) para la ventana modal */
+
+/* 1. Ancho y fondo del carril de desplazamiento */
+.modal-body::-webkit-scrollbar,
+.modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track,
+.modal::-webkit-scrollbar-track {
+    background: #0a0a0c; /* Fondo oscuro que coincide con el casino */
+    border-radius: var(--radius-pill);
+}
+
+/* 2. Estilo de la barra dorada que se desplaza */
+.modal-body::-webkit-scrollbar-thumb,
+.modal::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-color), #7a5c10); /* Gradient dorado */
+    border-radius: var(--radius-pill);
+    border: 1px solid #0a0a0c;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover,
+.modal::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Soporte para Firefox */
+.modal-body,
+.modal {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #0a0a0c;
+}

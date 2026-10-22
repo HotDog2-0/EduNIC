@@ -1,4 +1,4 @@
-/* Variables, reset y estilos globales - Estética Casino / Vegas */
+/* Variables, reset y estilos globales - Estética Casino / Vegas VIP Avanzada */
 
 :root {
     --primary-color: #d4af37;     /* Oro brillante principal */
@@ -16,18 +16,18 @@
     --text-card: #f3f4f6;         /* Texto en tarjetas */
     --text-muted: #9ca3af;        /* Texto secundario */
     
-    /* Bordes estéticos */
+    /* Bordes estéticos y luces */
     --border-color: rgba(212, 175, 55, 0.35); /* Borde dorado translúcido */
-    --border-gold-glow: 0 0 12px rgba(212, 175, 55, 0.4);
+    --border-gold-glow: 0 0 15px rgba(212, 175, 55, 0.35);
 
-    /* Geometría de Formas (NUEVO) */
+    /* Geometría de Formas */
     --radius-sm: 8px;             /* Para insignias y pequeños badges */
     --radius: 16px;               /* Radio estándar tipo carta de juego */
     --radius-lg: 28px;            /* Contenedores principales / Marcos */
     --radius-chip: 50%;           /* Forma circular perfecta para fichas */
     --radius-pill: 9999px;        /* Botones estilo cápsula suave */
     
-    /* Sombras y relieves tridimensionales */
+    /* Sombras y relieves tridimensionales seguros */
     --shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 10px rgba(212, 175, 55, 0.15);
     --shadow-lg: 0 12px 35px rgba(0, 0, 0, 0.95), 0 0 20px rgba(212, 175, 55, 0.25);
     --shadow-card: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 10px 25px rgba(0, 0, 0, 0.7);
@@ -51,8 +51,10 @@ html {
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
-    /* Patrón de fondo sutil que simula el fieltro/paño de mesa elegante */
-    background-image: radial-gradient(circle at 50% 20%, #15161f 0%, #0a0a0c 80%);
+    /* Fondo seguro con doble gradiente radial para dar profundidad sin bloquear el contenido */
+    background-image: 
+        radial-gradient(circle at 50% 10%, rgba(11, 79, 44, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 50% 30%, #15161f 0%, #0a0a0c 85%);
     color: var(--text-color);
     line-height: 1.6;
     min-height: 100vh;
@@ -62,7 +64,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Encabezados con estilo marquesina / letrero Vegas */
+/* Encabezados con estilo marquesina / letrero Vegas refinado */
 h1, h2, h3, h4, h5, h6 {
     line-height: 1.3;
     font-weight: 800;
@@ -79,8 +81,28 @@ h1 {
 
 h2 { 
     font-size: 1.6rem; 
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.4rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+/* Línea dorada que recubre todo el ancho disponible */
+h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Ocupa el 100% del ancho del título */
+    height: 2px;
+    background: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+/* Si la tarjeta o sección está centrada (como el inicio), la línea se centra automáticamente */
+.text-center h2::after,
+.hero-card h2::after {
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 h3 { font-size: 1.25rem; }
@@ -100,31 +122,44 @@ p { margin-bottom: 0.5rem; }
 .text-danger  { color: var(--danger-color); font-weight: 600; }
 .text-muted   { color: var(--text-muted); }
 
-/* --- NUEVAS CLASES DE FORMAS Y COMPONENTES ESTILO CASINO --- */
+/* --- COMPONENTES ESTILO CASINO CON PROFUNDIDAD REFINADA --- */
 
-/* Contenedores estilo Carta de Juego */
+/* Contenedores estilo Carta de Juego con destello superior */
 .casino-card {
     background-color: var(--card-bg);
     border: 2px solid var(--border-color);
     border-radius: var(--radius);
     box-shadow: var(--shadow-card);
     padding: 1.5rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.casino-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
 }
 
 .casino-card:hover {
     transform: translateY(-4px);
+    border-color: var(--primary-color);
     box-shadow: var(--shadow-lg), var(--border-gold-glow);
 }
 
-/* Ficha de Casino (para puntos, nivel o avatar) */
+/* Ficha de Casino (para puntos, nivel o avatar) con relieve tridimensional */
 .casino-chip {
     width: 60px;
     height: 60px;
     border-radius: var(--radius-chip);
     background: radial-gradient(circle, #d4af37 40%, #8a6d1c 100%);
     border: 4px dashed #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -132,7 +167,7 @@ p { margin-bottom: 0.5rem; }
     color: #000;
 }
 
-/* Botón interactivo estilo apuesta/premio */
+/* Botón interactivo estilo apuesta/premio con mayor dinamismo */
 .casino-btn {
     background: linear-gradient(135deg, var(--primary-color), #997a15);
     color: #000;
@@ -144,11 +179,15 @@ p { margin-bottom: 0.5rem; }
     text-transform: uppercase;
     letter-spacing: 1px;
     box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .casino-btn:hover {
     background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
-    transform: scale(1.03);
+    transform: translateY(-2px) scale(1.02);
     box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
+}
+
+.casino-btn:active {
+    transform: translateY(0) scale(0.98);
 }

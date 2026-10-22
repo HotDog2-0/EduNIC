@@ -1,19 +1,63 @@
-/* Botones, cards, formularios, notificaciones - Estética Casino / Vegas */
+/* ==========================================================================
+   COMPONENTES GENERALES Y UI - Estética Casino VIP Avanzada
+   ========================================================================== */
 
-/* ----- Cards ----- */
+/* ----- ANIMACIONES GLOBALES DE UI ----- */
+@keyframes casinoFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes casinoPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes goldPulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    }
+}
+
+/* Aplicación de entrada animada a tarjetas y secciones */
+.card, 
+.view-section:not(.hidden) {
+    animation: casinoFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-overlay:not(.hidden) .modal {
+    animation: casinoPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ----- TARJETAS / CARDS CON PROFUNDIDAD ----- */
 .card {
-    background: var(--card-bg);
+    background: linear-gradient(145deg, #16161c 0%, #101015 100%);
     border-radius: var(--radius-lg);
     padding: 1.8rem;
     margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
-    border: 2px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
     color: var(--text-card);
     position: relative;
     overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-/* Pequeño detalle decorativo estilo marco de casino en las tarjetas */
 .card::before {
     content: "";
     position: absolute;
@@ -22,240 +66,44 @@
     width: 100%;
     height: 3px;
     background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
 }
 
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Hero Card (Landing) */
 .hero-card {
-    max-width: 500px;
-    margin: 3rem auto;
+    max-width: 520px;
+    margin: 2.5rem auto;
     text-align: center;
     padding: 2.5rem 2rem;
-    background: radial-gradient(circle at center, #1a1a24 0%, #121216 100%);
     border: 2px solid var(--primary-color);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.2);
+    box-shadow: var(--shadow-lg), 0 0 25px rgba(212, 175, 55, 0.2);
 }
 
 .hero-card h2 {
     color: var(--primary-color);
     margin-bottom: 0.5rem;
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    border-bottom: none;
 }
 
 .hero-subtitle {
     color: var(--text-muted);
+    font-size: 0.95rem;
     margin-bottom: 1.5rem;
-    font-size: 1rem;
 }
-
-.form-card {
-    max-width: 500px;
-    margin: 2rem auto;
-}
-
-.form-card h2 {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-}
-
-/* ----- Botones ----- */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.6rem;
-    border-radius: var(--radius-pill); /* Estilo ficha / cápsula elegante */
-    border: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease;
-    font-family: inherit;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-}
-
-.btn:active {
-    transform: scale(0.97);
-}
-
-.btn-primary   { 
-    background: linear-gradient(135deg, var(--secondary-color), #07381f); 
-    color: #ffffff; 
-    border: 1px solid rgba(212, 175, 55, 0.3);
-}
-.btn-primary:hover { 
-    background: linear-gradient(135deg, #126e3f, var(--secondary-color)); 
-    border-color: var(--primary-color);
-}
-
-.btn-secondary { 
-    background: linear-gradient(135deg, var(--secondary-color), #07381f); 
-    color: #ffffff; 
-    border: 1px solid rgba(212, 175, 55, 0.3);
-}
-.btn-secondary:hover { 
-    background: linear-gradient(135deg, #126e3f, var(--secondary-color)); 
-    border-color: var(--primary-color);
-}
-
-.btn-success   { background-color: var(--success-color); color: #ffffff; }
-.btn-danger    { background-color: var(--danger-color); color: #ffffff; }
-
-.btn-block {
-    width: 100%;
-}
-
-/* ----- Selector de rol ----- */
-.role-selector {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.btn-role {
-    flex: 1;
-    padding: 1.5rem 1rem;
-    flex-direction: column;
-    font-size: 1.05rem;
-    border-radius: var(--radius-lg);
-    background-color: #16161c;
-    border: 2px solid var(--border-color);
-    color: var(--text-card);
-    transition: all 0.25s ease;
-}
-
-.btn-role:hover {
-    border-color: var(--primary-color);
-    background-color: #1f1f29;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
-    transform: translateY(-3px);
-}
-
-.btn-role i {
-    font-size: 2rem;
-    margin-bottom: 0.25rem;
-    color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-
-/* ----- Botón "Volver" ----- */
-.btn-back {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    font-family: inherit;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0;
-    transition: color 0.2s;
-}
-
-.btn-back:hover {
-    color: var(--primary-color);
-}
-
-/* ----- Formularios ----- */
-.form-group {
-    margin-bottom: 1.2rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--primary-color);
-    letter-spacing: 0.5px;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background-color: #121216;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    outline: none;
-    font-size: 1rem;
-    font-family: inherit;
-    color: var(--text-card);
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: var(--primary-color);
-    background-color: #16161c;
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); /* Sombra difuminada dorada */
-}
-
-.form-subtitle {
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-}
-
-.form-hint {
-    margin-top: 1.25rem;
-    padding: 0.75rem 1rem;
-    background-color: #16161c;
-    border-left: 3px solid var(--primary-color);
-    border-radius: var(--radius);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    border: 1px solid var(--border-color);
-}
-
-.form-hint strong {
-    color: var(--primary-color);
-}
-
-/* ----- Notificaciones ----- */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #16161c;
-    color: #fff;
-    padding: 14px 24px;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    max-width: 320px;
-    border: 2px solid var(--primary-color);
-}
-
-.toast.success { background-color: #0b4f2c; border-color: var(--success-color); }
-.toast.error   { background-color: #4a1515; border-color: var(--danger-color); }
-
-/* SEPARADOR EN LA LANDING
-   "¿Aún no tienes cuenta?" */
 
 .landing-divider {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin: 1.5rem 0 1rem;
+    margin: 1.5rem 0;
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .landing-divider::before,
@@ -267,10 +115,294 @@
 }
 
 .landing-divider span {
-    font-weight: 600;
+    padding: 0 0.8rem;
+}
+
+/* ----- BOTONES TÁCTILES VIP (MICRO-INTERACCIONES) ----- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    text-decoration: none;
+}
+
+/* Efecto de rayo de luz que cruza el botón al pasar el cursor */
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s ease;
+}
+
+.btn:hover::before {
+    left: 140%;
+}
+
+.btn:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: none !important;
+}
+
+/* Botón Principal (Oro VIP) */
+.btn-primary {
+    background: linear-gradient(135deg, #f3cf55 0%, #d4af37 50%, #997a15 100%);
+    color: #000000;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
+}
+
+/* Botón Secundario (Verde Mesa VIP) */
+.btn-secondary {
+    background: linear-gradient(135deg, #126e3f 0%, #0b4f2c 50%, #052a17 100%);
+    color: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 14px rgba(11, 79, 44, 0.4);
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 20px rgba(18, 110, 63, 0.6);
+}
+
+/* Botón Éxito */
+.btn-success {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    color: #000000;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.btn-success:hover {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+}
+
+/* Botón Alerta / Peligro */
+.btn-danger {
+    background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.55);
+}
+
+/* Botón Advertencia */
+.btn-warning {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: #000000;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+}
+
+.btn-block { 
+    width: 100%; 
+}
+
+.btn-sm {
+    padding: 0.45rem 1rem;
+    font-size: 0.78rem;
+}
+
+/* Botón de volver / Flecha */
+.btn-back {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background: rgba(212, 175, 55, 0.12);
+    transform: translateX(-3px);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+/* ----- SELECTOR DE ROL (LANDING) ----- */
+.role-selector {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.btn-role {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+    font-size: 0.95rem;
+    border-radius: var(--radius);
+    background: linear-gradient(145deg, #181822 0%, #0d0d12 100%);
+    border: 1.5px solid var(--border-color);
+    color: var(--text-card);
+}
+
+.btn-role:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--border-gold-glow);
+}
+
+.btn-role i {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+    color: var(--primary-color);
+    filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4));
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-role:hover i {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+/* ----- FORMULARIO E INPUTS CON RESPLANDOR REACTIVO ----- */
+.form-card {
+    max-width: 460px;
+    margin: 2rem auto;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--primary-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-size: 0.75rem;
-    white-space: nowrap;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #0d0d12;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius);
+    outline: none;
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.8);
+    background-color: #121218;
+}
+
+.form-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.form-hint i {
     color: var(--primary-color);
+}
+
+.input-readonly {
+    background-color: #070709 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--primary-color) !important;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* ----- TABLAS ESTILIZADAS VIP ----- */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.tabla-estudiantes {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+    background: #101015;
+}
+
+.tabla-estudiantes th {
+    background: #181822;
+    color: var(--primary-color);
+    padding: 0.85rem 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tabla-estudiantes td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    color: var(--text-card);
+}
+
+.tabla-estudiantes tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.tabla-estudiantes tbody tr:hover {
+    background-color: rgba(212, 175, 55, 0.08);
+}
+
+/* BADGES / INSIGNIAS EN FORMA DE FICHA DE CASINO */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 800;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }

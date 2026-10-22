@@ -176,7 +176,10 @@ function configurarCierreModalVideo() {
  */
 function configurarAperturaVideos() {
     document.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-video-url]');
+    // Verificar que e.target sea un elemento antes de usar closest
+    if (!e.target || typeof e.target.closest !== 'function') return;
+    
+    const btn = e.target.closest('[data-video-url]');
         if (!btn) return;
 
         e.preventDefault();

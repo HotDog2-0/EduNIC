@@ -340,7 +340,24 @@
                         <i class="fa-solid fa-calendar"></i> Primer Año
                     </p>
                 </div>
-                                <!-- Código de clase para auto-registro -->
+
+                <!-- Selector de año -->
+                <div class="anio-selector">
+                    <label for="selector-anio" class="anio-selector-label">
+                        <i class="fa-solid fa-calendar"></i> Año:
+                    </label>
+                    <select id="selector-anio" class="anio-selector-dropdown">
+                        <!-- Se llena con JS -->
+                    </select>
+                    <button class="btn btn-secondary btn-sm" type="button" id="btn-nuevo-anio" title="Crear nuevo año">
+                        <i class="fa-solid fa-plus"></i> Nuevo Año
+                    </button>
+                    <button class="btn btn-warning btn-sm" type="button" id="btn-archivar-anio" title="Archivar año actual">
+                        <i class="fa-solid fa-box-archive"></i> Archivar
+                    </button>
+                </div>
+                
+                <!-- Código de clase para auto-registro -->
                 <div class="codigo-clase-bloque">
                     <div class="codigo-clase-info">
                         <span class="codigo-clase-label">
@@ -1144,18 +1161,6 @@
                         <input type="text" id="carrera-nombre" required
                                placeholder="Ej: Ingeniería en Sistemas" autocomplete="off">
                     </div>
-
-                    <div class="form-group">
-                        <label for="carrera-anio">Año:</label>
-                        <select id="carrera-anio" required>
-                            <option value="">-- Selecciona un año --</option>
-                            <option value="Primer Año">Primer Año</option>
-                            <option value="Segundo Año">Segundo Año</option>
-                            <option value="Tercer Año">Tercer Año</option>
-                            <option value="Cuarto Año">Cuarto Año</option>
-                            <option value="Quinto Año">Quinto Año</option>
-                        </select>
-                    </div>
                 </form>
             </div>
 
@@ -1581,6 +1586,47 @@
                 </a>
                 <button class="btn btn-primary" type="button" data-cerrar-modal>
                     <i class="fa-solid fa-check"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREAR NUEVO AÑO -->
+    <div id="modal-nuevo-anio" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-nuevo-anio-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-nuevo-anio-titulo">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Nuevo Año
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="form-subtitle">
+                    Al crear un año nuevo, el año activo actual se archivará automáticamente.
+                </p>
+
+                <!-- SIN <form> -->
+                <div class="form-group">
+                    <label for="nuevo-anio-nombre">Nombre del Año:</label>
+                    <input type="text" id="nuevo-anio-nombre" required
+                        placeholder="Ej: Segundo Año" autocomplete="off">
+                    <p class="form-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Debe contener la palabra "Año" (ej: "Segundo Año", "Tercer Año").
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="button" id="btn-confirmar-nuevo-anio">
+                    <i class="fa-solid fa-plus"></i> Crear Año
                 </button>
             </div>
         </div>

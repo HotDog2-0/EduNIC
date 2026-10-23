@@ -406,3 +406,89 @@
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
+
+/* ============================================
+   NOTIFICACIONES (TOAST) - Estilo Casino VIP
+   ============================================ */
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(145deg, #181822 0%, #0d0d12 100%);
+    color: var(--text-color);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--primary-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 15px rgba(212, 175, 55, 0.3);
+    z-index: 10000;
+    max-width: 380px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    animation: casinoPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ícono decorativo a la izquierda */
+.toast::before {
+    content: "◆";
+    color: var(--primary-color);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.toast.success {
+    border-color: var(--success-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.toast.success::before {
+    content: "✓";
+    color: var(--success-color);
+}
+
+.toast.error {
+    border-color: var(--danger-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 15px rgba(220, 38, 38, 0.4);
+}
+
+.toast.error::before {
+    content: "✕";
+    color: var(--danger-color);
+}
+
+.toast.info {
+    border-color: var(--primary-color);
+}
+
+.toast.hidden {
+    display: none !important;
+}
+
+.banner-solo-lectura {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-left: 4px solid var(--warning-color);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.15rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.banner-solo-lectura i {
+    color: var(--warning-color);
+    font-size: 1.1rem;
+}

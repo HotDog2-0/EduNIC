@@ -90,17 +90,33 @@ function iniciarApp() {
 });
 
     // Recuperar sesión activa
-    const usuarioActual = bd.obtener(CLAVES.USUARIO_ACTUAL);
+// Recuperar sesión activa
+const usuarioActual = bd.obtener(CLAVES.USUARIO_ACTUAL);
 
-    if (usuarioActual && usuarioActual.rol === 'profesor') {
-        mostrarHeaderProfesor(usuarioActual.nombre);
-        mostrarVista('view-mis-carreras');
-    } else if (usuarioActual && usuarioActual.rol === 'estudiante') {
-        const ok = recuperarSesionEstudiante();
-        if (!ok) mostrarVista('view-landing');
+if (usuarioActual && usuarioActual.rol === 'profesor') {
+    mostrarHeaderProfesor(usuarioActual.nombre);
+    
+    // Restaurar última vista si existe
+    const ultimaVista = localStorage.getItem('edunic_ultima_vista');
+    
+    if (ultimaVista === 'view-panel-carrera') {
+        const carreraActiva = bd.obtener(CLAVES.CARRERA_ACTIVA);
+        if (carreraActiva) {
+            // Volver a abrir el panel de la carrera
+            if (typeof window.abrirPanelCarrera === 'function') {
+                window.abrirPanelCarrera(carreraActiva);
+            } else {
+                mostrarVista('view-mis-carreras');
+            }
+        } else {
+            mostrarVista('view-mis-carreras');
+        }
+    } else if (ultimaVista && ultimaVista !== 'view-landing') {
+        mostrarVista(ultimaVista);
     } else {
-        mostrarVista('view-landing');
+        mostrarVista('view-mis-carreras');
     }
+}
 
     console.log('EduNIC - Listo');
 }

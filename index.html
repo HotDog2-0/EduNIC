@@ -50,11 +50,11 @@
                 <div class="role-selector" role="group" aria-label="Selección de rol">
                     <button type="button" class="btn btn-primary btn-role" id="select-profesor">
                         <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
-                        <span>Profesor</span>
+                        <span>Crupier</span>
                     </button>
                     <button type="button" class="btn btn-secondary btn-role" id="select-estudiante">
                         <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
-                        <span>Estudiante</span>
+                        <span>Cliente</span>
                     </button>
                 </div>
                 <!-- Separador -->
@@ -65,7 +65,7 @@
                 <!-- Botón de auto-registro -->
                 <button type="button" class="btn btn-secondary btn-block" id="select-registro">
                     <i class="fa-solid fa-id-card"></i>
-                    Registrarme con código de clase
+                    Registrarme con código de mesa
                 </button>
             </div>
         </section>
@@ -77,7 +77,7 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-user-lock"></i> Acceso - Profesor</h2>
+                <h2><i class="fa-solid fa-user-lock"></i> Acceso - Crupier</h2>
 
                 <form id="form-login-profesor">
                     <div class="form-group">
@@ -109,8 +109,8 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-ticket"></i> Acceso Estudiante</h2>
-                <p class="form-subtitle">Ingresa tu código único de fichas asignado por el docente:</p>
+                <h2><i class="fa-solid fa-ticket"></i> Acceso Cliente</h2>
+                <p class="form-subtitle">Ingresa tu código único de fichas asignado por el crupier:</p>
 
                 <form id="form-login-estudiante">
                     <div class="form-group">
@@ -138,9 +138,9 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-user-plus"></i> Registro de Estudiante</h2>
+                <h2><i class="fa-solid fa-user-plus"></i> Registro de Cliente</h2>
                 <p class="form-subtitle">
-                    Ingresa el código de clase proporcionado por tu profesor para unirte a la mesa.
+                    Ingresa el código de clase proporcionado por tu crupier para unirte a la mesa.
                 </p>
 
                 <!-- Formulario en 2 pasos -->
@@ -159,7 +159,7 @@
                                 style="text-transform: uppercase;">
                             <p class="form-hint">
                                 <i class="fa-solid fa-circle-info"></i>
-                                Pídele a tu profesor el código clave de la carrera.
+                                Pídele a tu crupier el código clave de la mesa.
                             </p>
                         </div>
 
@@ -178,7 +178,7 @@
                             </div>
                             <div class="registro-carrera-datos">
                                 <span class="registro-carrera-label">Mesa asignada:</span>
-                                <strong id="registro-carrera-nombre">Carrera</strong>
+                                <strong id="registro-carrera-nombre">Mesa</strong>
                                 <span id="registro-carrera-anio" class="text-muted">Año</span>
                             </div>
                         </div>
@@ -251,16 +251,16 @@
         <section id="view-mis-carreras" class="view-section hidden">
 
             <div class="panel-header">
-                <h2>Salón de Carreras</h2>
+                <h2>Salón de Mesas</h2>
                 <p class="panel-subtitle">
                     <i class="fa-solid fa-circle-info"></i>
-                    Selecciona una carrera para administrar sus estudiantes, temarios y apuestas de evaluación.
+                    Selecciona una mesa para administrar sus clientes, temarios y apuestas de evaluación.
                 </p>
             </div>
 
             <div class="carreras-toolbar">
                 <button class="btn btn-success" type="button" id="btn-nueva-carrera">
-                    <i class="fa-solid fa-plus"></i> Crear Nueva Carrera
+                    <i class="fa-solid fa-plus"></i> Crear Nueva mesa
                 </button>
             </div>
 
@@ -325,7 +325,7 @@
             <!-- Cabecera con nombre de la carrera -->
             <div class="carrera-header">
                 <button class="btn-back" type="button" id="btn-volver-carreras">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a Mis Carreras
+                    <i class="fa-solid fa-arrow-left"></i> Volver a Mis Mesas
                 </button>
 
                 <div class="carrera-header-info">
@@ -337,7 +337,7 @@
                         <i class="fa-solid fa-calendar"></i> Primer Año
                     </p>
                 </div>
-<                                <!-- Selector de año -->
+                <!-- Selector de año -->
                 <div class="anio-selector">
                     <label for="selector-anio" class="anio-selector-label">
                         <i class="fa-solid fa-calendar"></i> Año:
@@ -379,16 +379,16 @@
             <!-- Navegación de pestañas del panel de la carrera -->
             <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel de la carrera">
                 <button class="tab-btn active" type="button" data-tab="tab-estudiantes" role="tab">
-                    <i class="fa-solid fa-users"></i> Estudiantes
+                    <i class="fa-solid fa-users"></i> Clientes
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-temas" role="tab">
                     <i class="fa-solid fa-book"></i> Temas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-evaluaciones" role="tab">
-                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                    <i class="fa-solid fa-file-pen"></i> Apuestas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-calificaciones" role="tab">
-                    <i class="fa-solid fa-chart-bar"></i> Calificaciones
+                    <i class="fa-solid fa-chart-bar"></i> Resultados
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-asistente" role="tab">
                     <i class="fa-solid fa-robot"></i> Asistente IA
@@ -401,7 +401,7 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-user-plus"></i>
-                        Registrar Nuevo Estudiante
+                        Registrar Nuevo Cliente
                     </h3>
 
                     <form id="form-registrar-estudiante" autocomplete="off">
@@ -422,7 +422,7 @@
 
                         <button type="submit" class="btn btn-success">
                             <i class="fa-solid fa-plus"></i>
-                            Registrar Estudiante
+                            Registrar Cliente
                         </button>
                     </form>
                 </div>
@@ -431,7 +431,7 @@
                 <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-file-import"></i>
-                        Importar Estudiantes
+                        Importar Clientes
                     </h3>
                     <div class="card-header-acciones">
                     <button class="btn btn-secondary btn-sm" type="button" id="btn-pegar-lista">
@@ -444,7 +444,7 @@
                 </div> 
 
                     <p class="form-subtitle">
-                        Sube un archivo CSV o TXT con un estudiante por línea.
+                        Sube un archivo CSV o TXT con un cliente por línea.
                         <br>
                         <strong>Formato:</strong> <code>Nombre Completo</code>.
                     </p>
@@ -467,9 +467,9 @@
                     <div class="card-header-row">
                         <h3>
                             <i class="fa-solid fa-list-check"></i>
-                            Estudiantes en Mesa
+                            Clientes en Mesa
                         </h3>
-                        <span class="badge" id="contador-estudiantes">0 estudiantes</span>
+                        <span class="badge" id="contador-estudiantes">0 Clientes</span>
                     </div>
 
                     <div class="table-responsive">
@@ -522,19 +522,19 @@
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-file-pen"></i>
-                            Evaluaciones
+                            Apuestas
                         </h3>
                         <p class="form-subtitle">
                             Crea exámenes con preguntas de selección múltiple, V/F y respuesta corta.
                         </p>
                     </div>
                     <button class="btn btn-success" type="button" id="btn-nueva-evaluacion">
-                        <i class="fa-solid fa-plus"></i> Crear Nueva Evaluación
+                        <i class="fa-solid fa-plus"></i> Crear Nueva Apuesta
                     </button>
                 </div>
 
                 <div id="lista-evaluaciones" class="modulos-lista">
-                    <p class="text-muted text-center">Cargando evaluaciones...</p>
+                    <p class="text-muted text-center">Cargando apuestas</p>
                 </div>
 
             </div>
@@ -546,10 +546,10 @@
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-chart-bar"></i>
-                            Calificaciones
+                            Resultados
                         </h3>
                         <p class="form-subtitle">
-                            Consulta el rendimiento de tus estudiantes y califica respuestas pendientes.
+                            Consulta el rendimiento de tus clientes y califica respuestas pendientes.
                         </p>
                     </div>
                 </div>
@@ -572,7 +572,7 @@
 
                 <!-- Lista de evaluaciones -->
                 <div id="lista-calificaciones" class="modulos-lista">
-                    <p class="text-muted text-center">Cargando calificaciones...</p>
+                    <p class="text-muted text-center">Cargando resultados</p>
                 </div>
 
             </div>
@@ -640,7 +640,7 @@
 
             <div class="carrera-header">
                 <button class="btn-back" type="button" id="btn-volver-calificaciones">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a Calificaciones
+                    <i class="fa-solid fa-arrow-left"></i> Volver a Resultados
                 </button>
 
                 <div class="carrera-header-info">
@@ -709,7 +709,7 @@
                 <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-list-check"></i>
-                        Respuestas de Estudiantes
+                        Respuestas de Clientes
                     </h3>
                     <span class="badge" id="calif-contador">0 respuestas</span>
                 </div>
@@ -719,7 +719,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Estudiante</th>
+                                <th>Cliente</th>
                                 <th>Código</th>
                                 <th>Nota</th>
                                 <th>Estado</th>
@@ -743,10 +743,10 @@
                 <div class="carrera-header-info">
                     <span class="carrera-header-codigo" id="estudiante-codigo">EST-101</span>
                     <h2 class="carrera-header-nombre" id="estudiante-nombre">
-                        Nombre del Estudiante
+                        Nombre del Cliente
                     </h2>
                     <p class="carrera-header-anio" id="estudiante-carrera">
-                        <i class="fa-solid fa-graduation-cap"></i> Carrera
+                        <i class="fa-solid fa-graduation-cap"></i> Mesa
                     </p>
                 </div>
             </div>
@@ -757,7 +757,7 @@
                     <i class="fa-solid fa-book-reader"></i> Mis Temas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-est-evaluaciones" role="tab">
-                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                    <i class="fa-solid fa-file-pen"></i> Apuestas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-est-resultados" role="tab">
                     <i class="fa-solid fa-chart-line"></i> Mis Resultados
@@ -769,10 +769,10 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-book-reader"></i>
-                        Temas de la Carrera
+                        Temas de la Mesa
                     </h3>
                     <p class="form-subtitle">
-                        Material didáctico publicado por tu profesor.
+                        Material didáctico publicado por tu Crupier.
                     </p>
 
                     <div id="est-lista-modulos" class="modulos-lista">
@@ -786,14 +786,14 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-file-pen"></i>
-                        Evaluaciones Disponibles
+                        Apuestas Disponibles
                     </h3>
                     <p class="form-subtitle">
                         Exámenes activos para poner a prueba tus conocimientos.
                     </p>
 
                     <div id="est-lista-evaluaciones" class="modulos-lista">
-                        <p class="text-muted text-center">Cargando evaluaciones...</p>
+                        <p class="text-muted text-center">Cargando apuestas</p>
                     </div>
                 </div>
             </div>
@@ -818,7 +818,7 @@
                             </div>
                             <div class="resultado-stat-info">
                                 <div class="resultado-stat-valor" id="stat-total">0</div>
-                                <div class="resultado-stat-etiqueta">Evaluaciones</div>
+                                <div class="resultado-stat-etiqueta">Apuestas</div>
                             </div>
                         </div>
 
@@ -859,7 +859,7 @@
                     <div class="card-header-row">
                         <h3>
                             <i class="fa-solid fa-list-check"></i>
-                            Historial de Evaluaciones
+                            Historial de Apuestas
                         </h3>
                         <span class="badge" id="contador-resultados">0 resultados</span>
                     </div>
@@ -1137,7 +1137,7 @@
             <div class="modal-header">
                 <h3 id="modal-carrera-titulo">
                     <i class="fa-solid fa-book-bookmark"></i>
-                    <span id="modal-carrera-titulo-texto">Nueva Carrera</span>
+                    <span id="modal-carrera-titulo-texto">Nueva Mesa</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1147,7 +1147,7 @@
             <div class="modal-body">
                 <form id="form-carrera" autocomplete="off">
                     <div class="form-group">
-                        <label for="carrera-nombre">Nombre de la Carrera:</label>
+                        <label for="carrera-nombre">Nombre de la Mesa:</label>
                         <input type="text" id="carrera-nombre" required
                                placeholder="Ej: Ingeniería en Sistemas" autocomplete="off">
                     </div>
@@ -1171,7 +1171,7 @@
             <div class="modal-header modal-header-danger">
                 <h3 id="modal-eliminar-titulo">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    Eliminar Carrera
+                    Eliminar Mesa
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1180,17 +1180,17 @@
 
             <div class="modal-body">
                 <p class="modal-warning">
-                    Estás a punto de eliminar la carrera
+                    Estás a punto de eliminar la mesa
                     <strong id="eliminar-carrera-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todos sus estudiantes, temas y evaluaciones</strong>.
+                    Se borrarán <strong>todos sus clientes, temas y apuestas</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
 
                 <div class="form-group">
                     <label for="confirmar-eliminar">
-                        Escribe el nombre exacto de la carrera para confirmar:
+                        Escribe el nombre exacto de la mesa para confirmar:
                     </label>
                     <input type="text" id="confirmar-eliminar" autocomplete="off"
                            placeholder="Nombre exacto de la carrera">
@@ -1213,7 +1213,7 @@
         <div class="modal" role="dialog" aria-labelledby="modal-editar-titulo" aria-modal="true">
             <div class="modal-header">
                 <h3 id="modal-editar-titulo">
-                    <i class="fa-solid fa-pen"></i> Editar Estudiante
+                    <i class="fa-solid fa-pen"></i> Editar Cliente
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1250,7 +1250,7 @@
                 <div class="modal-header">
                     <h3 id="modal-evaluacion-titulo">
                         <i class="fa-solid fa-file-pen"></i>
-                        <span id="modal-evaluacion-titulo-texto">Nueva Evaluación</span>
+                        <span id="modal-evaluacion-titulo-texto">Nueva Apuesta</span>
                     </h3>
                     <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                         <i class="fa-solid fa-xmark"></i>
@@ -1261,7 +1261,7 @@
                     <form id="form-evaluacion" autocomplete="off">
 
                         <div class="form-group">
-                            <label for="eval-titulo">Título de la Evaluación:</label>
+                            <label for="eval-titulo">Título de la Apuesta:</label>
                             <input type="text" id="eval-titulo" required
                                 placeholder="Ej: Examen Parcial I" autocomplete="off">
                         </div>
@@ -1320,7 +1320,7 @@
                         Cancelar
                     </button>
                     <button class="btn btn-primary" type="submit" form="form-evaluacion">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Apuesta
                     </button>
                 </div>
             </div>
@@ -1333,7 +1333,7 @@
             <div class="modal-header modal-header-danger">
                 <h3 id="modal-eliminar-evaluacion-titulo">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    Eliminar Evaluación
+                    Eliminar Apuesta
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1342,17 +1342,17 @@
 
             <div class="modal-body">
                 <p class="modal-warning">
-                    Estás a punto de eliminar la evaluación
+                    Estás a punto de eliminar la apuesta
                     <strong id="eliminar-evaluacion-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todas sus preguntas y respuestas de estudiantes</strong>.
+                    Se borrarán <strong>todas sus preguntas y respuestas de sus clientes</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
 
                 <div class="form-group">
                     <label for="confirmar-eliminar-evaluacion">
-                        Escribe el título exacto de la evaluación para confirmar:
+                        Escribe el título exacto de la apuesta para confirmar:
                     </label>
                     <input type="text" id="confirmar-eliminar-evaluacion" autocomplete="off"
                            placeholder="Título exacto">
@@ -1376,7 +1376,7 @@
             <div class="modal-header">
                 <h3 id="modal-ver-evaluacion-titulo">
                     <i class="fa-solid fa-eye"></i>
-                    <span id="modal-ver-evaluacion-nombre">Ver Evaluación</span>
+                    <span id="modal-ver-evaluacion-nombre">Ver Apuesta</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1498,7 +1498,7 @@
             <div class="modal-header">
                 <h3 id="modal-pegar-lista-titulo">
                     <i class="fa-solid fa-paste"></i>
-                    Pegar lista de estudiantes
+                    Pegar lista de clientes
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1519,7 +1519,7 @@
                         autocomplete="off"></textarea>
                     <p class="form-hint">
                         <i class="fa-solid fa-circle-info"></i>
-                        <span id="pegar-lista-contador">0 estudiantes detectados</span>
+                        <span id="pegar-lista-contador">0 clientes detectados</span>
                     </p>
                 </div>
             </div>
@@ -1529,8 +1529,7 @@
                     Cancelar
                 </button>
                 <button class="btn btn-primary" type="button" id="btn-confirmar-pegar-lista" disabled>
-                    <i class="fa-solid fa-plus"></i> Agregar Estudiantes
-                </button>
+                    <i class="fa-solid fa-plus"></i> Agregar Clientes
             </div>
         </div>
     </div>
@@ -1597,7 +1596,7 @@
                 <!-- SIN <form> -->
                 <div class="form-group">
                     <label for="nuevo-anio-nombre">Nombre del Año:</label>
-                    <input type="text" id="nuevo-anio-nombre" required
+                    <input type="text" id="nuevo-anio-nombre"
                         placeholder="Ej: Segundo Año" autocomplete="off">
                     <p class="form-hint">
                         <i class="fa-solid fa-circle-info"></i>

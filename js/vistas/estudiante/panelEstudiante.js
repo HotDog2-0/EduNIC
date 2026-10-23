@@ -205,15 +205,35 @@ function rellenarCabeceraPanel() {
         `<i class="fa-solid fa-graduation-cap"></i> ${escaparHTML(carrera.nombre)} — ${escaparHTML(carrera.anio)}`;
 }
 
-/* TEMAS */
-
+/**
+ * Carga los temas del año activo de la carrera del estudiante.
+ */
 function cargarTemasDeCarrera() {
     const cont = document.getElementById('est-lista-modulos');
     if (!cont || !estudianteActual) return;
 
+    // Buscar el año activo de la carrera del estudiante
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivo = anios.find(a => 
+        String(a.idCarrera) === String(estudianteActual.idCarrera) && 
+        a.estado === 'activo'
+    );
+
+    if (!anioActivo) {
+        cont.innerHTML = `
+            <div class="carreras-vacio">
+                <i class="fa-solid fa-book-open"></i>
+                <h3>No hay año activo</h3>
+                <p>Tu profesor aún no ha configurado el año académico.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Cargar módulos del año activo
     const todos = bd.obtener(CLAVES.TEMAS) || [];
-    const modulos = todos.filter(x =>
-        x.tipo === 'modulo' && x.idCarrera === estudianteActual.idCarrera
+    const modulos = todos.filter(x => 
+        x.tipo === 'modulo' && String(x.idAnio) === String(anioActivo.id)
     );
 
     if (modulos.length === 0) {
@@ -233,7 +253,9 @@ function cargarTemasDeCarrera() {
 
 function renderizarModuloEstudiante(m) {
     const todos = bd.obtener(CLAVES.TEMAS) || [];
-    const temas = todos.filter(x => x.tipo === 'tema' && x.idModulo === m.id);
+    const temas = todos.filter(x => 
+        x.tipo === 'tema' && String(x.idModulo) === String(m.id)
+    );
     const cantidad = temas.length;
 
     return `
@@ -355,19 +377,40 @@ function manejarClicModulosEstudiante(e) {
 /* EVALUACIONES DISPONIBLES */
 
 /**
- * Carga y renderiza las evaluaciones de la carrera del estudiante.
+ * Carga y renderiza las evaluaciones del año activo de la carrera del estudiante.
  */
 export function cargarEvaluacionesDeCarrera() {
     const cont = document.getElementById('est-lista-evaluaciones');
     if (!cont || !estudianteActual) return;
 
+    // ─── Buscar el año activo de la carrera del estudiante ───
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivo = anios.find(a =>
+        String(a.idCarrera) === String(estudianteActual.idCarrera) &&
+        a.estado === 'activo'
+    );
+
+    if (!anioActivo) {
+        cont.innerHTML = `
+            <div class="carreras-vacio">
+                <i class="fa-solid fa-file-pen"></i>
+                <h3>No hay año activo</h3>
+                <p>Tu profesor aún no ha configurado el año académico.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // ─── Cargar módulos y evaluaciones del año activo ───
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
     const modulos = todosTemas.filter(x =>
-        x.tipo === 'modulo' && x.idCarrera === estudianteActual.idCarrera
+        x.tipo === 'modulo' && String(x.idAnio) === String(anioActivo.id)
     );
 
     const todasEvals = bd.obtener(CLAVES.EVALUACIONES) || [];
-    const evaluaciones = todasEvals.filter(e => e.idCarrera === estudianteActual.idCarrera);
+    const evaluaciones = todasEvals.filter(e =>
+        String(e.idAnio) === String(anioActivo.id)
+    );
 
     if (modulos.length === 0 || evaluaciones.length === 0) {
         cont.innerHTML = `
@@ -384,7 +427,7 @@ export function cargarEvaluacionesDeCarrera() {
     const modulosConEvals = modulos
         .map(m => ({
             ...m,
-            evaluaciones: evaluaciones.filter(e => e.idModulo === m.id)
+            evaluaciones: evaluaciones.filter(e => String(e.idModulo) === String(m.id))
         }))
         .filter(m => m.evaluaciones.length > 0);
 

@@ -10,7 +10,7 @@ import { mostrarVista } from '../../navegacion.js';
 
 /* ESTADO INTERNO */
 
-let idCarreraActiva = null;
+let idAnioActivo = null;
 let evaluacionesCarrera = [];
 let modulosCarrera = [];
 let estudiantesCarrera = [];
@@ -33,21 +33,24 @@ export function inicializarCalificaciones() {
 }
 
 /**
- * Carga las evaluaciones de una carrera.
- * Se llama al abrir el panel de una carrera.
+ * Carga las calificaciones de un año específico.
+ * @param {string} idAnio
  */
-export function cargarCalificacionesDeCarrera(idCarrera) {
-    idCarreraActiva = idCarrera;
+export function cargarCalificacionesDeAnio(idAnio) {
+    idAnioActivo = idAnio;
 
-    // Cargar datos
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
-    modulosCarrera = todosTemas.filter(x => x.tipo === 'modulo' && x.idCarrera === idCarrera);
+    modulosCarrera = todosTemas.filter(x => 
+        x.tipo === 'modulo' && String(x.idAnio) === String(idAnio)
+    );
 
     const todasEvals = bd.obtener(CLAVES.EVALUACIONES) || [];
-    evaluacionesCarrera = todasEvals.filter(e => e.idCarrera === idCarrera);
+    evaluacionesCarrera = todasEvals.filter(e => 
+        String(e.idAnio) === String(idAnio)
+    );
 
     const todosEsts = bd.obtener(CLAVES.ESTUDIANTES) || [];
-    estudiantesCarrera = todosEsts.filter(e => e.idCarrera === idCarrera);
+    estudiantesCarrera = todosEsts; // Los estudiantes son de la carrera, no del año
 
     renderizarListaEvaluaciones();
 }
@@ -187,7 +190,10 @@ function renderizarEvalItem(ev) {
 
 function calcularStatsEvaluacion(idEvaluacion) {
     const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
-    const deEsta = resultados.filter(r => String(r.idEvaluacion) === String(idEvaluacion));
+    const deEsta = resultados.filter(r => 
+        String(r.idEvaluacion) === String(idEvaluacion) &&
+        String(r.idAnio) === String(idAnioActivo)
+    );
 
     const totalRespondieron = deEsta.length;
     let pendientes = 0;
@@ -661,3 +667,5 @@ function recalcularResultado(r) {
     r.aprobado = puntosObtenidos >= ev.puntajeMinimo;
     r.estado = pendientes > 0 ? 'pendiente' : 'calificada';
 }
+
+window.cargarCalificacionesDeAnio = cargarCalificacionesDeAnio;

@@ -115,6 +115,7 @@ export function inicializarBaseDatos() {
     migrarCarreras();
     migrarEvaluaciones();
     migrarResultados();
+    migrarAIdAnio(); 
 }
 
 /* MIGRACIONES (versiones anteriores) */
@@ -227,4 +228,81 @@ function generarCodigoClaseParaMigracion() {
         codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
     }
     return codigo;
+}
+
+/* MIGRACIÓN: idCarrera → idAnio */
+
+/**
+ * Migra los módulos, temas, evaluaciones y resultados
+ * del modelo viejo (idCarrera) al nuevo (idAnio).
+ * 
+ * Asigna a cada elemento el idAnio del año activo
+ * de su carrera correspondiente.
+ */
+export function migrarAIdAnio() {
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const carreras = bd.obtener(CLAVES.CARRERAS) || [];
+    let cambiosTemas = false;
+    let cambiosEvals = false;
+    let cambiosRes = false;
+
+    // Mapa: idCarrera → idAnio (del año activo)
+    const mapaCarreraAAnio = {};
+    carreras.forEach(c => {
+        const anioActivo = anios.find(a => 
+            String(a.idCarrera) === String(c.id) && a.estado === 'activo'
+        );
+        if (anioActivo) {
+            mapaCarreraAAnio[c.id] = anioActivo.id;
+        }
+    });
+
+    // Migrar temas (módulos y temas)
+    const temas = bd.obtener(CLAVES.TEMAS) || [];
+    temas.forEach(t => {
+        if (t.idCarrera && !t.idAnio) {
+            const idAnio = mapaCarreraAAnio[t.idCarrera];
+            if (idAnio) {
+                t.idAnio = idAnio;
+                cambiosTemas = true;
+            }
+        }
+    });
+    if (cambiosTemas) {
+        bd.guardar(CLAVES.TEMAS, temas);
+    }
+
+    // Migrar evaluaciones
+    const evaluaciones = bd.obtener(CLAVES.EVALUACIONES) || [];
+    evaluaciones.forEach(e => {
+        if (e.idCarrera && !e.idAnio) {
+            const idAnio = mapaCarreraAAnio[e.idCarrera];
+            if (idAnio) {
+                e.idAnio = idAnio;
+                cambiosEvals = true;
+            }
+        }
+    });
+    if (cambiosEvals) {
+        bd.guardar(CLAVES.EVALUACIONES, evaluaciones);
+    }
+
+    // Migrar resultados
+    const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
+    resultados.forEach(r => {
+        if (r.idCarrera && !r.idAnio) {
+            const idAnio = mapaCarreraAAnio[r.idCarrera];
+            if (idAnio) {
+                r.idAnio = idAnio;
+                cambiosRes = true;
+            }
+        }
+    });
+    if (cambiosRes) {
+        bd.guardar(CLAVES.RESULTADOS, resultados);
+    }
+
+    if (cambiosTemas || cambiosEvals || cambiosRes) {
+        console.log('Datos migrados: idCarrera → idAnio');
+    }
 }

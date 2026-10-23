@@ -7,14 +7,14 @@
  *                          Ej: 'view-landing', 'view-login-profesor'
  */
 export function mostrarVista(idVista) {
-    // 1. Ocultar todas las vistas
+    // Guardar la vista actual
+    localStorage.setItem('edunic_ultima_vista', idVista);
+    
     document.querySelectorAll('.view-section').forEach(vista => {
         vista.classList.add('hidden');
     });
 
-    // 2. Mostrar la vista destino
     const vistaDestino = document.getElementById(idVista);
-
     if (vistaDestino) {
         vistaDestino.classList.remove('hidden');
     } else {

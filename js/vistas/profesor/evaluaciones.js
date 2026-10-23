@@ -21,7 +21,7 @@ const MAX_PREGUNTAS = 50;
 
 /* ESTADO INTERNO */
 
-let idCarreraActiva = null;
+let idAnioActivo = null;
 let modulos = [];              // módulos de la carrera activa
 let evaluaciones = [];         // evaluaciones de la carrera activa
 
@@ -45,17 +45,21 @@ export function inicializarEvaluaciones() {
 }
 
 /**
- * Carga los módulos y evaluaciones de una carrera.
- * Se llama al abrir el panel de una carrera.
+ * Carga las evaluaciones de un año específico.
+ * @param {string} idAnio
  */
-export function cargarEvaluacionesDeCarrera(idCarrera) {
-    idCarreraActiva = idCarrera;
+export function cargarEvaluacionesDeAnio(idAnio) {
+    idAnioActivo = idAnio;
 
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
-    modulos = todosTemas.filter(x => x.tipo === 'modulo' && x.idCarrera === idCarrera);
+    modulos = todosTemas.filter(x => 
+        x.tipo === 'modulo' && String(x.idAnio) === String(idAnio)
+    );
 
     const todasEvals = bd.obtener(CLAVES.EVALUACIONES) || [];
-    evaluaciones = todasEvals.filter(e => e.idCarrera === idCarrera);
+    evaluaciones = todasEvals.filter(e => 
+        String(e.idAnio) === String(idAnio)
+    );
 
     renderizarEvaluaciones();
 }
@@ -227,8 +231,8 @@ function conectarModalEvaluacion() {
 }
 
 function abrirModalCrear(idModulo) {
-    if (!idCarreraActiva) {
-        mostrarNotificacion('No hay carrera activa', 'error');
+    if (!idAnioActivo) {
+        mostrarNotificacion('No hay año activo', 'error');
         return;
     }
     
@@ -376,7 +380,7 @@ function guardarEvaluacion() {
         // CREAR
         const nueva = {
             id: generarId(),
-            idCarrera: idCarreraActiva,
+            idAnio: idAnioActivo,
             idModulo,
             titulo,
             descripcion,
@@ -1047,3 +1051,5 @@ function validarInputPuntajeMinimo() {
         input.style.boxShadow = '';
     }
 }
+
+window.cargarEvaluacionesDeAnio = cargarEvaluacionesDeAnio;

@@ -21,7 +21,7 @@ const MAX_PDF_BYTES = 500 * 1024; // 500 KB
 /* ESTADO INTERNO */
 
 let modulos = [];
-let idCarreraActiva = null;
+let idAnioActivo = null; 
 let moduloEditandoId = null;
 let moduloEliminandoId = null;
 
@@ -45,11 +45,18 @@ export function inicializarTemas() {
     console.log('Módulo Temas: listo');
 }
 
-export function cargarModulosDeCarrera(idCarrera) {
-    idCarreraActiva = idCarrera;
+/**
+ * Carga los módulos de un año específico.
+ * Se llama al abrir el panel de una carrera.
+ * @param {string} idAnio
+ */
+export function cargarModulosDeAnio(idAnio) {
+    idAnioActivo = idAnio;
 
     const todos = bd.obtener(CLAVES.TEMAS) || [];
-    modulos = todos.filter(x => x.tipo === 'modulo' && x.idCarrera === idCarrera);
+    modulos = todos.filter(x => 
+        x.tipo === 'modulo' && String(x.idAnio) === String(idAnio)
+    );
 
     renderizarModulos();
 }
@@ -293,8 +300,8 @@ function conectarModalModulo() {
 }
 
 function abrirModalCrearModulo() {
-    if (!idCarreraActiva) {
-        mostrarNotificacion('No hay carrera activa', 'error');
+    if (!idAnioActivo) {
+        mostrarNotificacion('No hay año activo', 'error');
         return;
     }
 
@@ -359,7 +366,7 @@ function guardarModulo() {
         const nuevo = {
             id: generarId(),
             tipo: 'modulo',
-            idCarrera: idCarreraActiva,
+            idAnio: idAnioActivo,  
             nombre,
             creado: new Date().toISOString()
         };
@@ -573,11 +580,11 @@ function guardarTema() {
             id: generarId(),
             tipo: 'tema',
             idModulo: idModuloParaNuevoTema,
-            idCarrera: idCarreraActiva,
+            idAnio: idAnioActivo,
             titulo,
             descripcion,
             ejemplo,
-            material: recursosDelTemaEnEdicion.map(r => ({ ...r })),
+            material: [],
             creado: new Date().toISOString()
         };
 
@@ -850,3 +857,5 @@ function conectarAperturaVideos() {
         abrirModalVideo(embedURL, titulo, urlOriginal);
     });
 }
+
+window.cargarModulosDeAnio = cargarModulosDeAnio;

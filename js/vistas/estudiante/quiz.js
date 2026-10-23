@@ -306,9 +306,9 @@ function enviarRespuestas() {
     // Guardar resultado
     const resultado = {
         id: generarId(),
-        idEvaluacion: evaluacionActiva.id,
-        idEstudiante: estudianteActual.id,
-        idCarrera: evaluacionActiva.idCarrera,
+        idEvaluacion: String(evaluacionActiva.id),
+        idEstudiante: String(estudianteActual.id),
+        idAnio: String(evaluacionActiva.idAnio),
         tituloEvaluacion: evaluacionActiva.titulo,
         respuestas: { ...respuestas },
 

@@ -254,7 +254,7 @@
                 <h2>Salón de Carreras</h2>
                 <p class="panel-subtitle">
                     <i class="fa-solid fa-circle-info"></i>
-                    Selecciona una carrera para administrar sus Jugadores, temarios y apuestas de evaluación.
+                    Selecciona una carrera para administrar sus Jugadores, temarios y apuestas.
                 </p>
             </div>
 
@@ -382,13 +382,13 @@
                     <i class="fa-solid fa-users"></i> Jugadores
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-temas" role="tab">
-                    <i class="fa-solid fa-book"></i> Temas
+                    <i class="fa-solid fa-book"></i> Juegos
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-evaluaciones" role="tab">
-                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                    <i class="fa-solid fa-file-pen"></i> Apuestas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-calificaciones" role="tab">
-                    <i class="fa-solid fa-chart-bar"></i> Calificaciones
+                    <i class="fa-solid fa-chart-bar"></i> Resultados
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-asistente" role="tab">
                     <i class="fa-solid fa-robot"></i> Asistente IA
@@ -498,7 +498,7 @@
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-book"></i>
-                            Módulos y Temas
+                            Módulos y Juegos
                         </h3>
                         <p class="form-subtitle">
                             Organiza el contenido didáctico por unidades y publica material de apoyo.
@@ -522,19 +522,19 @@
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-file-pen"></i>
-                            Evaluaciones
+                            Apuestas 
                         </h3>
                         <p class="form-subtitle">
                             Crea exámenes con preguntas de selección múltiple, V/F y respuesta corta.
                         </p>
                     </div>
                     <button class="btn btn-success" type="button" id="btn-nueva-evaluacion">
-                        <i class="fa-solid fa-plus"></i> Crear Nueva Evaluación
+                        <i class="fa-solid fa-plus"></i> Crear Nueva Apuesta
                     </button>
                 </div>
 
                 <div id="lista-evaluaciones" class="modulos-lista">
-                    <p class="text-muted text-center">Cargando evaluaciones...</p>
+                    <p class="text-muted text-center">Cargando apuestas...</p>
                 </div>
 
             </div>
@@ -546,7 +546,7 @@
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-chart-bar"></i>
-                            Calificaciones
+                            Resultados
                         </h3>
                         <p class="form-subtitle">
                             Consulta el rendimiento de tus jugadores y califica respuestas pendientes.
@@ -572,7 +572,7 @@
 
                 <!-- Lista de evaluaciones -->
                 <div id="lista-calificaciones" class="modulos-lista">
-                    <p class="text-muted text-center">Cargando calificaciones...</p>
+                    <p class="text-muted text-center">Cargando resultados...</p>
                 </div>
 
             </div>
@@ -640,13 +640,13 @@
 
             <div class="carrera-header">
                 <button class="btn-back" type="button" id="btn-volver-calificaciones">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a Calificaciones
+                    <i class="fa-solid fa-arrow-left"></i> Volver a los resultados
                 </button>
 
                 <div class="carrera-header-info">
                     <span class="carrera-header-codigo" id="calif-eval-codigo">EVAL-001</span>
                     <h2 class="carrera-header-nombre" id="calif-eval-titulo">
-                        Título de la Evaluación
+                        Título de la Apuesta
                     </h2>
                     <p class="carrera-header-anio" id="calif-eval-modulo">
                         <i class="fa-solid fa-folder"></i> Módulo
@@ -754,10 +754,10 @@
             <!-- Pestañas -->
             <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel del jugador">
                 <button class="tab-btn active" type="button" data-tab="tab-est-temas" role="tab">
-                    <i class="fa-solid fa-book-reader"></i> Mis Temas
+                    <i class="fa-solid fa-book-reader"></i> Mis Juegos
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-est-evaluaciones" role="tab">
-                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                    <i class="fa-solid fa-file-pen"></i> Apuestas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-est-resultados" role="tab">
                     <i class="fa-solid fa-chart-line"></i> Mis Resultados
@@ -769,14 +769,14 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-book-reader"></i>
-                        Temas de la Carrera
+                        Juegos del tablero
                     </h3>
                     <p class="form-subtitle">
                         Material didáctico publicado por tu Crupier.
                     </p>
 
                     <div id="est-lista-modulos" class="modulos-lista">
-                        <p class="text-muted text-center">Cargando temas...</p>
+                        <p class="text-muted text-center">Cargando juegos...</p>
                     </div>
                 </div>
             </div>
@@ -786,14 +786,14 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-file-pen"></i>
-                        Evaluaciones Disponibles
+                        Apuestas Disponibles
                     </h3>
                     <p class="form-subtitle">
-                        Exámenes activos para poner a prueba tus conocimientos.
+                        Apuestas activas para poner a prueba tus conocimientos.
                     </p>
 
                     <div id="est-lista-evaluaciones" class="modulos-lista">
-                        <p class="text-muted text-center">Cargando evaluaciones...</p>
+                        <p class="text-muted text-center">Cargando apuestas...</p>
                     </div>
                 </div>
             </div>
@@ -818,7 +818,7 @@
                             </div>
                             <div class="resultado-stat-info">
                                 <div class="resultado-stat-valor" id="stat-total">0</div>
-                                <div class="resultado-stat-etiqueta">Evaluaciones</div>
+                                <div class="resultado-stat-etiqueta">Apuestas</div>
                             </div>
                         </div>
 
@@ -859,7 +859,7 @@
                     <div class="card-header-row">
                         <h3>
                             <i class="fa-solid fa-list-check"></i>
-                            Historial de Evaluaciones
+                            Historial de Apuestas
                         </h3>
                         <span class="badge" id="contador-resultados">0 resultados</span>
                     </div>
@@ -952,7 +952,7 @@
                     Estás a punto de eliminar el módulo
                     <strong id="eliminar-modulo-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todos sus temas y materiales de apoyo</strong>.
+                    Se borrarán <strong>todos sus juegos y materiales de apoyo</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
@@ -983,7 +983,7 @@
             <div class="modal-header">
                 <h3 id="modal-tema-titulo">
                     <i class="fa-solid fa-book-open"></i>
-                    <span id="modal-tema-titulo-texto">Nuevo Tema</span>
+                    <span id="modal-tema-titulo-texto">Nuevo Juego</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -994,7 +994,7 @@
                 <form id="form-tema" autocomplete="off">
 
                     <div class="form-group">
-                        <label for="tema-titulo">Título del Tema:</label>
+                        <label for="tema-titulo">Título del Juego:</label>
                         <input type="text" id="tema-titulo" required
                                placeholder="Ej: Fundamentos de HTML5" autocomplete="off">
                     </div>
@@ -1038,7 +1038,7 @@
                     Cancelar
                 </button>
                 <button class="btn btn-primary" type="submit" form="form-tema">
-                    <i class="fa-solid fa-floppy-disk"></i> Guardar Tema
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar juego
                 </button>
             </div>
         </div>
@@ -1183,7 +1183,7 @@
                     Estás a punto de eliminar la carrera
                     <strong id="eliminar-carrera-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todos sus jugadores, temas y evaluaciones</strong>.
+                    Se borrarán <strong>todos sus jugadores, juegos y apuestas</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
@@ -1250,7 +1250,7 @@
                 <div class="modal-header">
                     <h3 id="modal-evaluacion-titulo">
                         <i class="fa-solid fa-file-pen"></i>
-                        <span id="modal-evaluacion-titulo-texto">Nueva Evaluación</span>
+                        <span id="modal-evaluacion-titulo-texto">Nueva Apuesta</span>
                     </h3>
                     <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                         <i class="fa-solid fa-xmark"></i>
@@ -1261,7 +1261,7 @@
                     <form id="form-evaluacion" autocomplete="off">
 
                         <div class="form-group">
-                            <label for="eval-titulo">Título de la Evaluación:</label>
+                            <label for="eval-titulo">Título de la Apuesta:</label>
                             <input type="text" id="eval-titulo" required
                                 placeholder="Ej: Examen Parcial I" autocomplete="off">
                         </div>
@@ -1272,7 +1272,7 @@
                                 <span class="label-hint">(opcional)</span>
                             </label>
                             <textarea id="eval-descripcion" rows="2"
-                                    placeholder="Ej: Evaluación de los temas 1 al 3..."></textarea>
+                                    placeholder="Ej: Apuesta de los juegos 1 al 3..."></textarea>
                         </div>
 
                         <div class="form-group">
@@ -1320,7 +1320,7 @@
                         Cancelar
                     </button>
                     <button class="btn btn-primary" type="submit" form="form-evaluacion">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Apuesta
                     </button>
                 </div>
             </div>
@@ -1333,7 +1333,7 @@
             <div class="modal-header modal-header-danger">
                 <h3 id="modal-eliminar-evaluacion-titulo">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    Eliminar Evaluación
+                    Eliminar Apuesta
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1342,7 +1342,7 @@
 
             <div class="modal-body">
                 <p class="modal-warning">
-                    Estás a punto de eliminar la evaluación
+                    Estás a punto de eliminar la apuesta
                     <strong id="eliminar-evaluacion-nombre">—</strong>.
                     <br>
                     Se borrarán <strong>todas sus preguntas y respuestas de jugadores</strong>.
@@ -1352,7 +1352,7 @@
 
                 <div class="form-group">
                     <label for="confirmar-eliminar-evaluacion">
-                        Escribe el título exacto de la evaluación para confirmar:
+                        Escribe el título exacto de la apuesta para confirmar:
                     </label>
                     <input type="text" id="confirmar-eliminar-evaluacion" autocomplete="off"
                            placeholder="Título exacto">
@@ -1376,7 +1376,7 @@
             <div class="modal-header">
                 <h3 id="modal-ver-evaluacion-titulo">
                     <i class="fa-solid fa-eye"></i>
-                    <span id="modal-ver-evaluacion-nombre">Ver Evaluación</span>
+                    <span id="modal-ver-evaluacion-nombre">Ver Apuesta</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1418,7 +1418,7 @@
             <div class="modal-header">
                 <h3 id="modal-quiz-titulo">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    <span id="modal-quiz-nombre">Evaluación</span>
+                    <span id="modal-quiz-nombre">Apuesta</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar" id="btn-cerrar-quiz">
                     <i class="fa-solid fa-xmark"></i>

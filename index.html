@@ -50,11 +50,11 @@
                 <div class="role-selector" role="group" aria-label="Selección de rol">
                     <button type="button" class="btn btn-primary btn-role" id="select-profesor">
                         <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
-                        <span>Profesor</span>
+                        <span>crupier</span>
                     </button>
                     <button type="button" class="btn btn-secondary btn-role" id="select-estudiante">
                         <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
-                        <span>Estudiante</span>
+                        <span>Jugador</span>
                     </button>
                 </div>
                 <!-- Separador -->
@@ -77,7 +77,7 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-user-lock"></i> Acceso - Profesor</h2>
+                <h2><i class="fa-solid fa-user-lock"></i> Acceso - Crupier</h2>
 
                 <form id="form-login-profesor">
                     <div class="form-group">
@@ -109,7 +109,7 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-ticket"></i> Acceso Estudiante</h2>
+                <h2><i class="fa-solid fa-ticket"></i> Acceso Jugador</h2>
                 <p class="form-subtitle">Ingresa tu código único de fichas asignado por el docente:</p>
 
                 <form id="form-login-estudiante">
@@ -138,9 +138,9 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-user-plus"></i> Registro de Estudiante</h2>
+                <h2><i class="fa-solid fa-user-plus"></i> Registro de Jugador</h2>
                 <p class="form-subtitle">
-                    Ingresa el código de clase proporcionado por tu profesor para unirte a la mesa.
+                    Ingresa el código de clase proporcionado por tu crupier para unirte a la mesa.
                 </p>
 
                 <!-- Formulario en 2 pasos -->
@@ -159,7 +159,7 @@
                                 style="text-transform: uppercase;">
                             <p class="form-hint">
                                 <i class="fa-solid fa-circle-info"></i>
-                                Pídele a tu profesor el código clave de la carrera.
+                                Pídele a tu crupier el código clave de la carrera.
                             </p>
                         </div>
 
@@ -254,7 +254,7 @@
                 <h2>Salón de Carreras</h2>
                 <p class="panel-subtitle">
                     <i class="fa-solid fa-circle-info"></i>
-                    Selecciona una carrera para administrar sus estudiantes, temarios y apuestas de evaluación.
+                    Selecciona una carrera para administrar sus Jugadores, temarios y apuestas de evaluación.
                 </p>
             </div>
 
@@ -337,7 +337,7 @@
                         <i class="fa-solid fa-calendar"></i> Primer Año
                     </p>
                 </div>
-<                                <!-- Selector de año -->
+                             <!-- Selector de año -->
                 <div class="anio-selector">
                     <label for="selector-anio" class="anio-selector-label">
                         <i class="fa-solid fa-calendar"></i> Año:
@@ -379,7 +379,7 @@
             <!-- Navegación de pestañas del panel de la carrera -->
             <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel de la carrera">
                 <button class="tab-btn active" type="button" data-tab="tab-estudiantes" role="tab">
-                    <i class="fa-solid fa-users"></i> Estudiantes
+                    <i class="fa-solid fa-users"></i> Jugadores
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-temas" role="tab">
                     <i class="fa-solid fa-book"></i> Temas
@@ -401,7 +401,7 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-user-plus"></i>
-                        Registrar Nuevo Estudiante
+                        Registrar Nuevo Jugador
                     </h3>
 
                     <form id="form-registrar-estudiante" autocomplete="off">
@@ -422,7 +422,7 @@
 
                         <button type="submit" class="btn btn-success">
                             <i class="fa-solid fa-plus"></i>
-                            Registrar Estudiante
+                            Registrar Jugador
                         </button>
                     </form>
                 </div>
@@ -431,7 +431,7 @@
                 <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-file-import"></i>
-                        Importar Estudiantes
+                        Importar Jugadores
                     </h3>
                     <div class="card-header-acciones">
                     <button class="btn btn-secondary btn-sm" type="button" id="btn-pegar-lista">
@@ -444,7 +444,7 @@
                 </div> 
 
                     <p class="form-subtitle">
-                        Sube un archivo CSV o TXT con un estudiante por línea.
+                        Sube un archivo CSV o TXT con un jugador por línea.
                         <br>
                         <strong>Formato:</strong> <code>Nombre Completo</code>.
                     </p>
@@ -467,7 +467,7 @@
                     <div class="card-header-row">
                         <h3>
                             <i class="fa-solid fa-list-check"></i>
-                            Estudiantes en Mesa
+                            Jugadores en Mesa
                         </h3>
                         <span class="badge" id="contador-estudiantes">0 estudiantes</span>
                     </div>
@@ -549,7 +549,7 @@
                             Calificaciones
                         </h3>
                         <p class="form-subtitle">
-                            Consulta el rendimiento de tus estudiantes y califica respuestas pendientes.
+                            Consulta el rendimiento de tus jugadores y califica respuestas pendientes.
                         </p>
                     </div>
                 </div>
@@ -709,7 +709,7 @@
                 <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-list-check"></i>
-                        Respuestas de Estudiantes
+                        Respuestas de Jugadores
                     </h3>
                     <span class="badge" id="calif-contador">0 respuestas</span>
                 </div>
@@ -719,7 +719,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Estudiante</th>
+                                <th>jugadores</th>
                                 <th>Código</th>
                                 <th>Nota</th>
                                 <th>Estado</th>
@@ -743,7 +743,7 @@
                 <div class="carrera-header-info">
                     <span class="carrera-header-codigo" id="estudiante-codigo">EST-101</span>
                     <h2 class="carrera-header-nombre" id="estudiante-nombre">
-                        Nombre del Estudiante
+                        Nombre del Jugador
                     </h2>
                     <p class="carrera-header-anio" id="estudiante-carrera">
                         <i class="fa-solid fa-graduation-cap"></i> Carrera
@@ -752,7 +752,7 @@
             </div>
 
             <!-- Pestañas -->
-            <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel del estudiante">
+            <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel del jugador">
                 <button class="tab-btn active" type="button" data-tab="tab-est-temas" role="tab">
                     <i class="fa-solid fa-book-reader"></i> Mis Temas
                 </button>
@@ -772,7 +772,7 @@
                         Temas de la Carrera
                     </h3>
                     <p class="form-subtitle">
-                        Material didáctico publicado por tu profesor.
+                        Material didáctico publicado por tu Crupier.
                     </p>
 
                     <div id="est-lista-modulos" class="modulos-lista">
@@ -1183,7 +1183,7 @@
                     Estás a punto de eliminar la carrera
                     <strong id="eliminar-carrera-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todos sus estudiantes, temas y evaluaciones</strong>.
+                    Se borrarán <strong>todos sus jugadores, temas y evaluaciones</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
@@ -1213,7 +1213,7 @@
         <div class="modal" role="dialog" aria-labelledby="modal-editar-titulo" aria-modal="true">
             <div class="modal-header">
                 <h3 id="modal-editar-titulo">
-                    <i class="fa-solid fa-pen"></i> Editar Estudiante
+                    <i class="fa-solid fa-pen"></i> Editar Jugador
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1345,7 +1345,7 @@
                     Estás a punto de eliminar la evaluación
                     <strong id="eliminar-evaluacion-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todas sus preguntas y respuestas de estudiantes</strong>.
+                    Se borrarán <strong>todas sus preguntas y respuestas de jugadores</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
@@ -1498,7 +1498,7 @@
             <div class="modal-header">
                 <h3 id="modal-pegar-lista-titulo">
                     <i class="fa-solid fa-paste"></i>
-                    Pegar lista de estudiantes
+                    Pegar lista de Jugadores
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1529,7 +1529,7 @@
                     Cancelar
                 </button>
                 <button class="btn btn-primary" type="button" id="btn-confirmar-pegar-lista" disabled>
-                    <i class="fa-solid fa-plus"></i> Agregar Estudiantes
+                    <i class="fa-solid fa-plus"></i> Agregar Jugadores
                 </button>
             </div>
         </div>

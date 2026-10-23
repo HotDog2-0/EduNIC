@@ -75,7 +75,7 @@ function renderizarEvaluaciones() {
             <div class="carreras-vacio">
                 <i class="fa-solid fa-folder-open"></i>
                 <h3>No hay módulos todavía</h3>
-                <p>Crea primero un módulo en la pestaña "Temas" para poder añadir evaluaciones.</p>
+                <p>Crea primero un módulo en la pestaña "Juegos" para poder añadir apuestas.</p>
             </div>
         `;
         return;
@@ -101,13 +101,13 @@ function renderizarModuloConEvaluaciones(m) {
                 ${evalsDelModulo.length === 0
                     ? `<div class="modulo-vacio">
                         <i class="fa-solid fa-file-pen"></i>
-                        Este módulo no tiene evaluaciones todavía.
+                        Este módulo no tiene apuestas todavía.
                        </div>`
                     : evalsDelModulo.map(e => renderizarEvaluacionItem(e)).join('')
                 }
                 <button class="modulo-add-tema" type="button"
                         data-accion="nueva-evaluacion" data-id="${m.id}">
-                    <i class="fa-solid fa-plus"></i> Crear Evaluación en este Módulo
+                    <i class="fa-solid fa-plus"></i> Crear Apuesta en este Módulo
                 </button>
             </div>
         </div>
@@ -186,7 +186,7 @@ function conectarBotonNuevaEvaluacion() {
     document.getElementById('btn-nueva-evaluacion')
         ?.addEventListener('click', () => {
             if (modulos.length === 0) {
-                mostrarNotificacion('Primero crea un módulo en la pestaña "Temas"', 'error');
+                mostrarNotificacion('Primero crea un módulo en la pestaña "Juegos"', 'error');
                 return;
             }
             // Abrir para el primer módulo (el usuario puede cambiarlo)
@@ -828,7 +828,7 @@ function confirmarEliminar() {
 
     cerrarModalEliminar();
     renderizarEvaluaciones();
-    mostrarNotificacion('Evaluación eliminada');
+    mostrarNotificacion('Apuesta eliminada');
 }
 
 /* MODAL VER EVALUACIÓN */

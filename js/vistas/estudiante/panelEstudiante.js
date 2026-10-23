@@ -681,11 +681,21 @@ function calcularResumenResultados(resultados) {
 }
 
 function actualizarResumen(r) {
-    document.getElementById('stat-total').textContent = r.total;
-    document.getElementById('stat-aprobadas').textContent = r.aprobadas;
-    document.getElementById('stat-reprobadas').textContent = r.reprobadas;
-    
-    const promedioEl = document.getElementById('stat-promedio');
+    const totalEl = document.getElementById('stat-total-estudiante');
+    const aprobadasEl = document.getElementById('stat-aprobadas-estudiante');
+    const reprobadasEl = document.getElementById('stat-reprobadas-estudiante');
+    const promedioEl = document.getElementById('stat-promedio-estudiante');
+
+    // Si algún elemento no existe, salir sin error
+    if (!totalEl || !aprobadasEl || !reprobadasEl || !promedioEl) {
+        console.warn('⚠️ Algunos elementos del resumen no existen todavía');
+        return;
+    }
+
+    totalEl.textContent = r.total;
+    aprobadasEl.textContent = r.aprobadas;
+    reprobadasEl.textContent = r.reprobadas;
+
     if (r.promedioTotal > 0) {
         promedioEl.textContent = `${r.promedioPuntos}/${r.promedioTotal}`;
     } else {
@@ -726,6 +736,13 @@ function renderizarResultadoItem(r) {
         estadoVisual = r.aprobado ? 'aprobado' : 'reprobado';
     }
 
+    // ─── CALIFICASAURIO MINI ───
+    const imagenCalificasaurio = estadoVisual === 'aprobado'
+        ? 'assets/calificasaurio/aprobado.png'
+        : estadoVisual === 'reprobado'
+            ? 'assets/calificasaurio/reprobado.png'
+            : 'assets/calificasaurio/pendiente.png';
+
     // Buscar el módulo para mostrarlo
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
     const evals = bd.obtener(CLAVES.EVALUACIONES) || [];
@@ -753,9 +770,14 @@ function renderizarResultadoItem(r) {
 
     return `
         <div class="resultado-item ${estadoVisual}">
-            <div class="resultado-item-icono">
-                <i class="fa-solid ${icono}"></i>
-            </div>
+        <div class="calificasaurio-mini">
+            <img src="${imagenCalificasaurio}" 
+                 alt="Calificasaurio ${estadoVisual}" 
+                 class="calificasaurio-mini-img">
+        </div>
+        <div class="resultado-item-icono">
+            <i class="fa-solid ${icono}"></i>
+        </div>
 
             <div class="resultado-item-info">
                 <p class="resultado-item-titulo">${escaparHTML(r.tituloEvaluacion)}</p>

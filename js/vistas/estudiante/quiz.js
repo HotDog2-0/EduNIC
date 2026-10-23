@@ -404,27 +404,37 @@ function mostrarResultado(calificacion) {
 
     const aprobado = calificacion.puntosObtenidos >= evaluacionActiva.puntajeMinimo;
 
-    let icono, titulo, subtitulo, claseNota;
+    let icono, titulo, subtitulo, claseNota, imagenCalificasaurio, textoCalificasaurio;
 
     if (calificacion.pendientes > 0) {
         icono = 'fa-clock';
         titulo = 'Evaluación enviada';
         subtitulo = 'Tu profesor calificará las respuestas pendientes.';
         claseNota = 'pendiente';
+        imagenCalificasaurio = 'assets/calificasaurio/pendiente.png';
+        textoCalificasaurio = 'Esperando calificación';
     } else {
         icono = aprobado ? 'fa-circle-check' : 'fa-circle-xmark';
-        titulo = aprobado ? '¡Aprobado!' : 'No aprobado';
+        titulo = aprobado ? '¡Jackpot! Aprobaste' : 'Esta vez no fue';
         subtitulo = aprobado
-            ? '¡Excelente trabajo!':
-            'Sigue practicando y mejorando.';
+            ? '¡Excelente trabajo!'
+            : `Necesitabas al menos ${evaluacionActiva.puntajeMinimo} puntos para aprobar.`;
         claseNota = aprobado ? 'aprobado' : 'reprobado';
+        imagenCalificasaurio = aprobado
+            ? 'assets/calificasaurio/aprobado.png'
+            : 'assets/calificasaurio/reprobado.png';
+        textoCalificasaurio = aprobado ? '¡Jackpot!' : 'Sigue intentando';
     }
 
     cont.innerHTML = `
         <div class="quiz-resultado">
-            <div class="quiz-resultado-icono ${claseNota}">
-                <i class="fa-solid ${icono}"></i>
+            <div class="calificasaurio-grande">
+                <img src="${imagenCalificasaurio}" 
+                     alt="Calificasaurio ${claseNota}" 
+                     class="calificasaurio-img">
+                <span class="calificasaurio-texto ${claseNota}">${textoCalificasaurio}</span>
             </div>
+
             <h3 class="quiz-resultado-titulo">${titulo}</h3>
             <p class="quiz-resultado-subtitulo">${subtitulo}</p>
 

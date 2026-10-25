@@ -615,3 +615,81 @@
         opacity: 0;
     }
 }
+
+/* FICHAS DE CASINO (para puntos) */
+
+.fichas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    justify-content: center;
+    align-items: center;
+    margin: 0.75rem 0;
+}
+
+.ficha {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fef3c7, #d4af37 50%, #8b6914 100%);
+    border: 2px dashed rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 2px 3px rgba(255, 255, 255, 0.4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #4a3508;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    animation: fichaAparece 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    transition: transform 0.2s ease;
+}
+
+.ficha:hover {
+    transform: scale(1.15) rotate(10deg);
+}
+
+/* Ficha parcial (media ficha) */
+.ficha.parcial {
+    background: radial-gradient(circle at 30% 30%, #fff, #d4af37 50%, #8b6914 100%);
+    opacity: 0.6;
+    width: 14px;
+    height: 28px;
+    border-radius: 50% 0 0 50%;
+    border-right: none;
+}
+
+/* Animación de aparición escalonada */
+.ficha:nth-child(1)  { animation-delay: 0s; }
+.ficha:nth-child(2)  { animation-delay: 0.05s; }
+.ficha:nth-child(3)  { animation-delay: 0.1s; }
+.ficha:nth-child(4)  { animation-delay: 0.15s; }
+.ficha:nth-child(5)  { animation-delay: 0.2s; }
+.ficha:nth-child(6)  { animation-delay: 0.25s; }
+.ficha:nth-child(7)  { animation-delay: 0.3s; }
+.ficha:nth-child(8)  { animation-delay: 0.35s; }
+.ficha:nth-child(9)  { animation-delay: 0.4s; }
+.ficha:nth-child(10) { animation-delay: 0.45s; }
+
+@keyframes fichaAparece {
+    from {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .ficha {
+        width: 24px;
+        height: 24px;
+        font-size: 0.55rem;
+    }
+}

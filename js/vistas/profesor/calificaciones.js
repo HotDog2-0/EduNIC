@@ -317,13 +317,16 @@ function abrirVistaEvaluacion(idEvaluacion) {
 }
 
 function renderizarResumenEvaluacion() {
+    if (!evaluacionActiva) return;
+
     const stats = calcularStatsEvaluacion(evaluacionActiva.id);
-    document.getElementById('stat-total').textContent = stats.totalRespondieron;
-    document.getElementById('stat-promedio').textContent = stats.promedioPuntos > 0 
+
+    document.getElementById('calif-stat-total').textContent = stats.totalRespondieron;
+    document.getElementById('calif-stat-promedio').textContent = stats.promedioPuntos > 0 
         ? `${stats.promedioPuntos}/${stats.promedioTotal}` 
         : '—';
-    document.getElementById('stat-aprobadas').textContent = stats.aprobados;
-    document.getElementById('stat-reprobadas').textContent = stats.reprobados;
+    document.getElementById('calif-stat-aprobadas').textContent = stats.aprobados;
+    document.getElementById('calif-stat-reprobadas').textContent = stats.reprobados;
 }
 
 function renderizarTablaRespuestas() {

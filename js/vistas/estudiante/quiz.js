@@ -9,6 +9,7 @@ import {
 } from '../../utils.js';
 import { lanzarConfeti } from '../../confeti.js';
 import { reproducirSonido } from '../../sonidos.js';
+import { generarFichas } from '../../fichas.js';
 
 /* CONSTANTES */
 
@@ -428,7 +429,7 @@ function mostrarResultado(calificacion) {
         textoCalificasaurio = aprobado ? '¡Jackpot!' : 'Sigue intentando';
     }
 
-    cont.innerHTML = `
+       cont.innerHTML = `
         <div class="quiz-resultado">
             ${aprobado && calificacion.pendientes === 0
                 ? `<div class="jackpot-brillo"></div>`
@@ -453,6 +454,7 @@ function mostrarResultado(calificacion) {
                     ${calificacion.puntosObtenidos}<span class="nota-total">/${calificacion.puntosTotal}</span>
                 </div>
                 <p class="nota-label">puntos</p>
+                ${generarFichas(calificacion.puntosObtenidos, calificacion.puntosTotal)}
             ` : `
                 <div class="quiz-resultado-nota pendiente" style="color: var(--warning-color); font-size: 2rem;">
                     ${calificacion.pendientes} pendiente${calificacion.pendientes > 1 ? 's' : ''}
@@ -462,7 +464,6 @@ function mostrarResultado(calificacion) {
             <div class="quiz-resultado-detalle">
                 <strong>${calificacion.correctas}</strong> correctas · 
                 <strong>${calificacion.incorrectas}</strong> incorrectas
-                ${calificacion.pendientes > 0 ? ` · <strong>${calificacion.pendientes}</strong> pendiente${calificacion.pendientes > 1 ? 's' : ''}` : ''}
             </div>
 
             <div style="margin-top: 2rem;">

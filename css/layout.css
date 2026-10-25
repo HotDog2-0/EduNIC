@@ -199,3 +199,78 @@ body {
         background: rgba(212, 175, 55, 0.12);
     }
 }
+
+/* LUCES DE CASINO EN EL HEADER (bombillas) */
+
+.main-header {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 1.5rem; /* espacio extra para las luces */
+}
+
+/* Contenedor de luces */
+.header-luces {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Cada bombilla individual */
+.luz-bombilla {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    box-shadow: 
+        0 0 8px var(--primary-color),
+        0 0 16px var(--primary-color),
+        inset 0 0 4px rgba(255, 255, 255, 0.5);
+    animation: parpadearBombilla 1s ease-in-out infinite;
+}
+
+/* Animación de parpadeo con delays escalonados */
+.luz-bombilla:nth-child(1) { animation-delay: 0s; }
+.luz-bombilla:nth-child(2) { animation-delay: 0.2s; }
+.luz-bombilla:nth-child(3) { animation-delay: 0.4s; }
+.luz-bombilla:nth-child(4) { animation-delay: 0.6s; }
+.luz-bombilla:nth-child(5) { animation-delay: 0.8s; }
+.luz-bombilla:nth-child(6) { animation-delay: 1s; }
+.luz-bombilla:nth-child(7) { animation-delay: 1.2s; }
+.luz-bombilla:nth-child(8) { animation-delay: 1.4s; }
+.luz-bombilla:nth-child(9) { animation-delay: 1.6s; }
+.luz-bombilla:nth-child(10) { animation-delay: 1.8s; }
+.luz-bombilla:nth-child(11) { animation-delay: 2s; }
+.luz-bombilla:nth-child(12) { animation-delay: 2.2s; }
+.luz-bombilla:nth-child(13) { animation-delay: 2.4s; }
+.luz-bombilla:nth-child(14) { animation-delay: 2.6s; }
+
+@keyframes parpadearBombilla {
+    0%, 40%, 100% {
+        opacity: 1;
+        box-shadow: 
+            0 0 8px var(--primary-color),
+            0 0 16px var(--primary-color),
+            inset 0 0 4px rgba(255, 255, 255, 0.5);
+    }
+    20%, 60% {
+        opacity: 0.3;
+        box-shadow: 
+            0 0 4px var(--primary-color),
+            inset 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* Responsive: menos bombillas en móvil */
+@media (max-width: 600px) {
+    .luz-bombilla {
+        width: 8px;
+        height: 8px;
+    }
+}

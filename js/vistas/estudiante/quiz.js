@@ -7,6 +7,8 @@ import {
     escaparHTML,
     normalizar
 } from '../../utils.js';
+import { lanzarConfeti } from '../../confeti.js';
+import { reproducirSonido } from '../../sonidos.js';
 
 /* CONSTANTES */
 
@@ -415,7 +417,7 @@ function mostrarResultado(calificacion) {
         textoCalificasaurio = 'Esperando calificación';
     } else {
         icono = aprobado ? 'fa-circle-check' : 'fa-circle-xmark';
-        titulo = aprobado ? '¡Jackpot! Aprobaste' : 'Esta vez no fue';
+        titulo = aprobado ? '' : 'Esta vez no fue';  // ← vacío si aprobó (lo reemplaza el Jackpot)
         subtitulo = aprobado
             ? '¡Excelente trabajo!'
             : `Necesitabas al menos ${evaluacionActiva.puntajeMinimo} puntos para aprobar.`;
@@ -428,6 +430,11 @@ function mostrarResultado(calificacion) {
 
     cont.innerHTML = `
         <div class="quiz-resultado">
+            ${aprobado && calificacion.pendientes === 0
+                ? `<div class="jackpot-brillo"></div>`
+                : ''
+            }
+        
             <div class="calificasaurio-grande">
                 <img src="${imagenCalificasaurio}" 
                      alt="Calificasaurio ${claseNota}" 
@@ -435,7 +442,10 @@ function mostrarResultado(calificacion) {
                 <span class="calificasaurio-texto ${claseNota}">${textoCalificasaurio}</span>
             </div>
 
-            <h3 class="quiz-resultado-titulo">${titulo}</h3>
+            ${aprobado && calificacion.pendientes === 0
+                ? `<h3 class="jackpot-animado">¡JACKPOT!</h3>`
+                : `<h3 class="quiz-resultado-titulo">${titulo}</h3>`
+            }
             <p class="quiz-resultado-subtitulo">${subtitulo}</p>
 
             ${calificacion.pendientes === 0 ? `
@@ -462,6 +472,14 @@ function mostrarResultado(calificacion) {
             </div>
         </div>
     `;
+    // Lanzar confeti si aprobó
+    if (aprobado && calificacion.pendientes === 0) {
+        lanzarConfeti(80);
+        reproducirSonido('jackpot', 0.6);
+    } else if (calificacion.pendientes === 0) {
+    // Reprobado
+    reproducirSonido('buzzer', 0.4);
+    }
 
     document.getElementById('btn-cerrar-resultado')
         ?.addEventListener('click', cerrarQuizYRefrescar);

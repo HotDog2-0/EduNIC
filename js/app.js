@@ -30,6 +30,7 @@ import { inicializarQuiz } from './vistas/estudiante/quiz.js';
 import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
 import { inicializarRegistro } from './vistas/estudiante/registro.js';
 import { inicializarAsistente } from './vistas/profesor/asistente.js';
+import { toggleSilencio, estaSilenciado } from './sonidos.js';
 
 /* ==========================================
    INICIALIZACIÓN
@@ -83,6 +84,14 @@ function iniciarApp() {
         } else {
             mostrarNotificacion('Credenciales incorrectas', 'error');
         }
+
+        // Botón de silenciar
+        document.getElementById('btn-silenciar')?.addEventListener('click', (e) => {
+            const silenciado = toggleSilencio();
+            const icono = e.currentTarget.querySelector('i');
+            icono.className = silenciado ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+            mostrarNotificacion(silenciado ? 'Sonido silenciado' : 'Sonido activado');
+        });
     });
 
     // 5. Logout global

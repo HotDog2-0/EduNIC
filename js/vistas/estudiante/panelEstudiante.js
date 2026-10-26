@@ -11,6 +11,7 @@ import {
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
 import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
+import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
 
 /* ESTADO INTERNO */
 
@@ -25,8 +26,62 @@ export function inicializarPanelEstudiante() {
     conectarLogoutEstudiante();
     conectarCambioDePestanaEstudiante();
     conectarFiltrosResultados();
+    conectarSelectorJuegos();
 
     console.log('Panel Estudiante: listo');
+}
+
+/**
+ * Conecta la selección de juegos y el botón "Volver".
+ */
+function conectarSelectorJuegos() {
+    // Botones "Jugar" de cada tarjeta
+    document.querySelectorAll('[data-juego-btn]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const juego = btn.dataset.juegoBtn;
+            abrirJuego(juego);
+        });
+    });
+
+    // Botón "Volver a juegos"
+    document.getElementById('btn-volver-juegos')?.addEventListener('click', () => {
+        volverASeleccionJuegos();
+    });
+}
+
+/**
+ * Abre un juego específico.
+ * @param {string} juego
+ */
+function abrirJuego(juego) {
+    const seleccion = document.getElementById('juegos-seleccion');
+    const activo = document.getElementById('juego-activo');
+    if (!seleccion || !activo) return;
+
+    // Ocultar selección, mostrar juego activo
+    seleccion.classList.add('hidden');
+    activo.classList.remove('hidden');
+
+    // Renderizar el juego seleccionado
+    if (juego === 'piedra-papel-tijera') {
+        renderizarPiedraPapelTijera();
+    }
+}
+
+/**
+ * Vuelve a la pantalla de selección de juegos.
+ */
+function volverASeleccionJuegos() {
+    const seleccion = document.getElementById('juegos-seleccion');
+    const activo = document.getElementById('juego-activo');
+    if (!seleccion || !activo) return;
+
+    activo.classList.add('hidden');
+    seleccion.classList.remove('hidden');
+
+    // Limpiar el contenedor del juego
+    const cont = document.getElementById('juego-container');
+    if (cont) cont.innerHTML = '';
 }
 
 /**
@@ -49,6 +104,9 @@ function conectarCambioDePestanaEstudiante() {
          if (btn.dataset.tab === 'tab-est-resultados') {
             cargarResultadosEstudiante();
          }
+         if (btn.dataset.tab === 'tab-est-juegos') {
+            volverASeleccionJuegos();
+        }
     });
 }
 

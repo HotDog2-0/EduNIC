@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="css/modulos/estudiantes.css">
     <link rel="stylesheet" href="css/modulos/temas.css">
     <link rel="stylesheet" href="css/modulos/evaluaciones.css">
+    <link rel="stylesheet" href="css/modulos/juegos.css">
 </head>
 <body>
 
@@ -780,6 +781,9 @@
                 <button class="tab-btn" type="button" data-tab="tab-est-resultados" role="tab">
                     <i class="fa-solid fa-chart-line"></i> Mis Resultados
                 </button>
+                <button class="tab-btn" type="button" data-tab="tab-est-juegos" role="tab">
+                    <i class="fa-solid fa-dice"></i> Minijuegos
+                </button>
             </nav>
 
             <!-- TAB 1: TEMAS -->
@@ -904,6 +908,64 @@
 
                     <div id="est-lista-resultados" class="resultados-lista">
                         <p class="text-muted text-center">Cargando resultados...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 4: JUEGOS
+                Minijuegos con temática casino -->
+            <div id="tab-est-juegos" class="tab-content hidden" role="tabpanel">
+
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-dice"></i>
+                        Minijuegos
+                    </h3>
+                    <p class="form-subtitle">
+                        Elige tu juego favorito y demuestra que eres el rey de la mesa. 🎰
+                    </p>
+
+                    <!-- Pantalla 1: Selección de juegos -->
+                    <div id="juegos-seleccion" class="juegos-grid">
+                        <div class="juego-card" data-juego="piedra-papel-tijera">
+                            <div class="juego-card-icono">✊✋✌️</div>
+                            <h4 class="juego-card-titulo">Piedra, Papel o Tijera</h4>
+                            <p class="juego-card-descripcion">El clásico de siempre. ¿Podrás vencer a la casa?</p>
+                            <button class="btn btn-primary btn-block" type="button" data-juego-btn="piedra-papel-tijera">
+                                <i class="fa-solid fa-play"></i> Jugar
+                            </button>
+                        </div>
+
+                        <!-- Próximamente: Adivina el número -->
+                        <div class="juego-card juego-card-proximamente">
+                            <div class="juego-card-icono">🎲</div>
+                            <h4 class="juego-card-titulo">Adivina el Número</h4>
+                            <p class="juego-card-descripcion">¿Podrás adivinar el número secreto?</p>
+                            <button class="btn btn-secondary btn-block" type="button" disabled>
+                                <i class="fa-solid fa-clock"></i> Próximamente
+                            </button>
+                        </div>
+
+                        <!-- Próximamente: Memoria de cartas -->
+                        <div class="juego-card juego-card-proximamente">
+                            <div class="juego-card-icono">🃏</div>
+                            <h4 class="juego-card-titulo">Memoria de Cartas</h4>
+                            <p class="juego-card-descripcion">Encuentra todas las parejas antes de que se acabe el tiempo.</p>
+                            <button class="btn btn-secondary btn-block" type="button" disabled>
+                                <i class="fa-solid fa-clock"></i> Próximamente
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pantalla 2: Juego activo (oculta al inicio) -->
+                    <div id="juego-activo" class="hidden">
+                        <button class="btn btn-secondary btn-sm" type="button" id="btn-volver-juegos" style="margin-bottom: 1rem;">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a juegos
+                        </button>
+                        <div id="juego-container" class="juego-container">
+                            <!-- Se llena con JS -->
+                        </div>
                     </div>
                 </div>
 

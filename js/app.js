@@ -62,6 +62,7 @@ function iniciarApp() {
     configurarPestanas('view-panel-estudiante');
     configurarCierreModalVideo();
     configurarAperturaVideos();
+    configurarAperturaVideos();
 
     // 4. Login del profesor (temporal)
     const formProfesor = document.getElementById('form-login-profesor');

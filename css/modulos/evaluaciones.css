@@ -1949,3 +1949,59 @@
         letter-spacing: 2px;
     }
 }
+
+/* INVITACIÓN A LA RULETA (debajo de los puntos) */
+
+.quiz-ruleta-invitacion {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #1a1a22 0%, #0d0d12 100%);
+    border: 2px dashed var(--primary-color);
+    border-radius: var(--radius);
+    animation: ruletaInvitacion 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes ruletaInvitacion {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.quiz-ruleta-mensaje {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.quiz-ruleta-mensaje i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: block;
+    animation: ruletaDado 2s ease-in-out infinite;
+}
+
+@keyframes ruletaDado {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+}
+
+.quiz-ruleta-mensaje p {
+    color: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.quiz-ruleta-mensaje p strong {
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+.quiz-ruleta-invitacion .btn {
+    margin-top: 0.5rem;
+}

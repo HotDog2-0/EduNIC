@@ -1635,6 +1635,75 @@
         </div>
     </div>
 
+    <!-- MODAL: RULETA DEL TODO O NADA
+     Aparece cuando el estudiante reprueba por poco. -->
+<div id="modal-ruleta" class="modal-overlay hidden">
+    <div class="modal modal-ruleta" role="dialog" aria-labelledby="modal-ruleta-titulo" aria-modal="true">
+        <div class="modal-header">
+            <h3 id="modal-ruleta-titulo">
+                <i class="fa-solid fa-dice"></i>
+                Ruleta del Todo o Nada
+            </h3>
+            <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="modal-body modal-ruleta-body">
+            <div class="ruleta-mensaje">
+                <p class="ruleta-titulo-mensaje">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    ¡Has reprobado por muy poco!
+                </p>
+                <p class="ruleta-subtitulo">
+                    ¿Te arriesgas? Gira la ruleta y pasa con las completas o pierde todos tus puntos.
+                    <br>
+                    <strong>¡Tú decides!</strong>
+                </p>
+            </div>
+
+            <!-- Ruleta -->
+            <div class="ruleta-container">
+                <div class="ruleta-flecha">
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="ruleta" id="ruleta">
+                    <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 45deg; --angulo-texto: -45deg;">
+                        <span class="ruleta-texto">PIERDES</span>
+                    </div>
+                    <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 135deg; --angulo-texto: -135deg;">
+                        <span class="ruleta-texto">PASAS</span>
+                    </div>
+                    <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 225deg; --angulo-texto: -225deg;">
+                        <span class="ruleta-texto">PIERDES</span>
+                    </div>
+                    <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 315deg; --angulo-texto: -315deg;">
+                        <span class="ruleta-texto">PASAS</span>
+                    </div>
+                </div>
+                <div class="ruleta-centro">
+                    <i class="fa-solid fa-dice"></i>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="ruleta-botones">
+                <button class="btn btn-secondary" type="button" id="btn-cancelar-ruleta">
+                    <i class="fa-solid fa-xmark"></i> No, gracias
+                </button>
+                <button class="btn btn-primary" type="button" id="btn-girar-ruleta">
+                    <i class="fa-solid fa-rotate"></i> ¡Girar!
+                </button>
+            </div>
+
+            <!-- Resultado (oculto hasta girar) -->
+            <div id="ruleta-resultado" class="ruleta-resultado hidden">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- NOTIFICACIONES -->
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 

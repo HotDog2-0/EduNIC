@@ -693,3 +693,254 @@
         font-size: 0.55rem;
     }
 }
+
+/* RULETA DEL TODO O NADA */
+
+.modal-ruleta {
+    max-width: 520px;
+    background: linear-gradient(145deg, #1a1a22 0%, #0d0d12 100%);
+    border: 2px solid var(--primary-color);
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(212, 175, 55, 0.3);
+    color: #ffffff;   /* ← AÑADIR */
+}
+
+.modal-ruleta-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.modal-ruleta .modal-header h3 {
+    color: var(--primary-color);
+}
+
+/* ----- Mensaje superior ----- */
+.ruleta-mensaje {
+    margin-bottom: 1.5rem;
+}
+
+.ruleta-titulo-mensaje {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fbbf24;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.ruleta-subtitulo {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.ruleta-subtitulo strong {
+    color: var(--primary-color);
+}
+
+/* ----- Contenedor de la ruleta ----- */
+.ruleta-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 1.5rem auto;
+}
+
+/* Flecha indicadora (arriba) */
+.ruleta-flecha {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    filter: drop-shadow(0 0 8px var(--primary-color));
+    z-index: 10;
+    animation: flechaPulsa 1.5s ease-in-out infinite;
+}
+
+@keyframes flechaPulsa {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.15); }
+}
+
+/* La ruleta (círculo con secciones) */
+.ruleta {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px solid var(--primary-color);
+    box-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.5),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+     background: conic-gradient(
+        #16a34a 0deg 90deg,      /* pasa (verde) */
+        #dc2626 90deg 180deg,    /* pierdes (rojo) */
+        #16a34a 180deg 270deg,   /* pasa (verde) */
+        #dc2626 270deg 360deg    /* pierdes (rojo) */
+    );
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    transform: rotate(0deg);
+}
+
+/* Texto de cada sección */
+.ruleta-seccion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 0%;
+    transform: rotate(var(--angulo)) translate(0, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 55px;
+    pointer-events: none;
+}
+
+.ruleta-texto {
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    display: block;
+    transform: rotate(var(--angulo-texto));
+    transform-origin: center center;
+}
+
+/* Centro de la ruleta (círculo decorativo) */
+.ruleta-centro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fef3c7, #d4af37 50%, #8b6914 100%);
+    border: 3px solid #0d0d12;
+    box-shadow: 
+        0 0 15px rgba(212, 175, 55, 0.6),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a3508;
+    font-size: 1.8rem;
+    z-index: 5;
+    animation: centroPulsa 2s ease-in-out infinite;
+}
+
+@keyframes centroPulsa {
+    0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), inset 0 -3px 6px rgba(0, 0, 0, 0.4); }
+    50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.9), inset 0 -3px 6px rgba(0, 0, 0, 0.4); }
+}
+
+/* ----- Botones ----- */
+.ruleta-botones {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.ruleta-botones .btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+/* ----- Resultado ----- */
+.ruleta-resultado {
+    display: block;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    animation: resultadoAparece 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes resultadoAparece {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.ruleta-resultado.gana {
+    background: linear-gradient(135deg, #166534, #14532d);
+    border: 2px solid #22c55e;
+}
+
+.ruleta-resultado.pierde {
+    background: linear-gradient(135deg, #7f1d1d, #450a0a);
+    border: 2px solid #ef4444;
+}
+
+.ruleta-resultado-titulo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.ruleta-resultado.hidden {
+    display: none !important;
+}
+
+.ruleta-resultado.gana .ruleta-resultado-titulo {
+    color: #86efac;
+    text-shadow: 0 0 10px rgba(134, 239, 172, 0.5);
+}
+
+.ruleta-resultado.pierde .ruleta-resultado-titulo {
+    color: #fca5a5;
+    text-shadow: 0 0 10px rgba(252, 165, 165, 0.5);
+}
+
+.ruleta-resultado-detalle {
+    font-size: 0.9rem;
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 600px) {
+    .ruleta-container {
+        width: 220px;
+        height: 220px;
+    }
+
+    .ruleta-texto {
+        font-size: 0.6rem;
+    }
+
+    .ruleta-centro {
+        width: 55px;
+        height: 55px;
+        font-size: 1.4rem;
+    }
+
+    .ruleta-botones .btn {
+        min-width: 100px;
+    }
+}

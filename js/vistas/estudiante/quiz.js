@@ -10,6 +10,7 @@ import {
 import { lanzarConfeti } from '../../confeti.js';
 import { reproducirSonido } from '../../sonidos.js';
 import { generarFichas } from '../../fichas.js';
+import { abrirRuleta } from '../../ruleta.js';
 
 /* CONSTANTES */
 
@@ -473,6 +474,56 @@ function mostrarResultado(calificacion) {
             </div>
         </div>
     `;
+
+    // Si reprobó por poco (menos de 5 puntos del mínimo), mostrar mensaje de la ruleta
+    const reproboPorPoco = !aprobado && calificacion.pendientes === 0 && 
+                        (evaluacionActiva.puntajeMinimo - calificacion.puntosObtenidos) < 5 &&
+                        (evaluacionActiva.puntajeMinimo - calificacion.puntosObtenidos) > 0;
+
+    if (reproboPorPoco) {
+        // Buscar el resultado en storage para obtener su ID
+        const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
+        const miResultado = resultados.find(r => 
+            String(r.idEvaluacion) === String(evaluacionActiva.id) &&
+            String(r.idEstudiante) === String(estudianteActual.id)
+        );
+
+        if (miResultado) {
+            // Crear el bloque del mensaje de la ruleta
+            const bloqueRuleta = document.createElement('div');
+            bloqueRuleta.className = 'quiz-ruleta-invitacion';
+            bloqueRuleta.innerHTML = `
+                <div class="quiz-ruleta-mensaje">
+                    <i class="fa-solid fa-dice"></i>
+                    <p>¿Has reprobado por muy poco? <strong>¡Arriésgate!</strong></p>
+                    <p>Gira la ruleta y pasa con las completas o pierde todos tus puntos. <strong>¡Tú decides!</strong></p>
+                </div>
+                <button class="btn btn-primary btn-block" type="button" id="btn-abrir-ruleta">
+                    <i class="fa-solid fa-dice"></i> ¡Girar la Ruleta!
+                </button>
+            `;
+
+            // Insertar después del bloque de detalle (antes del botón "Cerrar")
+            const detalle = cont.querySelector('.quiz-resultado-detalle');
+            if (detalle) {
+                detalle.parentNode.insertBefore(bloqueRuleta, detalle.nextSibling);
+            }
+
+            // Conectar "Girar la Ruleta"
+            document.getElementById('btn-abrir-ruleta')
+                ?.addEventListener('click', () => {
+                    abrirRuleta(miResultado, {
+                        puntosObtenidos: calificacion.puntosObtenidos,
+                        puntosTotal: calificacion.puntosTotal,
+                        puntajeMinimo: evaluacionActiva.puntajeMinimo
+                    });
+                });
+        }
+    }
+
+    document.getElementById('btn-cerrar-resultado')
+    ?.addEventListener('click', cerrarQuizYRefrescar);
+
     // Lanzar confeti si aprobó
     if (aprobado && calificacion.pendientes === 0) {
         lanzarConfeti(80);

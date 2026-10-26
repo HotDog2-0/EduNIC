@@ -31,6 +31,7 @@ import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
 import { inicializarRegistro } from './vistas/estudiante/registro.js';
 import { inicializarAsistente } from './vistas/profesor/asistente.js';
 import { toggleSilencio, estaSilenciado } from './sonidos.js';
+import { inicializarRuleta } from './ruleta.js';
 
 /* ==========================================
    INICIALIZACIÓN
@@ -53,6 +54,7 @@ function iniciarApp() {
     inicializarCalificaciones();
     inicializarRegistro();
     inicializarAsistente();
+    inicializarRuleta();
 
     // 3. Configurar navegación y modales
     configurarBotonesVolver();

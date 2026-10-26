@@ -262,8 +262,18 @@ function rellenarCabeceraPanel() {
     document.getElementById('estudiante-nombre').textContent = estudianteActual.nombre;
 
     const carrera = estudianteActual.carrera;
+    
+    // ─── BUSCAR EL AÑO ACTIVO DE LA CARRERA ───
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivo = anios.find(a => 
+        String(a.idCarrera) === String(estudianteActual.idCarrera) && 
+        a.estado === 'activo'
+    );
+
+    const nombreAnio = anioActivo ? anioActivo.nombre : 'Sin año activo';
+
     document.getElementById('estudiante-carrera').innerHTML =
-        `<i class="fa-solid fa-graduation-cap"></i> ${escaparHTML(carrera.nombre)} — ${escaparHTML(carrera.anio)}`;
+        `<i class="fa-solid fa-graduation-cap"></i> ${escaparHTML(carrera.nombre)} — ${escaparHTML(nombreAnio)}`;
 }
 
 /**

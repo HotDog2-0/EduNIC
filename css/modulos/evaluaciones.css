@@ -2005,3 +2005,64 @@
 .quiz-ruleta-invitacion .btn {
     margin-top: 0.5rem;
 }
+
+/* RESUMEN EN LA CABECERA DEL ESTUDIANTE */
+
+.estudiante-resumen {
+    max-width: 800px;
+    width: 100%;
+    margin: 1.5rem auto 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
+}
+
+.estudiante-resumen .resultado-stat {
+    padding: 1rem 0.75rem;
+    min-height: 80px;
+}
+
+.estudiante-resumen .resultado-stat-icono {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+}
+
+.estudiante-resumen .resultado-stat-valor {
+    font-size: 1.4rem;
+}
+
+.estudiante-resumen .resultado-stat-etiqueta {
+    font-size: 0.7rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .estudiante-resumen {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .estudiante-resumen {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .estudiante-resumen .resultado-stat {
+        padding: 0.75rem 0.5rem;
+        min-height: 70px;
+    }
+
+    .estudiante-resumen .resultado-stat-icono {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+
+    .estudiante-resumen .resultado-stat-valor {
+        font-size: 1.2rem;
+    }
+}

@@ -243,6 +243,288 @@
     }
 }
 
+/* BLACKJACK (21) */
+
+.juego-blackjack {
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+}
+
+.juego-blackjack-titulo {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+.juego-blackjack-subtitulo {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* Barras */
+.blackjack-barra-superior {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.blackjack-barra-superior .blackjack-marcador {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Tapete verde */
+.blackjack-tapete {
+    background: radial-gradient(ellipse at center, #0f5132 0%, #052e1c 100%);
+    border: 3px solid #8b6914;
+    border-radius: var(--radius-lg);
+    padding: 1rem 0.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 
+        inset 0 0 40px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(139, 105, 20, 0.4);
+}
+
+/* Sección de la casa y del jugador */
+.blackjack-seccion {
+    margin-bottom: 0.75rem;
+}
+
+.blackjack-seccion:last-child {
+    margin-bottom: 0;
+}
+
+.blackjack-seccion-titulo {
+    color: #fef3c7;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.75rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Mano (conjunto de cartas) */
+.blackjack-mano {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    min-height: 120px;
+    align-items: center;
+}
+
+/* Carta */
+.carta {
+    width: 70px;
+    height: 100px;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1a1a22;
+    border: 2px solid #d4af37;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 0 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.4rem;
+    font-weight: 900;
+    position: relative;
+    animation: cartaRepartir 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.2s ease;
+}
+
+.carta:hover {
+    transform: translateY(-5px);
+}
+
+@keyframes cartaRepartir {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) rotate(-15deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+/* Esquinas de la carta */
+.carta-esquina {
+    font-size: 0.85rem;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.carta-esquina.abajo {
+    transform: rotate(180deg);
+}
+
+.carta-valor {
+    font-size: 0.9rem;
+}
+
+.carta-palo {
+    font-size: 0.75rem;
+}
+
+/* Palo central (grande) */
+.carta-centro {
+    font-size: 2rem;
+    line-height: 1;
+    text-align: center;
+    align-self: center;
+}
+
+/* Colores de palo */
+.carta.rojo {
+    color: #dc2626;
+}
+
+.carta.negro {
+    color: #1a1a22;
+}
+
+/* Carta oculta (boca abajo) */
+.carta.oculta {
+    background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+    border-color: #d4af37;
+    color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.carta.oculta::before {
+    content: "🂠";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    color: #d4af37;
+    opacity: 0.8;
+}
+
+.carta.oculta::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 2px solid #d4af37;
+    border-radius: 4px;
+}
+
+/* Total de puntos */
+.blackjack-total {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fef3c7;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    border: 1px solid #d4af37;
+}
+
+.blackjack-total.pasado {
+    background: rgba(220, 38, 38, 0.8);
+    color: #ffffff;
+}
+
+.blackjack-total.veintiuno {
+    background: rgba(22, 163, 74, 0.8);
+    color: #ffffff;
+    animation: veintiunoPulsa 1s ease-in-out infinite;
+}
+
+@keyframes veintiunoPulsa {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Resultado */
+.blackjack-resultado {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+    min-height: 2rem;
+    animation: pptMensajePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.blackjack-resultado.ganaste {
+    color: #22c55e;
+    text-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+}
+
+.blackjack-resultado.perdiste {
+    color: #ef4444;
+    text-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+.blackjack-resultado.empate {
+    color: #fbbf24;
+    text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+}
+
+/* Botones */
+.blackjack-botones {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: nowrap;   /* ← forzar fila */
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px dashed rgba(212, 175, 55, 0.3);
+}
+
+.blackjack-botones .btn {
+    flex: 1;
+    min-width: 0;   /* ← permitir que se encojan */
+    max-width: 200px;
+}
+
+/* Marcador */
+.blackjack-marcador {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 1.5rem;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .carta {
+        width: 55px;
+        height: 80px;
+    }
+
+    .carta-centro {
+        font-size: 1.5rem;
+    }
+
+    .blackjack-botones .btn {
+        min-width: 110px;
+        font-size: 0.8rem;
+    }
+
+    .juego-blackjack-titulo {
+        font-size: 1.2rem;
+    }
+}
+
 /* PANTALLA DE SELECCIÓN DE JUEGOS */
 
 .juegos-grid {

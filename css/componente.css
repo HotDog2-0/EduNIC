@@ -944,3 +944,90 @@
         min-width: 100px;
     }
 }
+
+/* ==========================================================================
+   FONDO ESTILO WALLPAPER CASINO VIP (ROMBOS Y PALOS DE PÓKER)
+   ========================================================================== */
+
+body {
+    font-family: var(--font-family);
+    background-color: #0a0a0c !important;
+    
+    /* Patrón SVG repetible inspirado en el papel tapiz de casino VIP */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Cpattern id='casino-wallpaper' width='120' height='120' patternUnits='userSpaceOnUse'%3E%3C!-- Fondo negro base --%3E%3Crect width='120' height='120' fill='%23050507'/%3E%3C!-- Rombo principal borgoña/rubí con borde dorado --%3E%3Cpath d='M60 0L120 60L60 120L0 60Z' fill='%233b0609' stroke='%23d4af37' stroke-width='1.2' stroke-opacity='0.75'/%3E%3C!-- Rombo interior con líneas punteadas doradas --%3E%3Cpath d='M60 18L102 60L60 102L18 60Z' fill='none' stroke='%23d4af37' stroke-width='0.9' stroke-dasharray='4,4' stroke-opacity='0.5'/%3E%3C!-- Símbolo central de pica --%3E%3Ctext x='60' y='65' font-size='18' text-anchor='middle' fill='%23000000' fill-opacity='0.9' font-family='sans-serif'%3E♠%3C/text%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23casino-wallpaper)'/%3E%3C/svg%3E") !important;
+    
+    background-repeat: repeat !important;
+    background-attachment: fixed !important;
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. Estilo de Mesa de Póker VIP para el Registro de Estudiante con Código */
+#view-registro-estudiante .form-card {
+    max-width: 580px !important;
+    border-radius: 60px 12px 60px 12px !important;
+    background: radial-gradient(ellipse at center, #0e522e 0%, #08331c 65%, #03170c 100%) !important;
+    border: 4px solid var(--primary-color) !important;
+    box-shadow: 
+        inset 0 0 15px rgba(255, 255, 255, 0.15),
+        inset 0 0 45px rgba(0, 0, 0, 0.9),
+        0 0 0 8px #121216,
+        0 20px 50px rgba(0, 0, 0, 0.95),
+        0 0 35px rgba(212, 175, 55, 0.4) !important;
+    padding: 3rem 2.8rem !important;
+    position: relative;
+    overflow: visible !important;
+}
+
+#view-registro-estudiante .form-card::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 2px dashed rgba(212, 175, 55, 0.4);
+    border-radius: 50px 6px 50px 6px;
+    pointer-events: none;
+}
+
+#view-registro-estudiante .form-card::before {
+    content: "♠  REGISTRO DE NUEVA FICHA / JUGADOR  ♠";
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #000000;
+    background: linear-gradient(135deg, var(--primary-color), #b38f27);
+    padding: 0.35rem 1rem;
+    border-radius: var(--radius-pill);
+    margin: -1.8rem auto 1.5rem auto;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 2;
+}
+
+#view-registro-estudiante .form-group input {
+    background-color: rgba(3, 14, 8, 0.92) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+    border-radius: var(--radius-pill) !important;
+    padding: 0.85rem 1.25rem !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+}
+
+#view-registro-estudiante .form-group input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.9) !important;
+    background-color: #062212 !important;
+}
+
+#view-registro-estudiante .form-group label {
+    color: #f1f5f9 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.8px;
+}

@@ -1,15 +1,33 @@
-/* Asistente IA con Gemini para el panel del profesor */
+/* Asistente IA con Gemini para el panel el profesor */
 
 import { bd, CLAVES } from '../../storage.js';
 import { mostrarNotificacion, escaparHTML } from '../../utils.js';
-import { CONFIG } from '../../config.js';   // ← NUEVO
 
-/* CONFIGURACIÓN */
 
-const GEMINI_API_KEY = CONFIG.GEMINI_API_KEY;
-const GEMINI_MODEL = CONFIG.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+/* CONFIGURACIÓN SEGURA*/
+
+let GEMINI_API_KEY = null;
+let GEMINI_MODEL = 'gemini-3.5-flash-lite';
+let API_DISPONIBLE = false;
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/interactions';
+
+/**
+ * Carga la configuración de forma segura.
+ * Si config.js no existe, la API queda deshabilitada.
+ */
+async function cargarConfiguracion() {
+    try {
+        const { CONFIG } = await import('../../config.js');
+        GEMINI_API_KEY = CONFIG.GEMINI_API_KEY;
+        GEMINI_MODEL = CONFIG.GEMINI_MODEL || 'gemini-2.5-flash';
+        API_DISPONIBLE = !!(GEMINI_API_KEY && GEMINI_API_KEY !== 'TU_API_KEY_AQUI');
+        console.log('✅ config.js cargado. API:', API_DISPONIBLE ? 'disponible' : 'sin key');
+    } catch (e) {
+        console.warn('⚠️ config.js no encontrado. El asistente IA no estará disponible.');
+        API_DISPONIBLE = false;
+    }
+}
 
 /* ESTADO INTERNO */
 
@@ -23,8 +41,10 @@ let enviando = false;
  * Inicializa el módulo del asistente.
  * Se llama una sola vez desde app.js.
  */
-export function inicializarAsistente() {
+export async function inicializarAsistente() {
     console.log('Módulo Asistente: iniciando');
+
+    await cargarConfiguracion();
 
     conectarBotonEnviar();
     conectarInputEnter();
@@ -44,6 +64,60 @@ export function cargarAsistenteDeCarrera(idCarrera) {
     historialChat = [];
     limpiarMensajes();
     mostrarBienvenida();
+
+    // ─── Si no hay API, mostrar aviso ───
+    if (!API_DISPONIBLE) {
+        mostrarAvisoSinAPI();
+    } else {
+        // Habilitar input y botones
+        habilitarAsistente();
+    }
+}
+
+function mostrarAvisoSinAPI() {
+    const cont = document.getElementById('asistente-mensajes');
+    if (!cont) return;
+
+    // Deshabilitar input
+    const input = document.getElementById('asistente-input');
+    const btnEnviar = document.getElementById('btn-asistente-enviar');
+    if (input) {
+        input.disabled = true;
+        input.placeholder = 'El asistente IA no está disponible';
+    }
+    if (btnEnviar) btnEnviar.disabled = true;
+
+    // Deshabilitar botones rápidos
+    document.querySelectorAll('[data-accion-ia]').forEach(btn => {
+        btn.disabled = true;
+        btn.title = 'El asistente IA no está disponible';
+    });
+
+    // Mensaje de aviso
+    cont.innerHTML += `
+        <div class="asistente-aviso">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <strong>Asistente IA no disponible</strong>
+                <p>Para usar el asistente, configura tu API key de Gemini en <code>js/config.js</code>.</p>
+            </div>
+        </div>
+    `;
+}
+
+function habilitarAsistente() {
+    const input = document.getElementById('asistente-input');
+    const btnEnviar = document.getElementById('btn-asistente-enviar');
+    if (input) {
+        input.disabled = false;
+        input.placeholder = 'Escribe tu pregunta aquí...';
+    }
+    if (btnEnviar) btnEnviar.disabled = false;
+
+    document.querySelectorAll('[data-accion-ia]').forEach(btn => {
+        btn.disabled = false;
+        btn.title = '';
+    });
 }
 
 /* INTERFAZ: MENSAJES */
@@ -271,17 +345,12 @@ async function enviarMensaje() {
 
     if (!texto) return;
 
-    // Verificar API key
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === 'TU_API_KEY_AQUI') {
-    mostrarNotificacion(
-        'Configura tu API key de Gemini en js/config.js. ' +
-        'Mira config.example.js para instrucciones.',
-        'error'
-    );
-    return;
+    // ─── Verificar si la API está disponible ───
+    if (!API_DISPONIBLE) {
+        mostrarNotificacion('El asistente IA no está disponible en este entorno', 'error');
+        return;
     }
 
-    // Verificar carrera activa
     if (!idCarreraActiva) {
         mostrarNotificacion('No hay carrera activa', 'error');
         return;
@@ -293,18 +362,14 @@ async function enviarMensaje() {
     input.disabled = true;
     document.getElementById('btn-asistente-enviar').disabled = true;
 
-    // Mostrar mensaje del usuario
     agregarMensaje(texto, 'user');
-    historialChat.push({ role: 'user', partes: texto });
 
-    // Mostrar "escribiendo..."
     mostrarEscribiendo();
 
     try {
         const respuesta = await llamarGemini(texto);
         ocultarEscribiendo();
         agregarMensaje(respuesta, 'model');
-        historialChat.push({ role: 'model', partes: respuesta });
     } catch (error) {
         ocultarEscribiendo();
         console.error('Error en Gemini:', error);

@@ -1031,3 +1031,45 @@ body {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
     letter-spacing: 0.8px;
 }
+
+/* AVISO: ASISTENTE IA NO DISPONIBLE */
+
+.asistente-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #fef3c7;
+    border-left: 4px solid var(--warning-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #92400e;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.asistente-aviso i {
+    color: var(--warning-color);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+.asistente-aviso strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #78350f;
+}
+
+.asistente-aviso p {
+    margin: 0;
+    color: #92400e;
+}
+
+.asistente-aviso code {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+}

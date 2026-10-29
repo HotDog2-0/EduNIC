@@ -37,7 +37,7 @@ import { inicializarRuleta } from './ruleta.js';
    INICIALIZACIÓN
    ========================================== */
 
-function iniciarApp() {
+async function iniciarApp() {
     console.log('🟢 iniciarApp: ejecutándose');
 
     // 1. Preparar base de datos
@@ -53,7 +53,7 @@ function iniciarApp() {
     inicializarQuiz();
     inicializarCalificaciones();
     inicializarRegistro();
-    inicializarAsistente();
+    await inicializarAsistente();
     inicializarRuleta();
 
     // 3. Configurar navegación y modales
@@ -225,10 +225,10 @@ function configurarAperturaVideos() {
    ARRANCAR LA APP
    ========================================== */
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', iniciarApp);
-} else {
-    iniciarApp();
-}
+document.addEventListener('DOMContentLoaded', () => {
+    iniciarApp().catch(err => {
+        console.error('Error al iniciar la app:', err);
+    });
+});
 
 console.log('🔵 app.js: archivo terminó de ejecutarse');

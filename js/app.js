@@ -1,4 +1,13 @@
-/* Punto de entrada */
+/* ============================================
+   APP.JS
+   Punto de entrada de la aplicación
+   ============================================ */
+
+console.log('🔵 app.js: archivo cargado');
+
+/* ==========================================
+   IMPORTS
+   ========================================== */
 
 import { bd, CLAVES, inicializarBaseDatos } from './storage.js';
 import { inicializarLanding } from './vistas/landing.js';
@@ -8,28 +17,33 @@ import { inicializarTemas } from './vistas/profesor/temas.js';
 import { inicializarEvaluaciones } from './vistas/profesor/evaluaciones.js';
 import {
     inicializarPanelEstudiante,
-    recuperarSesionEstudiante
+    recuperarSesionEstudiante,
+    resetearPanelEstudiante
 } from './vistas/estudiante/panelEstudiante.js';
 import {
     mostrarVista,
     configurarBotonesVolver,
     configurarPestanas
 } from './navegacion.js';
-import { mostrarNotificacion } from './utils.js';
+import { mostrarNotificacion, cerrarModalVideo, abrirModalVideo } from './utils.js';
 import { inicializarQuiz } from './vistas/estudiante/quiz.js';
-import { resetearPanelEstudiante } from './vistas/estudiante/panelEstudiante.js';
 import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
-import { cerrarModalVideo } from './utils.js';
-import { abrirModalVideo } from './utils.js';
 import { inicializarRegistro } from './vistas/estudiante/registro.js';
 import { inicializarAsistente } from './vistas/profesor/asistente.js';
+import { toggleSilencio, estaSilenciado } from './sonidos.js';
+import { inicializarRuleta } from './ruleta.js';
 
-function iniciarApp() {
-    console.log('EduNIC - Iniciando');
+/* ==========================================
+   INICIALIZACIÓN
+   ========================================== */
 
+async function iniciarApp() {
+    console.log('🟢 iniciarApp: ejecutándose');
+
+    // 1. Preparar base de datos
     inicializarBaseDatos();
 
-    // Inicializar módulos
+    // 2. Inicializar módulos
     inicializarLanding();
     inicializarCarreras();
     inicializarEstudiantes();
@@ -39,16 +53,18 @@ function iniciarApp() {
     inicializarQuiz();
     inicializarCalificaciones();
     inicializarRegistro();
-    inicializarAsistente();
+    await inicializarAsistente();
+    inicializarRuleta();
 
+    // 3. Configurar navegación y modales
     configurarBotonesVolver();
     configurarPestanas('view-panel-carrera');
     configurarPestanas('view-panel-estudiante');
     configurarCierreModalVideo();
-    configurarAperturaVideos();      
-    configurarCierreModalVideo();
+    configurarAperturaVideos();
+    configurarAperturaVideos();
 
-    // Login del profesor (temporal)
+    // 4. Login del profesor (temporal)
     const formProfesor = document.getElementById('form-login-profesor');
     formProfesor?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -71,13 +87,21 @@ function iniciarApp() {
         } else {
             mostrarNotificacion('Credenciales incorrectas', 'error');
         }
+
+        // Botón de silenciar
+        document.getElementById('btn-silenciar')?.addEventListener('click', (e) => {
+            const silenciado = toggleSilencio();
+            const icono = e.currentTarget.querySelector('i');
+            icono.className = silenciado ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+            mostrarNotificacion(silenciado ? 'Sonido silenciado' : 'Sonido activado');
+        });
     });
 
-    // Logout global
+    // 5. Logout global
     document.getElementById('btn-logout')?.addEventListener('click', () => {
         bd.eliminar(CLAVES.USUARIO_ACTUAL);
 
-        resetearPanelEstudiante();   // ← NUEVO: limpiar el estado del módulo
+        resetearPanelEstudiante();
 
         const infoSesion = document.getElementById('session-info');
         if (infoSesion) infoSesion.classList.add('hidden');
@@ -87,14 +111,29 @@ function iniciarApp() {
 
         mostrarVista('view-landing');
         mostrarNotificacion('Sesión cerrada');
-});
+    });
 
-    // Recuperar sesión activa
+    // 6. Recuperar sesión activa
     const usuarioActual = bd.obtener(CLAVES.USUARIO_ACTUAL);
 
     if (usuarioActual && usuarioActual.rol === 'profesor') {
         mostrarHeaderProfesor(usuarioActual.nombre);
-        mostrarVista('view-mis-carreras');
+
+        // Restaurar última vista si existe
+        const ultimaVista = localStorage.getItem('edunic_ultima_vista');
+
+        if (ultimaVista === 'view-panel-carrera') {
+            const carreraActiva = bd.obtener(CLAVES.CARRERA_ACTIVA);
+            if (carreraActiva && typeof window.abrirPanelCarrera === 'function') {
+                window.abrirPanelCarrera(carreraActiva);
+            } else {
+                mostrarVista('view-mis-carreras');
+            }
+        } else if (ultimaVista && ultimaVista !== 'view-landing') {
+            mostrarVista(ultimaVista);
+        } else {
+            mostrarVista('view-mis-carreras');
+        }
     } else if (usuarioActual && usuarioActual.rol === 'estudiante') {
         const ok = recuperarSesionEstudiante();
         if (!ok) mostrarVista('view-landing');
@@ -102,8 +141,12 @@ function iniciarApp() {
         mostrarVista('view-landing');
     }
 
-    console.log('EduNIC - Listo');
+    console.log('✅ EduNIC - Listo');
 }
+
+/* ==========================================
+   FUNCIONES AUXILIARES
+   ========================================== */
 
 /**
  * Actualiza el header global para mostrar al profesor.
@@ -136,27 +179,21 @@ function resetearPestanas(idContenedor) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', iniciarApp);
-
 /**
  * Configura el cierre del modal de video.
- * Se conecta una sola vez al arrancar la app.
  */
 function configurarCierreModalVideo() {
     const modal = document.getElementById('modal-video');
     if (!modal) return;
 
-    // Botones [data-cerrar-modal]
     modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
         b.addEventListener('click', cerrarModalVideo);
     });
 
-    // Click fuera del modal
     modal.addEventListener('click', (e) => {
         if (e.target === modal) cerrarModalVideo();
     });
 
-    // Tecla ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
             cerrarModalVideo();
@@ -164,18 +201,13 @@ function configurarCierreModalVideo() {
     });
 }
 
-/* MODAL DE VIDEO EMBEBIDO
-   Listener global para abrir videos de YouTube/Vimeo
-   dentro de la app. Se conecta una sola vez. */
-
 /**
- * Escucha los clics en cualquier elemento con [data-video-url]
- * y abre el modal de video embebido.
- * 
- * Funciona tanto para el panel del profesor como para el del estudiante.
+ * Listener global para abrir videos de YouTube/Vimeo.
  */
 function configurarAperturaVideos() {
     document.addEventListener('click', (e) => {
+        if (!e.target || typeof e.target.closest !== 'function') return;
+
         const btn = e.target.closest('[data-video-url]');
         if (!btn) return;
 
@@ -188,3 +220,15 @@ function configurarAperturaVideos() {
         abrirModalVideo(embedURL, titulo, urlOriginal);
     });
 }
+
+/* ==========================================
+   ARRANCAR LA APP
+   ========================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+    iniciarApp().catch(err => {
+        console.error('Error al iniciar la app:', err);
+    });
+});
+
+console.log('🔵 app.js: archivo terminó de ejecutarse');

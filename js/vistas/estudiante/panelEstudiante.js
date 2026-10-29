@@ -11,6 +11,8 @@ import {
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
 import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
+import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
+import { renderizarBlackjack } from '../../juegos/blackjack.js';
 
 /* ESTADO INTERNO */
 
@@ -25,8 +27,64 @@ export function inicializarPanelEstudiante() {
     conectarLogoutEstudiante();
     conectarCambioDePestanaEstudiante();
     conectarFiltrosResultados();
+    conectarSelectorJuegos();
 
     console.log('Panel Estudiante: listo');
+}
+
+/**
+ * Conecta la selección de juegos y el botón "Volver".
+ */
+function conectarSelectorJuegos() {
+    // Botones "Jugar" de cada tarjeta
+    document.querySelectorAll('[data-juego-btn]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const juego = btn.dataset.juegoBtn;
+            abrirJuego(juego);
+        });
+    });
+
+    // Botón "Volver a juegos"
+    document.getElementById('btn-volver-juegos')?.addEventListener('click', () => {
+        volverASeleccionJuegos();
+    });
+}
+
+/**
+ * Abre un juego específico.
+ * @param {string} juego
+ */
+function abrirJuego(juego) {
+    const seleccion = document.getElementById('juegos-seleccion');
+    const activo = document.getElementById('juego-activo');
+    if (!seleccion || !activo) return;
+
+    // Ocultar selección, mostrar juego activo
+    seleccion.classList.add('hidden');
+    activo.classList.remove('hidden');
+
+    // Renderizar el juego seleccionado
+    if (juego === 'piedra-papel-tijera') {
+        renderizarPiedraPapelTijera();
+    } else if(juego === 'blackjack') {
+        renderizarBlackjack();
+    }
+}
+
+/**
+ * Vuelve a la pantalla de selección de juegos.
+ */
+function volverASeleccionJuegos() {
+    const seleccion = document.getElementById('juegos-seleccion');
+    const activo = document.getElementById('juego-activo');
+    if (!seleccion || !activo) return;
+
+    activo.classList.add('hidden');
+    seleccion.classList.remove('hidden');
+
+    // Limpiar el contenedor del juego
+    const cont = document.getElementById('juego-container');
+    if (cont) cont.innerHTML = '';
 }
 
 /**
@@ -49,6 +107,9 @@ function conectarCambioDePestanaEstudiante() {
          if (btn.dataset.tab === 'tab-est-resultados') {
             cargarResultadosEstudiante();
          }
+         if (btn.dataset.tab === 'tab-est-juegos') {
+            volverASeleccionJuegos();
+        }
     });
 }
 
@@ -201,19 +262,49 @@ function rellenarCabeceraPanel() {
     document.getElementById('estudiante-nombre').textContent = estudianteActual.nombre;
 
     const carrera = estudianteActual.carrera;
+    
+    // ─── BUSCAR EL AÑO ACTIVO DE LA CARRERA ───
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivo = anios.find(a => 
+        String(a.idCarrera) === String(estudianteActual.idCarrera) && 
+        a.estado === 'activo'
+    );
+
+    const nombreAnio = anioActivo ? anioActivo.nombre : 'Sin año activo';
+
     document.getElementById('estudiante-carrera').innerHTML =
-        `<i class="fa-solid fa-graduation-cap"></i> ${escaparHTML(carrera.nombre)} — ${escaparHTML(carrera.anio)}`;
+        `<i class="fa-solid fa-graduation-cap"></i> ${escaparHTML(carrera.nombre)} — ${escaparHTML(nombreAnio)}`;
 }
 
-/* TEMAS */
-
+/**
+ * Carga los temas del año activo de la carrera del estudiante.
+ */
 function cargarTemasDeCarrera() {
     const cont = document.getElementById('est-lista-modulos');
     if (!cont || !estudianteActual) return;
 
+    // Buscar el año activo de la carrera del estudiante
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivo = anios.find(a => 
+        String(a.idCarrera) === String(estudianteActual.idCarrera) && 
+        a.estado === 'activo'
+    );
+
+    if (!anioActivo) {
+        cont.innerHTML = `
+            <div class="carreras-vacio">
+                <i class="fa-solid fa-book-open"></i>
+                <h3>No hay año activo</h3>
+                <p>Tu profesor aún no ha configurado el año académico.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Cargar módulos del año activo
     const todos = bd.obtener(CLAVES.TEMAS) || [];
-    const modulos = todos.filter(x =>
-        x.tipo === 'modulo' && x.idCarrera === estudianteActual.idCarrera
+    const modulos = todos.filter(x => 
+        x.tipo === 'modulo' && String(x.idAnio) === String(anioActivo.id)
     );
 
     if (modulos.length === 0) {
@@ -233,7 +324,9 @@ function cargarTemasDeCarrera() {
 
 function renderizarModuloEstudiante(m) {
     const todos = bd.obtener(CLAVES.TEMAS) || [];
-    const temas = todos.filter(x => x.tipo === 'tema' && x.idModulo === m.id);
+    const temas = todos.filter(x => 
+        x.tipo === 'tema' && String(x.idModulo) === String(m.id)
+    );
     const cantidad = temas.length;
 
     return `
@@ -355,19 +448,40 @@ function manejarClicModulosEstudiante(e) {
 /* EVALUACIONES DISPONIBLES */
 
 /**
- * Carga y renderiza las evaluaciones de la carrera del estudiante.
+ * Carga y renderiza las evaluaciones del año activo de la carrera del estudiante.
  */
 export function cargarEvaluacionesDeCarrera() {
     const cont = document.getElementById('est-lista-evaluaciones');
     if (!cont || !estudianteActual) return;
 
+    // ─── Buscar el año activo de la carrera del estudiante ───
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivo = anios.find(a =>
+        String(a.idCarrera) === String(estudianteActual.idCarrera) &&
+        a.estado === 'activo'
+    );
+
+    if (!anioActivo) {
+        cont.innerHTML = `
+            <div class="carreras-vacio">
+                <i class="fa-solid fa-file-pen"></i>
+                <h3>No hay año activo</h3>
+                <p>Tu profesor aún no ha configurado el año académico.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // ─── Cargar módulos y evaluaciones del año activo ───
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
     const modulos = todosTemas.filter(x =>
-        x.tipo === 'modulo' && x.idCarrera === estudianteActual.idCarrera
+        x.tipo === 'modulo' && String(x.idAnio) === String(anioActivo.id)
     );
 
     const todasEvals = bd.obtener(CLAVES.EVALUACIONES) || [];
-    const evaluaciones = todasEvals.filter(e => e.idCarrera === estudianteActual.idCarrera);
+    const evaluaciones = todasEvals.filter(e =>
+        String(e.idAnio) === String(anioActivo.id)
+    );
 
     if (modulos.length === 0 || evaluaciones.length === 0) {
         cont.innerHTML = `
@@ -384,7 +498,7 @@ export function cargarEvaluacionesDeCarrera() {
     const modulosConEvals = modulos
         .map(m => ({
             ...m,
-            evaluaciones: evaluaciones.filter(e => e.idModulo === m.id)
+            evaluaciones: evaluaciones.filter(e => String(e.idModulo) === String(m.id))
         }))
         .filter(m => m.evaluaciones.length > 0);
 
@@ -638,11 +752,21 @@ function calcularResumenResultados(resultados) {
 }
 
 function actualizarResumen(r) {
-    document.getElementById('stat-total').textContent = r.total;
-    document.getElementById('stat-aprobadas').textContent = r.aprobadas;
-    document.getElementById('stat-reprobadas').textContent = r.reprobadas;
-    
-    const promedioEl = document.getElementById('stat-promedio');
+    const totalEl = document.getElementById('stat-total-estudiante');
+    const aprobadasEl = document.getElementById('stat-aprobadas-estudiante');
+    const reprobadasEl = document.getElementById('stat-reprobadas-estudiante');
+    const promedioEl = document.getElementById('stat-promedio-estudiante');
+
+    // Si algún elemento no existe, salir sin error
+    if (!totalEl || !aprobadasEl || !reprobadasEl || !promedioEl) {
+        console.warn('⚠️ Algunos elementos del resumen no existen todavía');
+        return;
+    }
+
+    totalEl.textContent = r.total;
+    aprobadasEl.textContent = r.aprobadas;
+    reprobadasEl.textContent = r.reprobadas;
+
     if (r.promedioTotal > 0) {
         promedioEl.textContent = `${r.promedioPuntos}/${r.promedioTotal}`;
     } else {
@@ -683,6 +807,13 @@ function renderizarResultadoItem(r) {
         estadoVisual = r.aprobado ? 'aprobado' : 'reprobado';
     }
 
+    // ─── CALIFICASAURIO MINI ───
+    const imagenCalificasaurio = estadoVisual === 'aprobado'
+        ? 'assets/calificasaurio/aprobado.png'
+        : estadoVisual === 'reprobado'
+            ? 'assets/calificasaurio/reprobado.png'
+            : 'assets/calificasaurio/pendiente.png';
+
     // Buscar el módulo para mostrarlo
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
     const evals = bd.obtener(CLAVES.EVALUACIONES) || [];
@@ -710,9 +841,14 @@ function renderizarResultadoItem(r) {
 
     return `
         <div class="resultado-item ${estadoVisual}">
-            <div class="resultado-item-icono">
-                <i class="fa-solid ${icono}"></i>
-            </div>
+        <div class="calificasaurio-mini">
+            <img src="${imagenCalificasaurio}" 
+                 alt="Calificasaurio ${estadoVisual}" 
+                 class="calificasaurio-mini-img">
+        </div>
+        <div class="resultado-item-icono">
+            <i class="fa-solid ${icono}"></i>
+        </div>
 
             <div class="resultado-item-info">
                 <p class="resultado-item-titulo">${escaparHTML(r.tituloEvaluacion)}</p>

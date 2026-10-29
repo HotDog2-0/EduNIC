@@ -1,206 +1,109 @@
-/* Botones, cards, formularios, notificaciones */
+/* ==========================================================================
+   COMPONENTES GENERALES Y UI - Estética Casino VIP Avanzada
+   ========================================================================== */
 
-/* ----- Cards ----- */
-.card {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
+/* ----- ANIMACIONES GLOBALES DE UI ----- */
+@keyframes casinoFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
+@keyframes casinoPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes goldPulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    }
+}
+
+/* Aplicación de entrada animada a tarjetas y secciones */
+.card, 
+.view-section:not(.hidden) {
+    animation: casinoFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-overlay:not(.hidden) .modal {
+    animation: casinoPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ----- TARJETAS / CARDS CON PROFUNDIDAD ----- */
+.card {
+    background: linear-gradient(145deg, #16161c 0%, #101015 100%);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-card);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Hero Card (Landing) */
 .hero-card {
-    max-width: 500px;
-    margin: 3rem auto;
+    max-width: 520px;
+    margin: 2.5rem auto;
     text-align: center;
     padding: 2.5rem 2rem;
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--shadow-lg), 0 0 25px rgba(212, 175, 55, 0.2);
 }
 
 .hero-card h2 {
     color: var(--primary-color);
     margin-bottom: 0.5rem;
+    border-bottom: none;
 }
 
 .hero-subtitle {
     color: var(--text-muted);
-    margin-bottom: 1.5rem;
-    font-size: 1rem;
-}
-
-.form-card {
-    max-width: 500px;
-    margin: 2rem auto;
-}
-
-.form-card h2 {
-    color: var(--primary-color);
+    font-size: 0.95rem;
     margin-bottom: 1.5rem;
 }
-
-/* ----- Botones ----- */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius);
-    border: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    font-family: inherit;
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
-}
-
-.btn:active {
-    transform: scale(0.98);
-}
-
-.btn-primary   { background-color: var(--primary-color);   color: #ffffff; }
-.btn-primary:hover { background-color: var(--primary-hover); }
-
-.btn-secondary { background-color: var(--secondary-color); color: #ffffff; }
-.btn-secondary:hover { background-color: var(--secondary-hover); }
-
-.btn-success   { background-color: var(--success-color);   color: #ffffff; }
-.btn-danger    { background-color: var(--danger-color);    color: #ffffff; }
-
-.btn-block {
-    width: 100%;
-}
-
-/* ----- Selector de rol ----- */
-.role-selector {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.btn-role {
-    flex: 1;
-    padding: 1.5rem 1rem;
-    flex-direction: column;
-    font-size: 1.05rem;
-    border-radius: var(--radius-lg);
-}
-
-.btn-role i {
-    font-size: 2rem;
-    margin-bottom: 0.25rem;
-}
-
-/* ----- Botón "Volver" ----- */
-.btn-back {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    font-size: 0.95rem;
-    font-family: inherit;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0;
-    transition: color 0.2s;
-}
-
-.btn-back:hover {
-    color: var(--primary-color);
-}
-
-/* ----- Formularios ----- */
-.form-group {
-    margin-bottom: 1.2rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    outline: none;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-.form-subtitle {
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-}
-
-.form-hint {
-    margin-top: 1.25rem;
-    padding: 0.75rem 1rem;
-    background-color: #f0f9ff;
-    border-left: 3px solid var(--primary-color);
-    border-radius: var(--radius);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.form-hint strong {
-    color: var(--text-color);
-}
-
-/* ----- Notificaciones ----- */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #333;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    max-width: 320px;
-}
-
-.toast.success { background-color: var(--success-color); }
-.toast.error   { background-color: var(--danger-color); }
-
-/* SEPARADOR EN LA LANDING
-   "¿Aún no tienes cuenta?" */
 
 .landing-divider {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin: 1.5rem 0 1rem;
+    margin: 1.5rem 0;
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .landing-divider::before,
@@ -212,9 +115,961 @@
 }
 
 .landing-divider span {
-    font-weight: 600;
+    padding: 0 0.8rem;
+}
+
+/* ----- BOTONES TÁCTILES VIP (MICRO-INTERACCIONES) ----- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.75rem 1.6rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    text-decoration: none;
+}
+
+/* Efecto de rayo de luz que cruza el botón al pasar el cursor */
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.55s ease;
+}
+
+.btn:hover::before {
+    left: 140%;
+}
+
+.btn:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: none !important;
+}
+
+/* Botón Principal (Oro VIP) */
+.btn-primary {
+    background: linear-gradient(135deg, #ffcd27 0%, #0b4f2c 50%, #052a17 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
+}
+
+/* Botón Secundario (Verde Mesa VIP) */
+.btn-secondary {
+    background: linear-gradient(135deg, #ffcd27 0%, #0b4f2c 50%, #052a17 100%);
+    color: #ffffff;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 14px rgba(11, 79, 44, 0.4);
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 20px rgba(18, 110, 63, 0.6);
+}
+
+/* Botón Éxito */
+.btn-success {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    color: #000000;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.btn-success:hover {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+}
+
+/* Botón Alerta / Peligro */
+.btn-danger {
+    background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.55);
+}
+
+/* Botón Advertencia */
+.btn-warning {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: #000000;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+}
+
+.btn-block { 
+    width: 100%; 
+}
+
+.btn-sm {
+    padding: 0.45rem 1rem;
+    font-size: 0.78rem;
+}
+
+/* Botón de volver / Flecha */
+.btn-back {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background: rgba(212, 175, 55, 0.12);
+    transform: translateX(-3px);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+/* ----- SELECTOR DE ROL (LANDING) ----- */
+.role-selector {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.btn-role {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    flex-direction: column;
+    font-size: 0.95rem;
+    border-radius: var(--radius);
+    background: linear-gradient(145deg, #181822 0%, #0d0d12 100%);
+    border: 1.5px solid var(--border-color);
+    color: var(--text-card);
+}
+
+.btn-role:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--border-gold-glow);
+}
+
+.btn-role i {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+    color: var(--primary-color);
+    filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4));
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-role:hover i {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+/* ----- FORMULARIO E INPUTS CON RESPLANDOR REACTIVO ----- */
+.form-card {
+    max-width: 460px;
+    margin: 2rem auto;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--primary-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #0d0d12;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius);
+    outline: none;
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.8);
+    background-color: #121218;
+}
+
+.form-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.form-hint i {
+    color: var(--primary-color);
+}
+
+.input-readonly {
+    background-color: #070709 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--primary-color) !important;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* ----- TABLAS ESTILIZADAS VIP ----- */
+.table-responsive {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.tabla-estudiantes {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+    background: #101015;
+}
+
+.tabla-estudiantes th {
+    background: #181822;
+    color: var(--primary-color);
+    padding: 0.85rem 1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tabla-estudiantes td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    color: var(--text-card);
+}
+
+.tabla-estudiantes tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.tabla-estudiantes tbody tr:hover {
+    background-color: rgba(212, 175, 55, 0.08);
+}
+
+/* BADGES / INSIGNIAS EN FORMA DE FICHA DE CASINO */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: 800;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   NUEVA GEOMETRÍA: MESA DE PÓKER OVALADA CON REPOSABRAZOS DE CUERO VIP
+   ========================================================================== */
+
+#view-login-profesor .form-card,
+#view-login-estudiante .form-card {
+    max-width: 540px !important; /* Más ancha para simular la proporción de una mesa */
+    
+    /* 1. Cambio de Forma: Bordes suavemente redondeados tipo óvalo de casino */
+    border-radius: 60px 12px 60px 12px !important;
+    
+    /* 2. Textura del Paño Verde Esmeralda Central */
+    background: 
+        radial-gradient(ellipse at center, #0e522e 0%, #08331c 65%, #03170c 100%) !important;
+    
+    /* 3. Marco Acolchado de Cuero y Bisel Metálico Dorado */
+    border: 4px solid var(--primary-color) !important;
+    box-shadow: 
+        /* Relieve de luz interna */
+        inset 0 0 15px rgba(255, 255, 255, 0.15),
+        /* Sombra de profundidad del paño */
+        inset 0 0 45px rgba(0, 0, 0, 0.9),
+        /* Borde exterior tipo reposabrazos */
+        0 0 0 8px #121216,
+        /* Resplandor neón dorado en la mesa */
+        0 20px 50px rgba(0, 0, 0, 0.95),
+        0 0 35px rgba(212, 175, 55, 0.4) !important;
+    
+    padding: 3rem 2.8rem !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Riel interior de apuestas (Línea de corte ovalada) */
+#view-login-profesor .form-card::after,
+#view-login-estudiante .form-card::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 2px dashed rgba(212, 175, 55, 0.4);
+    border-radius: 50px 6px 50px 6px;
+    pointer-events: none;
+}
+
+/* Placa VIP Superior en forma de rótulo dorada */
+#view-login-profesor .form-card::before,
+#view-login-estudiante .form-card::before {
+    content: "♠  ACCESO A MESA VIP DE PÓKER  ♠";
+    display: block;
+    text-align: center;
     font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #000000;
+    background: linear-gradient(135deg, var(--primary-color), #b38f27);
+    padding: 0.35rem 1rem;
+    border-radius: var(--radius-pill);
+    margin: -1rem auto 1.5rem auto;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Estilización de los campos sobre el nuevo formato de mesa */
+#view-login-profesor .form-group input,
+#view-login-estudiante .form-group input {
+    background-color: rgba(3, 14, 8, 0.92) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+    border-radius: var(--radius-pill) !important; /* Inputs estilizados en cápsula */
+    padding: 0.85rem 1.25rem !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+}
+
+#view-login-profesor .form-group input:focus,
+#view-login-estudiante .form-group input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.9) !important;
+    background-color: #062212 !important;
+}
+
+/* Botón principal de la mesa */
+#view-login-profesor .btn-primary,
+#view-login-estudiante .btn-secondary {
+    margin-top: 1rem;
+    padding: 0.9rem 1.8rem !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 1.2px !important;
+}
+
+/* Ocultar el tirador de redimensionamiento del chat de la IA */
+#asistente-input {
+    resize: none;
+    overflow-y: auto; /* Permite desplazamiento interno suave si el texto es largo */
+}
+
+/* ============================================
+   NOTIFICACIONES (TOAST) - Estilo Casino VIP
+   ============================================ */
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: linear-gradient(145deg, #181822 0%, #0d0d12 100%);
+    color: var(--text-color);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--primary-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 15px rgba(212, 175, 55, 0.3);
+    z-index: 10000;
+    max-width: 380px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    animation: casinoPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ícono decorativo a la izquierda */
+.toast::before {
+    content: "◆";
+    color: var(--primary-color);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.toast.success {
+    border-color: var(--success-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 15px rgba(16, 185, 129, 0.4);
+}
+
+.toast.success::before {
+    content: "✓";
+    color: var(--success-color);
+}
+
+.toast.error {
+    border-color: var(--danger-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 15px rgba(220, 38, 38, 0.4);
+}
+
+.toast.error::before {
+    content: "✕";
+    color: var(--danger-color);
+}
+
+.toast.info {
+    border-color: var(--primary-color);
+}
+
+.toast.hidden {
+    display: none !important;
+}
+
+.banner-solo-lectura {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-left: 4px solid var(--warning-color);
+    border-radius: var(--radius);
+    padding: 0.85rem 1.15rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.banner-solo-lectura i {
+    color: var(--warning-color);
+    font-size: 1.1rem;
+}
+
+/* CONFETI DORADO (al aprobar) */
+
+.confeti-contenedor {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99999;
+    overflow: hidden;
+}
+
+.confeti-particula {
+    will-change: transform, opacity;
+}
+
+@keyframes confetiVolar {
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: 
+            translate(var(--destino-x), var(--destino-y)) 
+            rotate(var(--rotacion)) 
+            scale(0.3);
+        opacity: 0;
+    }
+}
+
+/* FICHAS DE CASINO (para puntos) */
+
+.fichas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    justify-content: center;
+    align-items: center;
+    margin: 0.75rem 0;
+}
+
+.ficha {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fef3c7, #d4af37 50%, #8b6914 100%);
+    border: 2px dashed rgba(255, 255, 255, 0.6);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 2px 3px rgba(255, 255, 255, 0.4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #4a3508;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+    animation: fichaAparece 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    transition: transform 0.2s ease;
+}
+
+.ficha:hover {
+    transform: scale(1.15) rotate(10deg);
+}
+
+/* Ficha parcial (media ficha) */
+.ficha.parcial {
+    background: radial-gradient(circle at 30% 30%, #fff, #d4af37 50%, #8b6914 100%);
+    opacity: 0.6;
+    width: 14px;
+    height: 28px;
+    border-radius: 50% 0 0 50%;
+    border-right: none;
+}
+
+/* Animación de aparición escalonada */
+.ficha:nth-child(1)  { animation-delay: 0s; }
+.ficha:nth-child(2)  { animation-delay: 0.05s; }
+.ficha:nth-child(3)  { animation-delay: 0.1s; }
+.ficha:nth-child(4)  { animation-delay: 0.15s; }
+.ficha:nth-child(5)  { animation-delay: 0.2s; }
+.ficha:nth-child(6)  { animation-delay: 0.25s; }
+.ficha:nth-child(7)  { animation-delay: 0.3s; }
+.ficha:nth-child(8)  { animation-delay: 0.35s; }
+.ficha:nth-child(9)  { animation-delay: 0.4s; }
+.ficha:nth-child(10) { animation-delay: 0.45s; }
+
+@keyframes fichaAparece {
+    from {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .ficha {
+        width: 24px;
+        height: 24px;
+        font-size: 0.55rem;
+    }
+}
+
+/* RULETA DEL TODO O NADA */
+
+.modal-ruleta {
+    max-width: 520px;
+    background: linear-gradient(145deg, #1a1a22 0%, #0d0d12 100%);
+    border: 2px solid var(--primary-color);
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(212, 175, 55, 0.3);
+    color: #ffffff;   /* ← AÑADIR */
+}
+
+.modal-ruleta-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.modal-ruleta .modal-header h3 {
+    color: var(--primary-color);
+}
+
+/* ----- Mensaje superior ----- */
+.ruleta-mensaje {
+    margin-bottom: 1.5rem;
+}
+
+.ruleta-titulo-mensaje {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fbbf24;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.ruleta-subtitulo {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.ruleta-subtitulo strong {
+    color: var(--primary-color);
+}
+
+/* ----- Contenedor de la ruleta ----- */
+.ruleta-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 1.5rem auto;
+}
+
+/* Flecha indicadora (arriba) */
+.ruleta-flecha {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    filter: drop-shadow(0 0 8px var(--primary-color));
+    z-index: 10;
+    animation: flechaPulsa 1.5s ease-in-out infinite;
+}
+
+@keyframes flechaPulsa {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.15); }
+}
+
+/* La ruleta (círculo con secciones) */
+.ruleta {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px solid var(--primary-color);
+    box-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.5),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+     background: conic-gradient(
+        #16a34a 0deg 90deg,      /* pasa (verde) */
+        #dc2626 90deg 180deg,    /* pierdes (rojo) */
+        #16a34a 180deg 270deg,   /* pasa (verde) */
+        #dc2626 270deg 360deg    /* pierdes (rojo) */
+    );
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    transform: rotate(0deg);
+}
+
+/* Texto de cada sección */
+.ruleta-seccion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 0%;
+    transform: rotate(var(--angulo)) translate(0, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 55px;
+    pointer-events: none;
+}
+
+.ruleta-texto {
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
     white-space: nowrap;
+    display: block;
+    transform: rotate(var(--angulo-texto));
+    transform-origin: center center;
+}
+
+/* Centro de la ruleta (círculo decorativo) */
+.ruleta-centro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fef3c7, #d4af37 50%, #8b6914 100%);
+    border: 3px solid #0d0d12;
+    box-shadow: 
+        0 0 15px rgba(212, 175, 55, 0.6),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a3508;
+    font-size: 1.8rem;
+    z-index: 5;
+    animation: centroPulsa 2s ease-in-out infinite;
+}
+
+@keyframes centroPulsa {
+    0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), inset 0 -3px 6px rgba(0, 0, 0, 0.4); }
+    50% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.9), inset 0 -3px 6px rgba(0, 0, 0, 0.4); }
+}
+
+/* ----- Botones ----- */
+.ruleta-botones {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.ruleta-botones .btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+/* ----- Resultado ----- */
+.ruleta-resultado {
+    display: block;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    animation: resultadoAparece 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes resultadoAparece {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.ruleta-resultado.gana {
+    background: linear-gradient(135deg, #166534, #14532d);
+    border: 2px solid #22c55e;
+}
+
+.ruleta-resultado.pierde {
+    background: linear-gradient(135deg, #7f1d1d, #450a0a);
+    border: 2px solid #ef4444;
+}
+
+.ruleta-resultado-titulo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.ruleta-resultado.hidden {
+    display: none !important;
+}
+
+.ruleta-resultado.gana .ruleta-resultado-titulo {
+    color: #86efac;
+    text-shadow: 0 0 10px rgba(134, 239, 172, 0.5);
+}
+
+.ruleta-resultado.pierde .ruleta-resultado-titulo {
+    color: #fca5a5;
+    text-shadow: 0 0 10px rgba(252, 165, 165, 0.5);
+}
+
+.ruleta-resultado-detalle {
+    font-size: 0.9rem;
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 600px) {
+    .ruleta-container {
+        width: 220px;
+        height: 220px;
+    }
+
+    .ruleta-texto {
+        font-size: 0.6rem;
+    }
+
+    .ruleta-centro {
+        width: 55px;
+        height: 55px;
+        font-size: 1.4rem;
+    }
+
+    .ruleta-botones .btn {
+        min-width: 100px;
+    }
+}
+
+/* ==========================================================================
+   FONDO ESTILO WALLPAPER CASINO VIP (ROMBOS Y PALOS DE PÓKER)
+   ========================================================================== */
+
+body {
+    font-family: var(--font-family);
+    background-color: #0a0a0c !important;
+    
+    /* Patrón SVG repetible inspirado en el papel tapiz de casino VIP */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Cpattern id='casino-wallpaper' width='120' height='120' patternUnits='userSpaceOnUse'%3E%3C!-- Fondo negro base --%3E%3Crect width='120' height='120' fill='%23050507'/%3E%3C!-- Rombo principal borgoña/rubí con borde dorado --%3E%3Cpath d='M60 0L120 60L60 120L0 60Z' fill='%233b0609' stroke='%23d4af37' stroke-width='1.2' stroke-opacity='0.75'/%3E%3C!-- Rombo interior con líneas punteadas doradas --%3E%3Cpath d='M60 18L102 60L60 102L18 60Z' fill='none' stroke='%23d4af37' stroke-width='0.9' stroke-dasharray='4,4' stroke-opacity='0.5'/%3E%3C!-- Símbolo central de pica --%3E%3Ctext x='60' y='65' font-size='18' text-anchor='middle' fill='%23000000' fill-opacity='0.9' font-family='sans-serif'%3E♠%3C/text%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23casino-wallpaper)'/%3E%3C/svg%3E") !important;
+    
+    background-repeat: repeat !important;
+    background-attachment: fixed !important;
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. Estilo de Mesa de Póker VIP para el Registro de Estudiante con Código */
+#view-registro-estudiante .form-card {
+    max-width: 580px !important;
+    border-radius: 60px 12px 60px 12px !important;
+    background: radial-gradient(ellipse at center, #0e522e 0%, #08331c 65%, #03170c 100%) !important;
+    border: 4px solid var(--primary-color) !important;
+    box-shadow: 
+        inset 0 0 15px rgba(255, 255, 255, 0.15),
+        inset 0 0 45px rgba(0, 0, 0, 0.9),
+        0 0 0 8px #121216,
+        0 20px 50px rgba(0, 0, 0, 0.95),
+        0 0 35px rgba(212, 175, 55, 0.4) !important;
+    padding: 3rem 2.8rem !important;
+    position: relative;
+    overflow: visible !important;
+}
+
+#view-registro-estudiante .form-card::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 2px dashed rgba(212, 175, 55, 0.4);
+    border-radius: 50px 6px 50px 6px;
+    pointer-events: none;
+}
+
+#view-registro-estudiante .form-card::before {
+    content: "♠  REGISTRO DE NUEVA FICHA / JUGADOR  ♠";
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #000000;
+    background: linear-gradient(135deg, var(--primary-color), #b38f27);
+    padding: 0.35rem 1rem;
+    border-radius: var(--radius-pill);
+    margin: -1.8rem auto 1.5rem auto;
+    width: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 2;
+}
+
+#view-registro-estudiante .form-group input {
+    background-color: rgba(3, 14, 8, 0.92) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.4) !important;
+    border-radius: var(--radius-pill) !important;
+    padding: 0.85rem 1.25rem !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+}
+
+#view-registro-estudiante .form-group input:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.9) !important;
+    background-color: #062212 !important;
+}
+
+#view-registro-estudiante .form-group label {
+    color: #f1f5f9 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.8px;
+}
+
+/* AVISO: ASISTENTE IA NO DISPONIBLE */
+
+.asistente-aviso {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #fef3c7;
+    border-left: 4px solid var(--warning-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #92400e;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.asistente-aviso i {
+    color: var(--warning-color);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+.asistente-aviso strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #78350f;
+}
+
+.asistente-aviso p {
+    margin: 0;
+    color: #92400e;
+}
+
+.asistente-aviso code {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
 }

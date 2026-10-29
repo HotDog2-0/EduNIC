@@ -10,9 +10,9 @@ import {
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
 import { cargarEstudiantesDeCarrera } from './estudiantes.js';
-import { cargarModulosDeCarrera } from './temas.js';
-import { cargarEvaluacionesDeCarrera } from './evaluaciones.js';
-import { cargarCalificacionesDeCarrera } from './calificaciones.js';
+import { cargarModulosDeAnio } from './temas.js';
+import { cargarEvaluacionesDeAnio } from './evaluaciones.js';
+import { cargarCalificacionesDeAnio } from './calificaciones.js';
 import { cargarAsistenteDeCarrera } from './asistente.js';
 
 /* ESTADO INTERNO */
@@ -20,6 +20,8 @@ import { cargarAsistenteDeCarrera } from './asistente.js';
 let carreras = [];             
 let carreraEditandoId = null;  
 let carreraEliminandoId = null;
+let aniosCarrera = [];
+let anioActivo = null;
 
 /* PUNTO DE ENTRADA */
 
@@ -185,7 +187,6 @@ function abrirModalCrear() {
 
     document.getElementById('modal-carrera-titulo-texto').textContent = 'Nueva Carrera';
     document.getElementById('carrera-nombre').value = '';
-    document.getElementById('carrera-anio').value = '';
 
     const modal = document.getElementById('modal-carrera');
     modal.classList.remove('hidden');
@@ -201,7 +202,6 @@ function abrirModalEditar(id) {
 
     document.getElementById('modal-carrera-titulo-texto').textContent = 'Editar Carrera';
     document.getElementById('carrera-nombre').value = c.nombre;
-    document.getElementById('carrera-anio').value = c.anio;
 
     const modal = document.getElementById('modal-carrera');
     modal.classList.remove('hidden');
@@ -217,27 +217,21 @@ function cerrarModalCarrera() {
 
 function guardarCarrera() {
     const nombre = limpiarNombre(document.getElementById('carrera-nombre').value);
-    const anio   = document.getElementById('carrera-anio').value;
 
     // Validaciones
     if (!nombre) {
         mostrarNotificacion('El nombre no puede estar vacío', 'error');
         return;
     }
-    if (!anio) {
-        mostrarNotificacion('Selecciona un año', 'error');
-        return;
-    }
 
-    // Verificar duplicado (mismo nombre + mismo año)
+    // Verificar duplicado (solo por nombre)
     const duplicado = carreras.some(c =>
         c.id !== carreraEditandoId &&
-        normalizar(c.nombre) === normalizar(nombre) &&
-        c.anio === anio
+        normalizar(c.nombre) === normalizar(nombre)
     );
 
     if (duplicado) {
-        mostrarNotificacion('Ya existe una carrera con ese nombre y año', 'error');
+        mostrarNotificacion('Ya existe una carrera con ese nombre', 'error');
         return;
     }
 
@@ -246,7 +240,6 @@ function guardarCarrera() {
         const c = carreras.find(x => x.id === carreraEditandoId);
         if (!c) return;
         c.nombre = nombre;
-        c.anio   = anio;
         guardarYRefrescar();
         cerrarModalCarrera();
         mostrarNotificacion('Carrera actualizada');
@@ -255,10 +248,9 @@ function guardarCarrera() {
         const nueva = {
             id: generarId(),
             nombre,
-            anio,
             codigo: calcularSiguienteCodigo(),
             codigoClase: generarCodigoClase(),
-            creado: new Date().toISOString(),
+            creado: new Date().toISOString()
         };
         carreras.push(nueva);
         guardarYRefrescar();
@@ -368,25 +360,38 @@ function abrirPanelCarrera(id) {
     const c = carreras.find(x => x.id === id);
     if (!c) return;
 
+    // Guardar carrera activa
     bd.guardar(CLAVES.CARRERA_ACTIVA, c.id);
 
+    // Datos de la carrera
     document.getElementById('panel-carrera-codigo').textContent = c.codigo;
     document.getElementById('panel-carrera-nombre').textContent = c.nombre;
-    document.getElementById('panel-carrera-anio').innerHTML =
-        `<i class="fa-solid fa-calendar"></i> ${escaparHTML(c.anio)}`;
 
-        rellenarCodigoClase(c);
-        conectarBotonesCodigoClase(c);
+    // Código de clase
+    rellenarCodigoClase(c);
+    conectarBotonesCodigoClase(c);
 
+    // Cargar años y conectar botones del selector
+    cargarAniosDeCarrera(c.id);
+    conectarBotonesAnio();
+    conectarModalNuevoAnio();
+
+    // ─── Cargar módulos, evaluaciones y calificaciones del año activo ───
+    if (anioActivo) {
+        cargarModulosDeAnio(anioActivo.id);
+        cargarEvaluacionesDeAnio(anioActivo.id);
+        cargarCalificacionesDeAnio(anioActivo.id);
+        aplicarModoSoloLectura(anioActivo.estado === 'archivado');
+    } else {
+        console.warn('⚠️ No hay año activo. Los módulos/evaluaciones no se cargarán.');
+    }
+
+    // ─── Cargar estudiantes y asistente (por carrera) ───
     cargarEstudiantesDeCarrera(c.id);
-    cargarModulosDeCarrera(c.id);
-    cargarEvaluacionesDeCarrera(c.id);
-    cargarCalificacionesDeCarrera(c.id);
     cargarAsistenteDeCarrera(c.id);
 
     mostrarVista('view-panel-carrera');
 }
-
 /* BOTÓN "VOLVER A MIS CARRERAS" */
 
 function conectarBotonVolverCarreras() {
@@ -560,3 +565,523 @@ function generarCodigoClase() {
 
     return codigo;
 }
+
+/* GESTIÓN DE AÑOS */
+
+/**
+ * Crea un año nuevo para la carrera activa.
+ * Archiva automáticamente el año activo anterior.
+ */
+/**
+ * Abre el modal para crear un año nuevo.
+ */
+function crearAnioNuevo() {
+    console.log('Abriendo modal de nuevo año');
+
+    // Verificar carrera activa
+    const idCarreraActiva = bd.obtener(CLAVES.CARRERA_ACTIVA);
+    if (!idCarreraActiva) {
+        mostrarNotificacion('No hay carrera activa', 'error');
+        return;
+    }
+
+    const carreras = bd.obtener(CLAVES.CARRERAS) || [];
+    const carrera = carreras.find(c => String(c.id) === String(idCarreraActiva));
+    if (!carrera) {
+        mostrarNotificacion('Carrera no encontrada', 'error');
+        return;
+    }
+
+    // Limpiar el input
+    document.getElementById('nuevo-anio-nombre').value = '';
+
+    // Mostrar modal
+    const modal = document.getElementById('modal-nuevo-anio');
+    modal.classList.remove('hidden');
+
+     // Conectar el modal
+    conectarModalNuevoAnio();
+
+    // Enfocar input
+    setTimeout(() => document.getElementById('nuevo-anio-nombre').focus(), 100);
+}
+
+/**
+ * Cierra el modal de nuevo año.
+ */
+function cerrarModalNuevoAnio() {
+    document.getElementById('modal-nuevo-anio')?.classList.add('hidden');
+}
+
+/**
+ * Guarda el nuevo año (llamado desde el form del modal).
+ */
+function guardarNuevoAnio() {
+    console.log('🔍 guardarNuevoAnio llamada');
+
+    const input = document.getElementById('nuevo-anio-nombre');
+    const nombre = limpiarNombre(input.value);
+    console.log('  Nombre limpio:', JSON.stringify(nombre));
+
+    // ─── VALIDACIONES ───
+    if (!nombre) {
+        console.log('  ❌ Validación: nombre vacío');
+        mostrarNotificacion('Escribe un nombre para el año', 'error');
+        return;
+    }
+
+    if (nombre.length < 3) {
+        console.log('  ❌ Validación: muy corto');
+        mostrarNotificacion('El nombre debe tener al menos 3 caracteres', 'error');
+        return;
+    }
+
+    if (nombre.length > 30) {
+        console.log('  ❌ Validación: muy largo');
+        mostrarNotificacion('El nombre es demasiado largo (máx. 30 caracteres)', 'error');
+        return;
+    }
+
+    if (/^\d+$/.test(nombre)) {
+        console.log('  ❌ Validación: solo números');
+        mostrarNotificacion('El nombre no puede ser solo números', 'error');
+        return;
+    }
+
+    const esValido = /año/i.test(nombre) || 
+                     /^(primero|segundo|tercero|cuarto|quinto|sexto|séptimo|octavo|noveno|décimo)$/i.test(nombre);
+    
+    console.log('  ¿Pasa validación de nombre?', esValido);
+    
+    if (!esValido) {
+        console.log('  ❌ Validación: no contiene "Año" ni es ordinal');
+        mostrarNotificacion('El nombre debe contener "Año" (ej: "Segundo Año") o ser un ordinal (ej: "Segundo")', 'error');
+        return;
+    }
+
+    // ─── VERIFICAR DUPLICADO ───
+    const idCarreraActiva = bd.obtener(CLAVES.CARRERA_ACTIVA);
+    console.log('  idCarreraActiva:', idCarreraActiva);
+    
+    const todosAnios = bd.obtener(CLAVES.ANIOS) || [];
+    console.log('  Años existentes:', todosAnios.length);
+    
+    const aniosDeEstaCarrera = todosAnios.filter(a => String(a.idCarrera) === String(idCarreraActiva));
+    console.log('  Años de esta carrera:', aniosDeEstaCarrera.length);
+    console.log('  Nombres:', aniosDeEstaCarrera.map(a => a.nombre));
+
+    if (aniosDeEstaCarrera.some(a => normalizar(a.nombre) === normalizar(nombre))) {
+        console.log('  ❌ Duplicado');
+        mostrarNotificacion('Ya existe un año con ese nombre', 'error');
+        return;
+    }
+
+    // ─── CREAR AÑO ───
+    console.log('  ✅ Pasó todas las validaciones. Creando año...');
+    
+    const nuevoAnio = {
+        id: generarId(),
+        idCarrera: idCarreraActiva,
+        nombre,
+        estado: 'activo',
+        creado: new Date().toISOString()
+    };
+    console.log('  Nuevo año:', nuevoAnio);
+
+    // Archivar el año activo actual
+    todosAnios.forEach(a => {
+        if (String(a.idCarrera) === String(idCarreraActiva) && a.estado === 'activo') {
+            a.estado = 'archivado';
+        }
+    });
+
+    todosAnios.push(nuevoAnio);
+    bd.guardar(CLAVES.ANIOS, todosAnios);
+    console.log('  ✅ Años guardados. Total:', todosAnios.length);
+
+     // Recargar
+    cargarAniosDeCarrera(idCarreraActiva);
+    cerrarModalNuevoAnio();
+
+    // ─── APLICAR MODO SOLO LECTURA SEGÚN EL NUEVO AÑO ───
+    // El nuevo año es activo, así que NO debe ser solo lectura
+    if (anioActivo) {
+        aplicarModoSoloLectura(anioActivo.estado === 'archivado');
+        
+        // Recargar módulos del nuevo año (vacío)
+        cargarModulosDeAnio(anioActivo.id);
+        cargarEvaluacionesDeAnio(anioActivo.id);
+        cargarCalificacionesDeAnio(anioActivo.id);
+    }
+
+    mostrarNotificacion(`Año "${nombre}" creado`);
+}
+/**
+ * Archiva el año actual.
+ */
+function archivarAnioActual() {
+    console.log('📦 archivarAnioActual llamada');
+
+    const idCarreraActiva = bd.obtener(CLAVES.CARRERA_ACTIVA);
+    if (!idCarreraActiva) {
+        mostrarNotificacion('No hay carrera activa', 'error');
+        return;
+    }
+
+    const todosAnios = bd.obtener(CLAVES.ANIOS) || [];
+    const anioActivoActual = todosAnios.find(a =>
+        String(a.idCarrera) === String(idCarreraActiva) && a.estado === 'activo'
+    );
+
+    if (!anioActivoActual) {
+        mostrarNotificacion('No hay año activo para archivar', 'error');
+        return;
+    }
+
+    const confirmar = window.confirm(
+        `¿Archivar "${anioActivoActual.nombre}"?\n\n` +
+        `El contenido quedará en modo solo lectura.`
+    );
+    if (!confirmar) return;
+
+    // Cambiar estado
+    const idx = todosAnios.findIndex(a => a.id === anioActivoActual.id);
+    if (idx !== -1) {
+        todosAnios[idx].estado = 'archivado';
+        bd.guardar(CLAVES.ANIOS, todosAnios);
+    }
+
+    // ─── RECARGAR EN VIVO ───
+    cargarAniosDeCarrera(idCarreraActiva);
+    cargarModulosDeAnio(anioActivoActual.id);
+    cargarEvaluacionesDeAnio(anioActivoActual.id);
+    cargarCalificacionesDeAnio(anioActivoActual.id);
+
+    // ─── APLICAR MODO SOLO LECTURA ───
+    aplicarModoSoloLectura(true);
+
+    mostrarNotificacion('Año archivado (solo lectura)');
+}
+
+/**
+ * Cambia el año activo.
+ */
+function cambiarAnio(idAnio) {
+    console.log('📅 cambiarAnio llamada:', idAnio);
+
+    // ─── LIMPIAR COMILLAS ───
+    let idLimpio = idAnio;
+    if (typeof idLimpio === 'string') {
+        // Quitar comillas dobles al inicio y final
+        idLimpio = idLimpio.replace(/^"|"$/g, '');
+    }
+
+    console.log('  ID limpio:', JSON.stringify(idLimpio));
+
+    const todosAnios = bd.obtener(CLAVES.ANIOS) || [];
+    const anio = todosAnios.find(a => String(a.id) === String(idLimpio));
+    if (!anio) {
+        console.warn('  ⚠️ Año no encontrado:', idLimpio);
+        return;
+    }
+
+    anioActivo = anio;
+    bd.guardar(CLAVES.ANIO_ACTIVO, anio.id);   // ← guarda el ID limpio
+
+    // Recargar módulos, evaluaciones y calificaciones
+    cargarModulosDeAnio(anio.id);
+    cargarEvaluacionesDeAnio(anio.id);
+    cargarCalificacionesDeAnio(anio.id);
+    aplicarModoSoloLectura(anio.estado === 'archivado');
+
+    mostrarNotificacion(`Cambiado a ${anio.nombre}${anio.estado === 'archivado' ? ' (archivado)' : ''}`);
+}
+
+/* EXPORTAR FUNCIONES AL SCOPE GLOBAL
+   Para que los listeners globales las encuentren*/
+
+window.crearAnioNuevo = crearAnioNuevo;
+window.archivarAnioActual = archivarAnioActual;
+window.cambiarAnio = cambiarAnio;
+
+/* CONEXIÓN DE BOTONES DE AÑO
+   Se llama cada vez que se abre el panel. */
+
+function conectarBotonesAnio() {
+    console.log('Conectando botones de año...');
+
+    const btnNuevo = document.getElementById('btn-nuevo-anio');
+    const btnArchivar = document.getElementById('btn-archivar-anio');
+    const selector = document.getElementById('selector-anio');
+
+    if (btnNuevo && !btnNuevo.dataset.conectado) {
+        btnNuevo.dataset.conectado = 'true';
+        btnNuevo.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Clic en Nuevo Año');
+            crearAnioNuevo();
+        });
+        console.log('Botón Nuevo Año conectado');
+    }
+
+    if (btnArchivar && !btnArchivar.dataset.conectado) {
+        btnArchivar.dataset.conectado = 'true';
+        btnArchivar.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Clic en Archivar');
+            archivarAnioActual();
+        });
+        console.log('Botón Archivar conectado');
+    }
+
+    if (selector && !selector.dataset.conectado) {
+        selector.dataset.conectado = 'true';
+        selector.addEventListener('change', (e) => {
+            console.log('Cambio de año:', e.target.value);
+            cambiarAnio(e.target.value);
+        });
+        console.log('Selector conectado');
+    }
+}
+
+/**
+ * Carga los años de una carrera y llena el selector.
+ * 
+ * @param {string} idCarrera - ID de la carrera
+ */
+function cargarAniosDeCarrera(idCarrera) {
+    console.log('📅 Cargando años de la carrera:', idCarrera);
+
+    // Obtener todos los años de esta carrera
+    const todosAnios = bd.obtener(CLAVES.ANIOS) || [];
+    aniosCarrera = todosAnios.filter(a => String(a.idCarrera) === String(idCarrera));
+
+    console.log('  Años encontrados:', aniosCarrera.length);
+
+    // ─── CREAR AÑO AUTOMÁTICO SI NO HAY ───
+    if (aniosCarrera.length === 0) {
+        console.log('⚠️ No hay años. Creando "Primer Año" automáticamente...');
+        
+        const nuevoAnio = {
+            id: 'anio-' + Date.now(),
+            idCarrera: idCarrera,
+            nombre: 'Primer Año',
+            estado: 'activo',
+            creado: new Date().toISOString()
+        };
+        
+        todosAnios.push(nuevoAnio);
+        bd.guardar(CLAVES.ANIOS, todosAnios);
+        
+        aniosCarrera = [nuevoAnio];
+        
+        console.log('✅ Año creado automáticamente:', nuevoAnio.nombre);
+    }
+
+    // Ordenar: activos primero, luego archivados
+    aniosCarrera.sort((a, b) => {
+        if (a.estado === b.estado) {
+            return new Date(b.creado) - new Date(a.creado);
+        }
+        return a.estado === 'activo' ? -1 : 1;
+    });
+
+    // Buscar el año activo
+    const activo = aniosCarrera.find(a => a.estado === 'activo');
+    if (activo) {
+        anioActivo = activo;
+    } else {
+        let guardado = bd.obtener(CLAVES.ANIO_ACTIVO);
+        if (typeof guardado === 'string') {
+            guardado = guardado.replace(/^"|"$/g, '');
+        }
+        anioActivo = aniosCarrera.find(a => String(a.id) === String(guardado)) || aniosCarrera[0] || null;
+    }
+
+    // Guardar el año activo (limpio, sin comillas)
+    if (anioActivo) {
+        let idLimpio = anioActivo.id;
+        if (typeof idLimpio === 'string') {
+            idLimpio = idLimpio.replace(/^"|"$/g, '');
+        }
+        bd.guardar(CLAVES.ANIO_ACTIVO, idLimpio);
+        console.log('  Año activo:', anioActivo.nombre);
+    } else {
+        console.log('  ⚠️ No hay año activo');
+    }
+
+    // ─── LLENAR EL SELECTOR ───
+    const select = document.getElementById('selector-anio');
+    if (!select) {
+        console.warn('  ⚠️ No se encontró #selector-anio');
+        return;
+    }
+
+    if (aniosCarrera.length === 0) {
+        select.innerHTML = '<option value="">No hay años</option>';
+    } else {
+        select.innerHTML = aniosCarrera.map(a => `
+            <option value="${a.id}" ${String(a.id) === String(anioActivo?.id) ? 'selected' : ''}>
+                ${escaparHTML(a.nombre)} ${a.estado === 'archivado' ? '(Archivado)' : ''}
+            </option>
+        `).join('');
+    }
+
+    console.log('  Selector llenado:', select.options.length, 'opciones');
+
+    // Al final, aplicar modo solo lectura según el año activo
+    if (anioActivo) {
+        aplicarModoSoloLectura(anioActivo.estado === 'archivado');
+    }
+}
+
+
+/**
+ * Rellena el dropdown de años con los años de la carrera.
+ */
+function rellenarSelectorAnios() {
+    const select = document.getElementById('selector-anio');
+    if (!select) {
+        console.warn('No se encontró #selector-anio');
+        return;
+    }
+
+    if (aniosCarrera.length === 0) {
+        select.innerHTML = '<option value="">No hay años</option>';
+        return;
+    }
+
+    select.innerHTML = aniosCarrera.map(a => `
+        <option value="${a.id}" ${a.id === anioActivo?.id ? 'selected' : ''}
+                class="${a.estado === 'archivado' ? 'archivado' : ''}">
+            ${escaparHTML(a.nombre)} ${a.estado === 'archivado' ? '(Archivado)' : ''}
+        </option>
+    `).join('');
+
+    console.log('  Selector rellenado con', aniosCarrera.length, 'años');
+}
+
+/* CARGAR MÓDULOS DEL AÑO ACTIVO
+   (puente temporal mientras se adapta temas.js) */
+
+/**
+ * Carga los módulos del año activo.
+ * Por ahora, redirige a cargarModulosDeCarrera (modelo viejo).
+ * En la Sesión A3 se adaptará para usar idAnio.
+ * 
+ * @param {string} idAnio - ID del año
+ */
+function cargarModulosDelAnio(idAnio) {
+    console.log('Cargando módulos del año:', idAnio);
+    cargarModulosDeAnio(idAnio);
+}
+
+/* CONEXIÓN DEL MODAL NUEVO AÑO */
+
+function conectarModalNuevoAnio() {
+    console.log('Conectando modal Nuevo Año...');
+
+    const modal = document.getElementById('modal-nuevo-anio');
+    if (!modal) {
+        console.warn('No se encontró #modal-nuevo-anio');
+        return;
+    }
+
+    // Cerrar con botones [data-cerrar-modal]
+    modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
+        b.onclick = (e) => {
+            e.preventDefault();
+            cerrarModalNuevoAnio();
+        };
+    });
+
+    // Cerrar al hacer clic fuera
+    modal.onclick = (e) => {
+        if (e.target === modal) cerrarModalNuevoAnio();
+    };
+
+    // Cerrar con ESC
+    document.onkeydown = (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            cerrarModalNuevoAnio();
+        }
+    };
+
+    // Conectar botón "Crear Año"
+    const btnCrear = document.getElementById('btn-confirmar-nuevo-anio');
+    if (btnCrear) {
+        btnCrear.onclick = (e) => {
+            e.preventDefault();
+            console.log('Crear Año clicado');
+            guardarNuevoAnio();
+        };
+        console.log('Botón Crear Año conectado');
+    }
+
+    // Conectar input con Enter
+    const input = document.getElementById('nuevo-anio-nombre');
+    if (input) {
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                guardarNuevoAnio();
+            }
+        };
+    }
+
+    console.log('Modal Nuevo Año conectado');
+}
+
+/* MODO SOLO LECTURA (años archivados) */
+
+/**
+ * Aplica o quita el modo solo lectura según el estado del año activo.
+ * 
+ * @param {boolean} soloLectura - true para bloquear, false para permitir
+ */
+function aplicarModoSoloLectura(soloLectura) {
+    console.log('🔒 Modo solo lectura:', soloLectura);
+
+    // Bloquear/desbloquear botones de crear
+    const botones = [
+        'btn-nuevo-modulo',
+        'btn-nueva-evaluacion',
+        'btn-add-pregunta',
+        'btn-add-recurso'
+    ];
+
+    botones.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.disabled = soloLectura;
+            btn.title = soloLectura ? 'Año archivado: solo lectura' : '';
+        }
+    });
+
+    // Bloquear botones de editar/eliminar dentro de módulos y temas
+    document.querySelectorAll('#lista-modulos .btn-icon, #lista-evaluaciones .btn-icon').forEach(btn => {
+        btn.disabled = soloLectura;
+        btn.title = soloLectura ? 'Año archivado: solo lectura' : '';
+    });
+
+    // Añadir banner visual si está en solo lectura
+    let banner = document.getElementById('banner-solo-lectura');
+    if (soloLectura) {
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.id = 'banner-solo-lectura';
+            banner.className = 'banner-solo-lectura';
+            banner.innerHTML = `
+                <i class="fa-solid fa-lock"></i>
+                Este año está archivado. El contenido es de solo lectura.
+            `;
+            const panel = document.getElementById('view-panel-carrera');
+            if (panel) panel.insertBefore(banner, panel.firstChild);
+        }
+    } else {
+        banner?.remove();
+    }
+}
+
+window.cargarAniosDeCarrera = cargarAniosDeCarrera;
+window.abrirPanelCarrera = abrirPanelCarrera;

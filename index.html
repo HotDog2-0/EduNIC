@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="EduNIC - Sistema de Gestión Educativa">
+    <meta name="description" content="EduNIC - Sistema de Gestión Educativa Casino VIP">
     <title>EduNIC - Sistema de Gestión Educativa</title>
 
     <!-- Iconos-->
@@ -16,56 +16,75 @@
     <link rel="stylesheet" href="css/responsive.css">
 
     <!-- CSS de módulos -->
-    <link rel="stylesheet" href="css/modulos/carreras.css">
+    S<link rel="stylesheet" href="css/modulos/carreras.css">
     <link rel="stylesheet" href="css/modulos/estudiantes.css">
     <link rel="stylesheet" href="css/modulos/temas.css">
     <link rel="stylesheet" href="css/modulos/evaluaciones.css">
+    <link rel="stylesheet" href="css/modulos/juegos.css">
 </head>
 <body>
 
-    <!-- ENCABEZADO -->
+        <!-- ENCABEZADO -->
     <header class="main-header">
         <div class="logo-container">
-            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-            <h1>EduNIC</h1>
+            <i class="fa-solid fa-dice" aria-hidden="true"></i>
+            <h1>EduNIC <span class="casino-gold" style="font-size: 0.8rem; letter-spacing: 2px;">VIP</span></h1>
         </div>
 
         <div id="session-info" class="session-info hidden">
             <span id="user-display"></span>
+            <button id="btn-silenciar" class="btn btn-secondary btn-sm" type="button" title="Silenciar sonidos">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
             <button id="btn-logout" class="btn btn-danger" type="button">
-                <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                <i class="fa-solid fa-right-from-bracket"></i> Salir
             </button>
         </div>
-    </header>
 
+        <!-- Luces de casino (bombillas) -->
+        <div class="header-luces">
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+            <span class="luz-bombilla"></span>
+        </div>
+    </header>
     <!-- CONTENEDOR PRINCIPAL-->
     <main class="container">
 
         <!-- VISTA 1: SELECCIÓN DE USUARIO (LANDING) -->
         <section id="view-landing" class="view-section hidden">
             <div class="card hero-card">
-                <h2>Bienvenido al Portal Educativo</h2>
-                <p class="hero-subtitle">Selecciona tu rol para acceder al sistema</p>
+                <h2>Portal Educativo VIP</h2>
+                <p class="hero-subtitle">Elige tu mesa de acceso para comenzar la partida</p>
 
                 <div class="role-selector" role="group" aria-label="Selección de rol">
                     <button type="button" class="btn btn-primary btn-role" id="select-profesor">
                         <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
-                        <span>Profesor</span>
+                        <span>crupier</span>
                     </button>
                     <button type="button" class="btn btn-secondary btn-role" id="select-estudiante">
                         <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
-                        <span>Estudiante</span>
+                        <span>Jugador</span>
                     </button>
                 </div>
                 <!-- Separador -->
                 <div class="landing-divider">
-                    <span>¿Aún no tienes cuenta?</span>
+                    <span>¿Nuevo jugador?</span>
                 </div>
 
                 <!-- Botón de auto-registro -->
                 <button type="button" class="btn btn-secondary btn-block" id="select-registro">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Registrarme con código de clase
+                    <i class="fa-solid fa-id-card"></i>
+                    Registrarme con código de mesa
                 </button>
             </div>
         </section>
@@ -77,7 +96,7 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-user-lock"></i> Inicio de Sesión - Profesor</h2>
+                <h2><i class="fa-solid fa-user-lock"></i> Acceso - Crupier</h2>
 
                 <form id="form-login-profesor">
                     <div class="form-group">
@@ -91,7 +110,7 @@
                                placeholder="••••••••" autocomplete="off">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar al Sistema
                     </button>
                 </form>
 
@@ -109,8 +128,8 @@
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-key"></i> Acceso Estudiante</h2>
-                <p class="form-subtitle">Ingresa tu código único asignado por el docente:</p>
+                <h2><i class="fa-solid fa-ticket"></i> Acceso Jugador</h2>
+                <p class="form-subtitle">Ingresa tu código único de fichas asignado por el docente:</p>
 
                 <form id="form-login-estudiante">
                     <div class="form-group">
@@ -120,7 +139,7 @@
                                style="text-transform: uppercase;">
                     </div>
                     <button type="submit" class="btn btn-secondary btn-block">
-                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                        <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
                     </button>
                 </form>
 
@@ -131,18 +150,16 @@
             </div>
         </section>
 
-            <!-- VISTA: REGISTRO DE ESTUDIANTE
-            El estudiante ingresa un código de clase
-            para registrarse sin que el profesor lo haga. -->
+            <!-- VISTA: REGISTRO DE ESTUDIANTE -->
         <section id="view-registro-estudiante" class="view-section hidden">
             <div class="card form-card">
                 <button class="btn-back" type="button" data-volver="view-landing">
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </button>
 
-                <h2><i class="fa-solid fa-user-plus"></i> Registro de Estudiante</h2>
+                <h2><i class="fa-solid fa-user-plus"></i> Registro de Jugador</h2>
                 <p class="form-subtitle">
-                    Ingresa el código de clase que te dio tu profesor para unirte a su grupo.
+                    Ingresa el código de clase proporcionado por tu crupier para unirte a la mesa.
                 </p>
 
                 <!-- Formulario en 2 pasos -->
@@ -161,7 +178,7 @@
                                 style="text-transform: uppercase;">
                             <p class="form-hint">
                                 <i class="fa-solid fa-circle-info"></i>
-                                Pídele a tu profesor el código de clase de tu carrera.
+                                Pídele a tu crupier el código clave de la carrera.
                             </p>
                         </div>
 
@@ -170,7 +187,7 @@
                         </button>
                     </div>
 
-                    <!-- PASO 2: Nombre del estudiante (oculto hasta validar código) -->
+                    <!-- PASO 2: Nombre del estudiante -->
                     <div id="registro-paso-2" class="hidden">
 
                         <!-- Info de la carrera encontrada -->
@@ -179,8 +196,8 @@
                                 <i class="fa-solid fa-book-bookmark"></i>
                             </div>
                             <div class="registro-carrera-datos">
-                                <span class="registro-carrera-label">Te unirás a:</span>
-                                <strong id="registro-carrera-nombre">Carrera</strong>
+                                <span class="registro-carrera-label">Mesa asignada:</span>
+                                <strong id="registro-carrera-nombre">Mesa</strong>
                                 <span id="registro-carrera-anio" class="text-muted">Año</span>
                             </div>
                         </div>
@@ -195,7 +212,7 @@
                                 autocomplete="off">
                             <p class="form-hint">
                                 <i class="fa-solid fa-circle-info"></i>
-                                Escribe tu nombre tal como aparece en la lista del profesor.
+                                Escribe tu nombre tal como figura en los registros oficiales.
                             </p>
                         </div>
 
@@ -209,21 +226,20 @@
                         </div>
                     </div>
 
-                    <!-- PASO 3: Éxito (oculto hasta completar el registro) -->
+                    <!-- PASO 3: Éxito -->
                     <div id="registro-paso-3" class="hidden">
                         <div class="registro-exito">
                             <div class="registro-exito-icono">
                                 <i class="fa-solid fa-check"></i>
                             </div>
 
-                            <h3 class="registro-exito-titulo">¡Registro exitoso!</h3>
+                            <h3 class="registro-exito-titulo">¡Jugador Registrado!</h3>
                             <p class="registro-exito-subtitulo">
-                                Ya eres parte de la clase. Guarda tu código único,
-                                lo necesitarás para iniciar sesión.
+                                Ya formas parte de la clase. Guarda celosamente tu código único de acceso.
                             </p>
 
                             <div class="registro-codigo-caja">
-                                <span class="registro-codigo-label">Tu código único</span>
+                                <span class="registro-codigo-label">Tu código único VIP</span>
                                 <span class="registro-codigo-valor" id="registro-codigo-asignado">EST-XXX</span>
 
                                 <button type="button" class="btn btn-secondary btn-sm" id="btn-copiar-codigo-estudiante">
@@ -234,8 +250,8 @@
                             <div class="registro-codigo-aviso">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                                 <div>
-                                    <strong>Importante:</strong> anota tu código.
-                                    Lo necesitarás cada vez que quieras entrar al sistema.
+                                    <strong>Importante:</strong> Guárdalo bien.
+                                    Lo necesitarás cada vez que desees entrar al sistema.
                                 </div>
                             </div>
 
@@ -254,21 +270,21 @@
         <section id="view-mis-carreras" class="view-section hidden">
 
             <div class="panel-header">
-                <h2>Mis Carreras</h2>
+                <h2>Salón de Mesas</h2>
                 <p class="panel-subtitle">
                     <i class="fa-solid fa-circle-info"></i>
-                    Selecciona una carrera para gestionar sus estudiantes, temas y evaluaciones.
+                    Selecciona una carrera para administrar sus Jugadores, temarios y apuestas.
                 </p>
             </div>
 
             <div class="carreras-toolbar">
                 <button class="btn btn-success" type="button" id="btn-nueva-carrera">
-                    <i class="fa-solid fa-plus"></i> Crear Nueva Carrera
+                    <i class="fa-solid fa-plus"></i> Crear Nueva mesa
                 </button>
             </div>
 
             <div id="lista-carreras" class="carreras-grid">
-                <!-- Tarjeta de prueba (será reemplazada con JS) -->
+                <!-- Tarjeta de prueba -->
                 <article class="carrera-card">
                     <div class="carrera-card-icon">
                         <i class="fa-solid fa-book-bookmark"></i>
@@ -328,7 +344,7 @@
             <!-- Cabecera con nombre de la carrera -->
             <div class="carrera-header">
                 <button class="btn-back" type="button" id="btn-volver-carreras">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a Mis Carreras
+                    <i class="fa-solid fa-arrow-left"></i> Volver a Mis Mesas
                 </button>
 
                 <div class="carrera-header-info">
@@ -340,7 +356,22 @@
                         <i class="fa-solid fa-calendar"></i> Primer Año
                     </p>
                 </div>
-                                <!-- Código de clase para auto-registro -->
+                             <!-- Selector de año -->
+                <div class="anio-selector">
+                    <label for="selector-anio" class="anio-selector-label">
+                        <i class="fa-solid fa-calendar"></i> Año:
+                    </label>
+                    <select id="selector-anio" class="anio-selector-dropdown">
+                        <!-- Se llena con JS -->
+                    </select>
+                    <button class="btn btn-secondary btn-sm" type="button" id="btn-nuevo-anio" title="Crear nuevo año">
+                        <i class="fa-solid fa-plus"></i> Nuevo Año
+                    </button>
+                    <button class="btn btn-warning btn-sm" type="button" id="btn-archivar-anio" title="Archivar año actual">
+                        <i class="fa-solid fa-box-archive"></i> Archivar
+                    </button>
+                </div>
+                <!-- Código de clase para auto-registro -->
                 <div class="codigo-clase-bloque">
                     <div class="codigo-clase-info">
                         <span class="codigo-clase-label">
@@ -357,7 +388,7 @@
                         <button class="btn btn-secondary btn-sm" type="button" id="btn-compartir-codigo" title="Copiar mensaje de invitación">
                             <i class="fa-solid fa-share-nodes"></i> Compartir
                         </button>
-                        <button class="btn btn-warning btn-sm" type="button" id="btn-regenerar-codigo" title="Generar uno nuevo (invalida el anterior)">
+                        <button class="btn btn-warning btn-sm" type="button" id="btn-regenerar-codigo" title="Generar uno nuevo">
                             <i class="fa-solid fa-rotate"></i> Regenerar
                         </button>
                     </div>
@@ -367,16 +398,16 @@
             <!-- Navegación de pestañas del panel de la carrera -->
             <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel de la carrera">
                 <button class="tab-btn active" type="button" data-tab="tab-estudiantes" role="tab">
-                    <i class="fa-solid fa-users"></i> Estudiantes
+                    <i class="fa-solid fa-users"></i> Jugadores
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-temas" role="tab">
-                    <i class="fa-solid fa-book"></i> Temas
+                    <i class="fa-solid fa-book"></i> Juegos
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-evaluaciones" role="tab">
-                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                    <i class="fa-solid fa-file-pen"></i> Apuestas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-calificaciones" role="tab">
-                    <i class="fa-solid fa-chart-bar"></i> Calificaciones
+                    <i class="fa-solid fa-chart-bar"></i> Resultados
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-asistente" role="tab">
                     <i class="fa-solid fa-robot"></i> Asistente IA
@@ -389,7 +420,7 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-user-plus"></i>
-                        Registrar Nuevo Estudiante
+                        Registrar Nuevo Jugador
                     </h3>
 
                     <form id="form-registrar-estudiante" autocomplete="off">
@@ -402,7 +433,7 @@
                         <div class="form-group">
                             <label for="new-student-codigo">
                                 Código Único
-                                <span class="label-hint">(se genera automáticamente)</span>
+                                <span class="label-hint">(autogenerado)</span>
                             </label>
                             <input type="text" id="new-student-codigo" readonly
                                    placeholder="EST-XXX" class="input-readonly">
@@ -410,7 +441,7 @@
 
                         <button type="submit" class="btn btn-success">
                             <i class="fa-solid fa-plus"></i>
-                            Registrar Estudiante
+                            Registrar Jugador
                         </button>
                     </form>
                 </div>
@@ -419,22 +450,22 @@
                 <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-file-import"></i>
-                        Importar Estudiantes desde Archivo
+                        Importar Jugadores
                     </h3>
                     <div class="card-header-acciones">
                     <button class="btn btn-secondary btn-sm" type="button" id="btn-pegar-lista">
                         <i class="fa-solid fa-clipboard"></i> Pegar lista
                     </button>
                     <button class="btn btn-secondary btn-sm" type="button" id="btn-descargar-plantilla">
-                        <i class="fa-solid fa-download"></i> Descargar plantilla
+                        <i class="fa-solid fa-download"></i> Plantilla CSV
                     </button>
                     </div>
                 </div> 
 
                     <p class="form-subtitle">
-                        Sube un archivo CSV o TXT con un estudiante por línea.
+                        Sube un archivo CSV o TXT con un jugador por línea.
                         <br>
-                        <strong>Formato:</strong> <code>Nombre Completo</code> (una línea por estudiante).
+                        <strong>Formato:</strong> <code>Nombre Completo</code>.
                     </p>
 
                     <div class="upload-area" id="upload-area">
@@ -455,9 +486,9 @@
                     <div class="card-header-row">
                         <h3>
                             <i class="fa-solid fa-list-check"></i>
-                            Estudiantes Registrados
+                            Jugadores en Mesa
                         </h3>
-                        <span class="badge" id="contador-estudiantes">0 estudiantes</span>
+                        <span class="badge" id="contador-estudiantes">0 Clientes</span>
                     </div>
 
                     <div class="table-responsive">
@@ -482,15 +513,14 @@
              <!-- TAB 2: TEMAS -->
             <div id="tab-temas" class="tab-content hidden" role="tabpanel">
 
-                <!-- Toolbar superior -->
                 <div class="temas-toolbar">
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-book"></i>
-                            Módulos y Temas
+                            Módulos y Juegos
                         </h3>
                         <p class="form-subtitle">
-                            Organiza el contenido por unidades y publica temas con material de apoyo.
+                            Organiza el contenido didáctico por unidades y publica material de apoyo.
                         </p>
                     </div>
                     <button class="btn btn-success" type="button" id="btn-nuevo-modulo">
@@ -498,37 +528,36 @@
                     </button>
                 </div>
 
-                <!-- Contenedor del acordeón de módulos -->
                 <div id="lista-modulos" class="modulos-lista">
-                    <!-- Se llena con JS -->
                     <p class="text-muted text-center">Cargando módulos...</p>
                 </div>
 
             </div>
 
-                        <!-- TAB 3: EVALUACIONES -->
+            <!-- TAB 3: EVALUACIONES -->
             <div id="tab-evaluaciones" class="tab-content hidden" role="tabpanel">
 
                 <div class="temas-toolbar">
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-file-pen"></i>
-                            Evaluaciones
+                            Apuestas 
                         </h3>
                         <p class="form-subtitle">
-                            Crea evaluaciones con preguntas de selección múltiple, V/F y respuesta corta.
+                            Crea exámenes con preguntas de selección múltiple, V/F y respuesta corta.
                         </p>
                     </div>
                     <button class="btn btn-success" type="button" id="btn-nueva-evaluacion">
-                        <i class="fa-solid fa-plus"></i> Crear Nueva Evaluación
+                        <i class="fa-solid fa-plus"></i> Crear Nueva Apuesta
                     </button>
                 </div>
 
                 <div id="lista-evaluaciones" class="modulos-lista">
-                    <p class="text-muted text-center">Cargando evaluaciones...</p>
+                    <p class="text-muted text-center">Cargando apuestas...</p>
                 </div>
 
             </div>
+
             <!-- TAB 4: CALIFICACIONES -->
             <div id="tab-calificaciones" class="tab-content hidden" role="tabpanel">
 
@@ -536,10 +565,10 @@
                     <div>
                         <h3 class="temas-titulo">
                             <i class="fa-solid fa-chart-bar"></i>
-                            Calificaciones
+                            Resultados
                         </h3>
                         <p class="form-subtitle">
-                            Consulta las notas de tus estudiantes y califica las respuestas pendientes.
+                            Consulta el rendimiento de tus jugadores y califica respuestas pendientes.
                         </p>
                     </div>
                 </div>
@@ -562,23 +591,22 @@
 
                 <!-- Lista de evaluaciones -->
                 <div id="lista-calificaciones" class="modulos-lista">
-                    <p class="text-muted text-center">Cargando calificaciones...</p>
+                    <p class="text-muted text-center">Cargando resultados...</p>
                 </div>
 
             </div>
 
-            <!-- TAB 5: ASISTENTE IA
-            Chat con IA (Gemini) para análisis del grupo -->
+            <!-- TAB 5: ASISTENTE IA -->
             <div id="tab-asistente" class="tab-content hidden" role="tabpanel">
 
                 <div class="card asistente-card">
                     <div class="asistente-header">
                         <h3>
                             <i class="fa-solid fa-robot"></i>
-                            Asistente IA
+                            Asistente VIP
                         </h3>
                         <p class="form-subtitle">
-                            Pregúntame sobre tu grupo, pídeme ideas para clases o redacta mensajes.
+                            Pregúntame sobre tu grupo, pídeme ideas para clases o redacciones estratégicas.
                         </p>
                     </div>
 
@@ -604,8 +632,8 @@
                             <div class="asistente-bienvenida-icono">
                                 <i class="fa-solid fa-robot"></i>
                             </div>
-                            <p>¡Hola! Soy tu asistente. Puedo ayudarte a analizar el rendimiento de tu grupo, darte ideas para clases o redactar mensajes para tus estudiantes.</p>
-                            <p class="text-muted">Prueba con un botón rápido o escríbeme algo.</p>
+                            <p>¡Saludos! Soy tu crupier virtual y asistente. Analizo el rendimiento de las mesas de estudio y te auxilio en lo que necesites.</p>
+                            <p class="text-muted">Usa un acceso rápido o escribe tu consulta.</p>
                         </div>
                     </div>
 
@@ -614,7 +642,7 @@
                         <textarea
                             id="asistente-input"
                             rows="1"
-                            placeholder="Escribe tu pregunta aquí..."
+                            placeholder="Escribe tu consulta aquí..."
                             autocomplete="off"></textarea>
                         <button class="btn btn-primary" type="button" id="btn-asistente-enviar">
                             <i class="fa-solid fa-paper-plane"></i>
@@ -626,19 +654,18 @@
 
         </section>
 
-        <!-- VISTA: CALIFICACIONES DE UNA EVALUACIÓN
-        (dedicada, pantalla completa)-->
+        <!-- VISTA: CALIFICACIONES DE UNA EVALUACIÓN -->
         <section id="view-calificaciones-evaluacion" class="view-section hidden">
 
             <div class="carrera-header">
                 <button class="btn-back" type="button" id="btn-volver-calificaciones">
-                    <i class="fa-solid fa-arrow-left"></i> Volver a Calificaciones
+                    <i class="fa-solid fa-arrow-left"></i> Volver a los resultados
                 </button>
 
                 <div class="carrera-header-info">
                     <span class="carrera-header-codigo" id="calif-eval-codigo">EVAL-001</span>
                     <h2 class="carrera-header-nombre" id="calif-eval-titulo">
-                        Título de la Evaluación
+                        Título de la Apuesta
                     </h2>
                     <p class="carrera-header-anio" id="calif-eval-modulo">
                         <i class="fa-solid fa-folder"></i> Módulo
@@ -646,7 +673,7 @@
                 </div>
             </div>
 
-            <!-- Resumen estadístico -->
+                        <!-- Resumen estadístico -->
             <div class="card">
                 <h3>
                     <i class="fa-solid fa-chart-simple"></i>
@@ -669,7 +696,7 @@
                             <i class="fa-solid fa-star"></i>
                         </div>
                         <div class="resultado-stat-info">
-                            <div class="resultado-stat-valor" id="stat-promedio">—</div>
+                            <div class="resultado-stat-valor" id="calif-stat-promedio">—</div>
                             <div class="resultado-stat-etiqueta">Promedio</div>
                         </div>
                     </div>
@@ -701,7 +728,7 @@
                 <div class="card-header-row">
                     <h3>
                         <i class="fa-solid fa-list-check"></i>
-                        Respuestas de Estudiantes
+                        Respuestas de Jugadores
                     </h3>
                     <span class="badge" id="calif-contador">0 respuestas</span>
                 </div>
@@ -711,7 +738,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Estudiante</th>
+                                <th>jugadores</th>
                                 <th>Código</th>
                                 <th>Nota</th>
                                 <th>Estado</th>
@@ -735,24 +762,71 @@
                 <div class="carrera-header-info">
                     <span class="carrera-header-codigo" id="estudiante-codigo">EST-101</span>
                     <h2 class="carrera-header-nombre" id="estudiante-nombre">
-                        Nombre del Estudiante
+                        Nombre del Jugador
                     </h2>
                     <p class="carrera-header-anio" id="estudiante-carrera">
-                        <i class="fa-solid fa-graduation-cap"></i> Carrera
+                        <i class="fa-solid fa-graduation-cap"></i> Mesa
                     </p>
                 </div>
+
+                <!-- Resumen del estudiante (NUEVO) -->
+    <div class="resultados-resumen estudiante-resumen">
+        <div class="resultado-stat">
+            <div class="resultado-stat-icono icono-total">
+                <i class="fa-solid fa-file-pen"></i>
+            </div>
+            <div class="resultado-stat-info">
+                <div class="resultado-stat-valor" id="stat-total-estudiante">0</div>
+                <div class="resultado-stat-etiqueta">Evaluaciones</div>
+            </div>
+        </div>
+
+        <div class="resultado-stat">
+            <div class="resultado-stat-icono icono-aprobadas">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="resultado-stat-info">
+                <div class="resultado-stat-valor" id="stat-aprobadas-estudiante">0</div>
+                <div class="resultado-stat-etiqueta">Aprobadas</div>
+            </div>
+        </div>
+
+        <div class="resultado-stat">
+            <div class="resultado-stat-icono icono-reprobadas">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </div>
+            <div class="resultado-stat-info">
+                <div class="resultado-stat-valor" id="stat-reprobadas-estudiante">0</div>
+                <div class="resultado-stat-etiqueta">Reprobadas</div>
+            </div>
+        </div>
+
+        <div class="resultado-stat">
+            <div class="resultado-stat-icono icono-promedio">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="resultado-stat-info">
+                <div class="resultado-stat-valor" id="stat-promedio-estudiante">—</div>
+                <div class="resultado-stat-etiqueta">Promedio</div>
+            </div>
+        </div>
+    </div>
+
             </div>
 
             <!-- Pestañas -->
-            <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel del estudiante">
+            <nav class="tabs-nav" role="tablist" aria-label="Secciones del panel del jugador">
                 <button class="tab-btn active" type="button" data-tab="tab-est-temas" role="tab">
-                    <i class="fa-solid fa-book-reader"></i> Mis Temas
+                    <i class="fa-solid fa-book-reader"></i> Mis Juegos
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-est-evaluaciones" role="tab">
-                    <i class="fa-solid fa-file-pen"></i> Evaluaciones
+                    <i class="fa-solid fa-file-pen"></i> Apuestas
                 </button>
                 <button class="tab-btn" type="button" data-tab="tab-est-resultados" role="tab">
                     <i class="fa-solid fa-chart-line"></i> Mis Resultados
+                </button>
+                <button class="tab-btn" type="button" data-tab="tab-est-juegos" role="tab">
+                    <i class="fa-solid fa-dice"></i> Minijuegos
                 </button>
             </nav>
 
@@ -761,14 +835,14 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-book-reader"></i>
-                        Temas de la Carrera
+                        Juegos del tablero
                     </h3>
                     <p class="form-subtitle">
-                        Aquí encontrarás todo el material de estudio publicado por tu profesor.
+                        Material didáctico publicado por tu Crupier.
                     </p>
 
                     <div id="est-lista-modulos" class="modulos-lista">
-                        <p class="text-muted text-center">Cargando temas...</p>
+                        <p class="text-muted text-center">Cargando juegos...</p>
                     </div>
                 </div>
             </div>
@@ -778,14 +852,14 @@
                 <div class="card">
                     <h3>
                         <i class="fa-solid fa-file-pen"></i>
-                        Evaluaciones Disponibles
+                        Apuestas Disponibles
                     </h3>
                     <p class="form-subtitle">
-                        Aquí puedes ver las evaluaciones publicadas por tu profesor y responderlas.
+                        Apuestas activas para poner a prueba tus conocimientos.
                     </p>
 
                     <div id="est-lista-evaluaciones" class="modulos-lista">
-                        <p class="text-muted text-center">Cargando evaluaciones...</p>
+                        <p class="text-muted text-center">Cargando apuestas...</p>
                     </div>
                 </div>
             </div>
@@ -793,71 +867,18 @@
             <!-- TAB 3: MIS RESULTADOS -->
             <div id="tab-est-resultados" class="tab-content hidden" role="tabpanel">
 
-                <!-- Resumen -->
-                <div class="card">
-                    <h3>
-                        <i class="fa-solid fa-chart-line"></i>
-                        Resumen
-                    </h3>
-                    <p class="form-subtitle">
-                        Un vistazo rápido a tu rendimiento en las evaluaciones.
-                    </p>
-
-                    <div class="resultados-resumen">
-                        <div class="resultado-stat">
-                            <div class="resultado-stat-icono icono-total">
-                                <i class="fa-solid fa-file-pen"></i>
-                            </div>
-                            <div class="resultado-stat-info">
-                                <div class="resultado-stat-valor" id="stat-total">0</div>
-                                <div class="resultado-stat-etiqueta">Evaluaciones</div>
-                            </div>
-                        </div>
-
-                        <div class="resultado-stat">
-                            <div class="resultado-stat-icono icono-aprobadas">
-                                <i class="fa-solid fa-circle-check"></i>
-                            </div>
-                            <div class="resultado-stat-info">
-                                <div class="resultado-stat-valor" id="stat-aprobadas">0</div>
-                                <div class="resultado-stat-etiqueta">Aprobadas</div>
-                            </div>
-                        </div>
-
-                        <div class="resultado-stat">
-                            <div class="resultado-stat-icono icono-reprobadas">
-                                <i class="fa-solid fa-circle-xmark"></i>
-                            </div>
-                            <div class="resultado-stat-info">
-                                <div class="resultado-stat-valor" id="stat-reprobadas">0</div>
-                                <div class="resultado-stat-etiqueta">Reprobadas</div>
-                            </div>
-                        </div>
-
-                        <div class="resultado-stat">
-                            <div class="resultado-stat-icono icono-promedio">
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                            <div class="resultado-stat-info">
-                                <div class="resultado-stat-valor" id="calif-stat-promedio">—</div>
-                                <div class="resultado-stat-etiqueta">Promedio</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Lista de resultados -->
                 <div class="card">
                     <div class="card-header-row">
                         <h3>
                             <i class="fa-solid fa-list-check"></i>
-                            Historial de Evaluaciones
+                            Historial de Apuestas
                         </h3>
                         <span class="badge" id="contador-resultados">0 resultados</span>
                     </div>
 
                     <p class="form-subtitle">
-                        Aquí ves todas las evaluaciones que has respondido.
+                        Registro de todas tus pruebas enviadas.
                     </p>
 
                     <!-- Filtros -->
@@ -883,11 +904,69 @@
 
             </div>
 
+            <!-- TAB 4: JUEGOS
+                Minijuegos con temática casino -->
+            <div id="tab-est-juegos" class="tab-content hidden" role="tabpanel">
+
+                <div class="card">
+                    <h3>
+                        <i class="fa-solid fa-dice"></i>
+                        Minijuegos
+                    </h3>
+                    <p class="form-subtitle">
+                        Elige tu juego favorito y demuestra que eres el rey de la mesa. 🎰
+                    </p>
+
+                    <!-- Pantalla 1: Selección de juegos -->
+                    <div id="juegos-seleccion" class="juegos-grid">
+                        <div class="juego-card" data-juego="piedra-papel-tijera">
+                            <div class="juego-card-icono">✊✋✌️</div>
+                            <h4 class="juego-card-titulo">Piedra, Papel o Tijera</h4>
+                            <p class="juego-card-descripcion">El clásico de siempre. ¿Podrás vencer a la casa?</p>
+                            <button class="btn btn-primary btn-block" type="button" data-juego-btn="piedra-papel-tijera">
+                                <i class="fa-solid fa-play"></i> Jugar
+                            </button>
+                        </div>
+
+                        <!-- Blackjack -->
+                        <div class="juego-card" data-juego="blackjack">
+                            <div class="juego-card-icono">🃏</div>
+                            <h4 class="juego-card-titulo">Blackjack (21)</h4>
+                            <p class="juego-card-descripcion">Acércate a 21 sin pasarte. ¿Podrás vencer a la casa?</p>
+                            <button class="btn btn-primary btn-block" type="button" data-juego-btn="blackjack">
+                                <i class="fa-solid fa-play"></i> Jugar
+                            </button>
+                        </div>
+
+                        <!-- Próximamente: Memoria de cartas -->
+                        <div class="juego-card juego-card-proximamente">
+                            <div class="juego-card-icono">🃏</div>
+                            <h4 class="juego-card-titulo">Memoria de Cartas</h4>
+                            <p class="juego-card-descripcion">Encuentra todas las parejas antes de que se acabe el tiempo.</p>
+                            <button class="btn btn-secondary btn-block" type="button" disabled>
+                                <i class="fa-solid fa-clock"></i> Próximamente
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pantalla 2: Juego activo (oculta al inicio) -->
+                    <div id="juego-activo" class="hidden">
+                        <button class="btn btn-secondary btn-sm" type="button" id="btn-volver-juegos" style="margin-bottom: 1rem;">
+                            <i class="fa-solid fa-arrow-left"></i> Volver a juegos
+                        </button>
+                        <div id="juego-container" class="juego-container">
+                            <!-- Se llena con JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </section>
 
     </main>
 
-        <!-- MODAL: CREAR / EDITAR MÓDULO -->
+    <!-- MODAL: CREAR / EDITAR MÓDULO -->
     <div id="modal-modulo" class="modal-overlay hidden">
         <div class="modal" role="dialog" aria-labelledby="modal-modulo-titulo" aria-modal="true">
             <div class="modal-header">
@@ -905,12 +984,12 @@
                     <div class="form-group">
                         <label for="modulo-nombre">Nombre del Módulo / Unidad:</label>
                         <input type="text" id="modulo-nombre" required
-                               placeholder="Ej: Estadística, Diseño Web, Base de Datos..."
+                               placeholder="Ej: Estadística, Diseño Web..."
                                autocomplete="off">
                     </div>
                     <p class="form-hint">
                         <i class="fa-solid fa-lightbulb"></i>
-                        Un módulo agrupa varios temas relacionados.
+                        Un módulo agrupa contenidos temáticos relacionados.
                     </p>
                 </form>
             </div>
@@ -926,7 +1005,7 @@
         </div>
     </div>
 
-    <!-- MODAL: ELIMINAR MÓDULO (DOBLE CONFIRMACIÓN) -->
+    <!-- MODAL: ELIMINAR MÓDULO -->
     <div id="modal-eliminar-modulo" class="modal-overlay hidden">
         <div class="modal" role="dialog" aria-labelledby="modal-eliminar-modulo-titulo" aria-modal="true">
             <div class="modal-header modal-header-danger">
@@ -944,7 +1023,7 @@
                     Estás a punto de eliminar el módulo
                     <strong id="eliminar-modulo-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todos sus temas y materiales de apoyo</strong>.
+                    Se borrarán <strong>todos sus juegos y materiales de apoyo</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
@@ -975,7 +1054,7 @@
             <div class="modal-header">
                 <h3 id="modal-tema-titulo">
                     <i class="fa-solid fa-book-open"></i>
-                    <span id="modal-tema-titulo-texto">Nuevo Tema</span>
+                    <span id="modal-tema-titulo-texto">Nuevo Juego</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -986,7 +1065,7 @@
                 <form id="form-tema" autocomplete="off">
 
                     <div class="form-group">
-                        <label for="tema-titulo">Título del Tema:</label>
+                        <label for="tema-titulo">Título del Juego:</label>
                         <input type="text" id="tema-titulo" required
                                placeholder="Ej: Fundamentos de HTML5" autocomplete="off">
                     </div>
@@ -994,7 +1073,7 @@
                     <div class="form-group">
                         <label for="tema-descripcion">Descripción / Explicación:</label>
                         <textarea id="tema-descripcion" rows="4" required
-                                  placeholder="Escribe aquí la teoría o explicación del tema..."></textarea>
+                                  placeholder="Escribe aquí la teoría o explicación..."></textarea>
                     </div>
 
                     <div class="form-group">
@@ -1016,7 +1095,6 @@
                         </div>
 
                         <div id="lista-recursos-tema" class="recursos-lista">
-                            <!-- Se llena con JS -->
                             <p class="text-muted text-center recursos-vacio">
                                 No hay recursos añadidos todavía.
                             </p>
@@ -1031,13 +1109,13 @@
                     Cancelar
                 </button>
                 <button class="btn btn-primary" type="submit" form="form-tema">
-                    <i class="fa-solid fa-floppy-disk"></i> Guardar Tema
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar juego
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: AÑADIR RECURSO (MATERIAL DE APOYO)-->
+    <!-- MODAL: AÑADIR RECURSO -->
     <div id="modal-recurso" class="modal-overlay hidden">
         <div class="modal" role="dialog" aria-labelledby="modal-recurso-titulo" aria-modal="true">
             <div class="modal-header">
@@ -1082,7 +1160,7 @@
                         <div class="form-group">
                             <label for="recurso-titulo">Título del Recurso:</label>
                             <input type="text" id="recurso-titulo" 
-                                   placeholder="Ej: Video: Cómo calcular la media" autocomplete="off">
+                                   placeholder="Ej: Video explicativo" autocomplete="off">
                         </div>
 
                         <div class="form-group">
@@ -1097,7 +1175,7 @@
                         <div class="form-group">
                             <label for="recurso-titulo-pdf">Título del Recurso:</label>
                             <input type="text" id="recurso-titulo-pdf" 
-                                   placeholder="Ej: Guía de Estadística" autocomplete="off">
+                                   placeholder="Ej: Guía de estudio" autocomplete="off">
                         </div>
 
                         <div class="form-group">
@@ -1130,7 +1208,7 @@
             <div class="modal-header">
                 <h3 id="modal-carrera-titulo">
                     <i class="fa-solid fa-book-bookmark"></i>
-                    <span id="modal-carrera-titulo-texto">Nueva Carrera</span>
+                    <span id="modal-carrera-titulo-texto">Nueva Mesa</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1140,21 +1218,9 @@
             <div class="modal-body">
                 <form id="form-carrera" autocomplete="off">
                     <div class="form-group">
-                        <label for="carrera-nombre">Nombre de la Carrera:</label>
+                        <label for="carrera-nombre">Nombre de la Mesa:</label>
                         <input type="text" id="carrera-nombre" required
                                placeholder="Ej: Ingeniería en Sistemas" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="carrera-anio">Año:</label>
-                        <select id="carrera-anio" required>
-                            <option value="">-- Selecciona un año --</option>
-                            <option value="Primer Año">Primer Año</option>
-                            <option value="Segundo Año">Segundo Año</option>
-                            <option value="Tercer Año">Tercer Año</option>
-                            <option value="Cuarto Año">Cuarto Año</option>
-                            <option value="Quinto Año">Quinto Año</option>
-                        </select>
                     </div>
                 </form>
             </div>
@@ -1170,13 +1236,13 @@
         </div>
     </div>
 
-    <!-- MODAL: ELIMINAR CARRERA (DOBLE CONFIRMACIÓN) -->
+    <!-- MODAL: ELIMINAR CARRERA -->
     <div id="modal-eliminar-carrera" class="modal-overlay hidden">
         <div class="modal" role="dialog" aria-labelledby="modal-eliminar-titulo" aria-modal="true">
             <div class="modal-header modal-header-danger">
                 <h3 id="modal-eliminar-titulo">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    Eliminar Carrera
+                    Eliminar Mesa
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1185,17 +1251,17 @@
 
             <div class="modal-body">
                 <p class="modal-warning">
-                    Estás a punto de eliminar la carrera
+                    Estás a punto de eliminar la mesa
                     <strong id="eliminar-carrera-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todos sus estudiantes, temas y evaluaciones</strong>.
+                    Se borrarán <strong>todos sus jugadores, juegos y apuestas</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
 
                 <div class="form-group">
                     <label for="confirmar-eliminar">
-                        Escribe el nombre exacto de la carrera para confirmar:
+                        Escribe el nombre exacto de la mesa para confirmar:
                     </label>
                     <input type="text" id="confirmar-eliminar" autocomplete="off"
                            placeholder="Nombre exacto de la carrera">
@@ -1218,7 +1284,7 @@
         <div class="modal" role="dialog" aria-labelledby="modal-editar-titulo" aria-modal="true">
             <div class="modal-header">
                 <h3 id="modal-editar-titulo">
-                    <i class="fa-solid fa-pen"></i> Editar Estudiante
+                    <i class="fa-solid fa-pen"></i> Editar Jugador
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1255,7 +1321,7 @@
                 <div class="modal-header">
                     <h3 id="modal-evaluacion-titulo">
                         <i class="fa-solid fa-file-pen"></i>
-                        <span id="modal-evaluacion-titulo-texto">Nueva Evaluación</span>
+                        <span id="modal-evaluacion-titulo-texto">Nueva Apuesta</span>
                     </h3>
                     <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                         <i class="fa-solid fa-xmark"></i>
@@ -1266,7 +1332,7 @@
                     <form id="form-evaluacion" autocomplete="off">
 
                         <div class="form-group">
-                            <label for="eval-titulo">Título de la Evaluación:</label>
+                            <label for="eval-titulo">Título de la Apuesta:</label>
                             <input type="text" id="eval-titulo" required
                                 placeholder="Ej: Examen Parcial I" autocomplete="off">
                         </div>
@@ -1277,7 +1343,7 @@
                                 <span class="label-hint">(opcional)</span>
                             </label>
                             <textarea id="eval-descripcion" rows="2"
-                                    placeholder="Ej: Evaluación de los temas 1 al 3..."></textarea>
+                                    placeholder="Ej: Apuesta de los juegos 1 al 3..."></textarea>
                         </div>
 
                         <div class="form-group">
@@ -1325,20 +1391,20 @@
                         Cancelar
                     </button>
                     <button class="btn btn-primary" type="submit" form="form-evaluacion">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Evaluación
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Apuesta
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: ELIMINAR EVALUACIÓN (DOBLE CONFIRMACIÓN)-->
+    <!-- MODAL: ELIMINAR EVALUACIÓN -->
     <div id="modal-eliminar-evaluacion" class="modal-overlay hidden">
         <div class="modal" role="dialog" aria-labelledby="modal-eliminar-evaluacion-titulo" aria-modal="true">
             <div class="modal-header modal-header-danger">
                 <h3 id="modal-eliminar-evaluacion-titulo">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    Eliminar Evaluación
+                    Eliminar Apuesta
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1347,17 +1413,17 @@
 
             <div class="modal-body">
                 <p class="modal-warning">
-                    Estás a punto de eliminar la evaluación
+                    Estás a punto de eliminar la apuesta
                     <strong id="eliminar-evaluacion-nombre">—</strong>.
                     <br>
-                    Se borrarán <strong>todas sus preguntas y respuestas de estudiantes</strong>.
+                    Se borrarán <strong>todas sus preguntas y respuestas de jugadores</strong>.
                     <br>
                     <strong>Esta acción no se puede deshacer.</strong>
                 </p>
 
                 <div class="form-group">
                     <label for="confirmar-eliminar-evaluacion">
-                        Escribe el título exacto de la evaluación para confirmar:
+                        Escribe el título exacto de la apuesta para confirmar:
                     </label>
                     <input type="text" id="confirmar-eliminar-evaluacion" autocomplete="off"
                            placeholder="Título exacto">
@@ -1375,13 +1441,13 @@
         </div>
     </div>
 
-    <!-- MODAL: VER PREGUNTAS DE UNA EVALUACIÓN-->
+    <!-- MODAL: VER PREGUNTAS DE UNA EVALUACIÓN -->
     <div id="modal-ver-evaluacion" class="modal-overlay hidden">
         <div class="modal modal-lg" role="dialog" aria-labelledby="modal-ver-evaluacion-titulo" aria-modal="true">
             <div class="modal-header">
                 <h3 id="modal-ver-evaluacion-titulo">
                     <i class="fa-solid fa-eye"></i>
-                    <span id="modal-ver-evaluacion-nombre">Ver Evaluación</span>
+                    <span id="modal-ver-evaluacion-nombre">Ver Apuesta</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1417,13 +1483,13 @@
         </div>
     </div>
 
-    <!--  MODAL: RESPONDER EVALUACIÓN (QUIZ) -->
+    <!-- MODAL: RESPONDER EVALUACIÓN (QUIZ) -->
     <div id="modal-quiz" class="modal-overlay hidden">
         <div class="modal modal-xl" role="dialog" aria-labelledby="modal-quiz-titulo" aria-modal="true">
             <div class="modal-header">
                 <h3 id="modal-quiz-titulo">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    <span id="modal-quiz-nombre">Evaluación</span>
+                    <span id="modal-quiz-nombre">Apuesta</span>
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar" id="btn-cerrar-quiz">
                     <i class="fa-solid fa-xmark"></i>
@@ -1443,7 +1509,7 @@
                     </div>
                 </div>
 
-                <!-- Contenedor de preguntas de la página actual -->
+                <!-- Contenedor de preguntas -->
                 <div id="quiz-preguntas-container" class="quiz-preguntas-container">
                     <!-- Se llena con JS -->
                 </div>
@@ -1464,7 +1530,7 @@
         </div>
     </div>
 
-        <!--  MODAL: CALIFICAR RESPUESTAS PENDIENTES -->
+    <!-- MODAL: CALIFICAR RESPUESTAS PENDIENTES -->
     <div id="modal-calificar" class="modal-overlay hidden">
         <div class="modal modal-xl" role="dialog" aria-labelledby="modal-calificar-titulo" aria-modal="true">
             <div class="modal-header">
@@ -1480,7 +1546,7 @@
             <div class="modal-body">
                 <div class="form-subtitle" style="margin-bottom: 1rem;">
                     <i class="fa-solid fa-circle-info"></i>
-                    Marca cada respuesta corta como <strong>Correcta</strong> o <strong>Incorrecta</strong>.
+                    Marca cada respuesta como <strong>Correcta</strong> o <strong>Incorrecta</strong>.
                     El puntaje se recalculará automáticamente.
                 </div>
 
@@ -1497,15 +1563,13 @@
         </div>
     </div>
 
-     <!-- MODAL: PEGAR LISTA DE ESTUDIANTES
-        Permite agregar varios estudiantes de una vez
-        pegando sus nombres directamente en un textarea. -->
+    <!-- MODAL: PEGAR LISTA DE ESTUDIANTES -->
     <div id="modal-pegar-lista" class="modal-overlay hidden">
         <div class="modal modal-lg" role="dialog" aria-labelledby="modal-pegar-lista-titulo" aria-modal="true">
             <div class="modal-header">
                 <h3 id="modal-pegar-lista-titulo">
                     <i class="fa-solid fa-paste"></i>
-                    Pegar lista de estudiantes
+                    Pegar lista de Jugadores
                 </h3>
                 <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
                     <i class="fa-solid fa-xmark"></i>
@@ -1515,7 +1579,7 @@
             <div class="modal-body">
                 <p class="form-subtitle">
                     Escribe o pega los nombres, <strong>uno por línea</strong>.
-                    Los códigos únicos se generarán automáticamente.
+                    Los códigos de ficha se asignarán automáticamente.
                 </p>
 
                 <div class="form-group">
@@ -1526,7 +1590,7 @@
                         autocomplete="off"></textarea>
                     <p class="form-hint">
                         <i class="fa-solid fa-circle-info"></i>
-                        <span id="pegar-lista-contador">0 estudiantes detectados</span>
+                        <span id="pegar-lista-contador">0 clientes detectados</span>
                     </p>
                 </div>
             </div>
@@ -1536,16 +1600,13 @@
                     Cancelar
                 </button>
                 <button class="btn btn-primary" type="button" id="btn-confirmar-pegar-lista" disabled>
-                    <i class="fa-solid fa-plus"></i> Agregar Estudiantes
+                    <i class="fa-solid fa-plus"></i> Agregar Jugadores
                 </button>
             </div>
         </div>
     </div>
 
-        <!-- MODAL: REPRODUCTOR DE VIDEO EMBEBIDO
-         Se muestra cuando el usuario hace clic en un
-         enlace de YouTube o Vimeo. Reproduce el video
-         dentro de la app sin abrir pestaña nueva. -->
+    <!-- MODAL: REPRODUCTOR DE VIDEO EMBEBIDO -->
     <div id="modal-video" class="modal-overlay hidden">
         <div class="modal modal-xl" role="dialog" aria-labelledby="modal-video-titulo" aria-modal="true">
             <div class="modal-header">
@@ -1577,7 +1638,7 @@
                    href="#"
                    target="_blank"
                    rel="noopener noreferrer">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir en el sitio original
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir en sitio externo
                 </a>
                 <button class="btn btn-primary" type="button" data-cerrar-modal>
                     <i class="fa-solid fa-check"></i> Cerrar
@@ -1585,6 +1646,116 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL: CREAR NUEVO AÑO -->
+    <div id="modal-nuevo-anio" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-nuevo-anio-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-nuevo-anio-titulo">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Nuevo Año
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p class="form-subtitle">
+                    Al crear un año nuevo, el año activo actual se archivará automáticamente.
+                </p>
+
+                <!-- SIN <form> -->
+                <div class="form-group">
+                    <label for="nuevo-anio-nombre">Nombre del Año:</label>
+                    <input type="text" id="nuevo-anio-nombre"
+                        placeholder="Ej: Segundo Año" autocomplete="off">
+                    <p class="form-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Debe contener la palabra "Año" (ej: "Segundo Año", "Tercer Año").
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="button" id="btn-confirmar-nuevo-anio">
+                    <i class="fa-solid fa-plus"></i> Crear Año
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: RULETA DEL TODO O NADA
+     Aparece cuando el estudiante reprueba por poco. -->
+<div id="modal-ruleta" class="modal-overlay hidden">
+    <div class="modal modal-ruleta" role="dialog" aria-labelledby="modal-ruleta-titulo" aria-modal="true">
+        <div class="modal-header">
+            <h3 id="modal-ruleta-titulo">
+                <i class="fa-solid fa-dice"></i>
+                Ruleta del Todo o Nada
+            </h3>
+            <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="modal-body modal-ruleta-body">
+            <div class="ruleta-mensaje">
+                <p class="ruleta-titulo-mensaje">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    ¡Has reprobado por muy poco!
+                </p>
+                <p class="ruleta-subtitulo">
+                    ¿Te arriesgas? Gira la ruleta y pasa con las completas o pierde todos tus puntos.
+                    <br>
+                    <strong>¡Tú decides!</strong>
+                </p>
+            </div>
+
+            <!-- Ruleta -->
+            <div class="ruleta-container">
+                <div class="ruleta-flecha">
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="ruleta" id="ruleta">
+                    <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 45deg; --angulo-texto: -45deg;">
+                        <span class="ruleta-texto">PIERDES</span>
+                    </div>
+                    <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 135deg; --angulo-texto: -135deg;">
+                        <span class="ruleta-texto">PASAS</span>
+                    </div>
+                    <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 225deg; --angulo-texto: -225deg;">
+                        <span class="ruleta-texto">PIERDES</span>
+                    </div>
+                    <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 315deg; --angulo-texto: -315deg;">
+                        <span class="ruleta-texto">PASAS</span>
+                    </div>
+                </div>
+                <div class="ruleta-centro">
+                    <i class="fa-solid fa-dice"></i>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="ruleta-botones">
+                <button class="btn btn-secondary" type="button" id="btn-cancelar-ruleta">
+                    <i class="fa-solid fa-xmark"></i> No, gracias
+                </button>
+                <button class="btn btn-primary" type="button" id="btn-girar-ruleta">
+                    <i class="fa-solid fa-rotate"></i> ¡Girar!
+                </button>
+            </div>
+
+            <!-- Resultado (oculto hasta girar) -->
+            <div id="ruleta-resultado" class="ruleta-resultado hidden">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- NOTIFICACIONES -->
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>

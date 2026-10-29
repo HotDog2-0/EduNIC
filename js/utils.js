@@ -1,4 +1,5 @@
 /* Funciones auxiliares reutilizables */
+import { reproducirSonido } from './sonidos.js';
 
 /**
  * Muestra una notificación flotante (toast).
@@ -8,6 +9,9 @@
 export function mostrarNotificacion(mensaje, tipo = 'success') {
     const toast = document.getElementById('toast');
     if (!toast) return;
+
+    // Sonido al mostrar notificación
+    reproducirSonido('ficha', 0.3);
 
     toast.textContent = mensaje;
     toast.className = `toast ${tipo}`;

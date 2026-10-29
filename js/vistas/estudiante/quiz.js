@@ -7,6 +7,10 @@ import {
     escaparHTML,
     normalizar
 } from '../../utils.js';
+import { lanzarConfeti } from '../../confeti.js';
+import { reproducirSonido } from '../../sonidos.js';
+import { generarFichas } from '../../fichas.js';
+import { abrirRuleta } from '../../ruleta.js';
 
 /* CONSTANTES */
 
@@ -306,9 +310,9 @@ function enviarRespuestas() {
     // Guardar resultado
     const resultado = {
         id: generarId(),
-        idEvaluacion: evaluacionActiva.id,
-        idEstudiante: estudianteActual.id,
-        idCarrera: evaluacionActiva.idCarrera,
+        idEvaluacion: String(evaluacionActiva.id),
+        idEstudiante: String(estudianteActual.id),
+        idAnio: String(evaluacionActiva.idAnio),
         tituloEvaluacion: evaluacionActiva.titulo,
         respuestas: { ...respuestas },
 
@@ -404,28 +408,46 @@ function mostrarResultado(calificacion) {
 
     const aprobado = calificacion.puntosObtenidos >= evaluacionActiva.puntajeMinimo;
 
-    let icono, titulo, subtitulo, claseNota;
+    let icono, titulo, subtitulo, claseNota, imagenCalificasaurio, textoCalificasaurio;
 
     if (calificacion.pendientes > 0) {
         icono = 'fa-clock';
         titulo = 'Evaluación enviada';
         subtitulo = 'Tu profesor calificará las respuestas pendientes.';
         claseNota = 'pendiente';
+        imagenCalificasaurio = 'assets/calificasaurio/pendiente.png';
+        textoCalificasaurio = 'Esperando calificación';
     } else {
         icono = aprobado ? 'fa-circle-check' : 'fa-circle-xmark';
-        titulo = aprobado ? '¡Aprobado!' : 'No aprobado';
+        titulo = aprobado ? '' : 'Esta vez no fue';  // ← vacío si aprobó (lo reemplaza el Jackpot)
         subtitulo = aprobado
-            ? '¡Excelente trabajo!':
-            'Sigue practicando y mejorando.';
+            ? '¡Excelente trabajo!'
+            : `Necesitabas al menos ${evaluacionActiva.puntajeMinimo} puntos para aprobar.`;
         claseNota = aprobado ? 'aprobado' : 'reprobado';
+        imagenCalificasaurio = aprobado
+            ? 'assets/calificasaurio/aprobado.png'
+            : 'assets/calificasaurio/reprobado.png';
+        textoCalificasaurio = aprobado ? '¡Jackpot!' : 'Sigue intentando';
     }
 
-    cont.innerHTML = `
+       cont.innerHTML = `
         <div class="quiz-resultado">
-            <div class="quiz-resultado-icono ${claseNota}">
-                <i class="fa-solid ${icono}"></i>
+            ${aprobado && calificacion.pendientes === 0
+                ? `<div class="jackpot-brillo"></div>`
+                : ''
+            }
+        
+            <div class="calificasaurio-grande">
+                <img src="${imagenCalificasaurio}" 
+                     alt="Calificasaurio ${claseNota}" 
+                     class="calificasaurio-img">
+                <span class="calificasaurio-texto ${claseNota}">${textoCalificasaurio}</span>
             </div>
-            <h3 class="quiz-resultado-titulo">${titulo}</h3>
+
+            ${aprobado && calificacion.pendientes === 0
+                ? `<h3 class="jackpot-animado">¡JACKPOT!</h3>`
+                : `<h3 class="quiz-resultado-titulo">${titulo}</h3>`
+            }
             <p class="quiz-resultado-subtitulo">${subtitulo}</p>
 
             ${calificacion.pendientes === 0 ? `
@@ -433,6 +455,7 @@ function mostrarResultado(calificacion) {
                     ${calificacion.puntosObtenidos}<span class="nota-total">/${calificacion.puntosTotal}</span>
                 </div>
                 <p class="nota-label">puntos</p>
+                ${generarFichas(calificacion.puntosObtenidos, calificacion.puntosTotal)}
             ` : `
                 <div class="quiz-resultado-nota pendiente" style="color: var(--warning-color); font-size: 2rem;">
                     ${calificacion.pendientes} pendiente${calificacion.pendientes > 1 ? 's' : ''}
@@ -442,7 +465,6 @@ function mostrarResultado(calificacion) {
             <div class="quiz-resultado-detalle">
                 <strong>${calificacion.correctas}</strong> correctas · 
                 <strong>${calificacion.incorrectas}</strong> incorrectas
-                ${calificacion.pendientes > 0 ? ` · <strong>${calificacion.pendientes}</strong> pendiente${calificacion.pendientes > 1 ? 's' : ''}` : ''}
             </div>
 
             <div style="margin-top: 2rem;">
@@ -452,6 +474,64 @@ function mostrarResultado(calificacion) {
             </div>
         </div>
     `;
+
+    // Si reprobó por poco (menos de 5 puntos del mínimo), mostrar mensaje de la ruleta
+    const reproboPorPoco = !aprobado && calificacion.pendientes === 0 && 
+                        (evaluacionActiva.puntajeMinimo - calificacion.puntosObtenidos) < 5 &&
+                        (evaluacionActiva.puntajeMinimo - calificacion.puntosObtenidos) > 0;
+
+    if (reproboPorPoco) {
+        // Buscar el resultado en storage para obtener su ID
+        const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
+        const miResultado = resultados.find(r => 
+            String(r.idEvaluacion) === String(evaluacionActiva.id) &&
+            String(r.idEstudiante) === String(estudianteActual.id)
+        );
+
+        if (miResultado) {
+            // Crear el bloque del mensaje de la ruleta
+            const bloqueRuleta = document.createElement('div');
+            bloqueRuleta.className = 'quiz-ruleta-invitacion';
+            bloqueRuleta.innerHTML = `
+                <div class="quiz-ruleta-mensaje">
+                    <i class="fa-solid fa-dice"></i>
+                    <p>¿Has reprobado por muy poco? <strong>¡Arriésgate!</strong></p>
+                    <p>Gira la ruleta y pasa con las completas o pierde todos tus puntos. <strong>¡Tú decides!</strong></p>
+                </div>
+                <button class="btn btn-primary btn-block" type="button" id="btn-abrir-ruleta">
+                    <i class="fa-solid fa-dice"></i> ¡Girar la Ruleta!
+                </button>
+            `;
+
+            // Insertar después del bloque de detalle (antes del botón "Cerrar")
+            const detalle = cont.querySelector('.quiz-resultado-detalle');
+            if (detalle) {
+                detalle.parentNode.insertBefore(bloqueRuleta, detalle.nextSibling);
+            }
+
+            // Conectar "Girar la Ruleta"
+            document.getElementById('btn-abrir-ruleta')
+                ?.addEventListener('click', () => {
+                    abrirRuleta(miResultado, {
+                        puntosObtenidos: calificacion.puntosObtenidos,
+                        puntosTotal: calificacion.puntosTotal,
+                        puntajeMinimo: evaluacionActiva.puntajeMinimo
+                    });
+                });
+        }
+    }
+
+    document.getElementById('btn-cerrar-resultado')
+    ?.addEventListener('click', cerrarQuizYRefrescar);
+
+    // Lanzar confeti si aprobó
+    if (aprobado && calificacion.pendientes === 0) {
+        lanzarConfeti(80);
+        reproducirSonido('jackpot', 0.6);
+    } else if (calificacion.pendientes === 0) {
+    // Reprobado
+    reproducirSonido('buzzer', 0.4);
+    }
 
     document.getElementById('btn-cerrar-resultado')
         ?.addEventListener('click', cerrarQuizYRefrescar);

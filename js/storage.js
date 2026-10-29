@@ -1,25 +1,29 @@
-/* Capa de acceso a datos (localStorage) */
+/* Capa de acceso a datos (localStorage)
+   
+   MODELO DE DATOS ACTUAL:
+   - carreras: { id, nombre, codigo, codigoClase, creado }
+   - anios: { id, idCarrera, nombre, estado, creado }
+   - estudiantes: { id, nombre, codigo, idCarrera }
+   - temas: módulos y temas (con idAnio)
+   - evaluaciones: con idAnio
+   - resultados: con idAnio */
 
 export const CLAVES = {
     CARRERAS:        'edunic_carreras',
+    ANIOS:           'edunic_anios',           // ← NUEVA
     ESTUDIANTES:     'edunic_estudiantes',
     TEMAS:           'edunic_temas',
     EVALUACIONES:    'edunic_evaluaciones',
     RESULTADOS:      'edunic_resultados',
     USUARIO_ACTUAL:  'edunic_usuario_actual',
-    CARRERA_ACTIVA:  'edunic_carrera_activa'
+    CARRERA_ACTIVA:  'edunic_carrera_activa',
+    ANIO_ACTIVO:     'edunic_anio_activo'      // ← NUEVA
 };
 
 /**
  * Objeto de acceso a datos.
- * Toda la app usa estas funciones para leer/escribir.
  */
 export const bd = {
-    /**
-     * Lee un valor del almacenamiento.
-     * @param {string} clave
-     * @returns {*|null}
-     */
     obtener(clave) {
         try {
             const raw = localStorage.getItem(clave);
@@ -30,11 +34,6 @@ export const bd = {
         }
     },
 
-    /**
-     * Guarda un valor en el almacenamiento.
-     * @param {string} clave
-     * @param {*} valor
-     */
     guardar(clave, valor) {
         try {
             localStorage.setItem(clave, JSON.stringify(valor));
@@ -43,25 +42,48 @@ export const bd = {
         }
     },
 
-    /**
-     * Elimina una clave.
-     * @param {string} clave
-     */
     eliminar(clave) {
         localStorage.removeItem(clave);
     }
 };
 
-/* DATOS INICIALES
-   Se cargan la primera vez que se abre la app.*/
+/*  DATOS INICIALES */
 
 const datosIniciales = {
     carreras: [
-        { id: 'car-1', nombre: 'Ingeniería en Sistemas', anio: 'Primer Año',  codigo: 'CAR-001' },
-        { id: 'car-2', nombre: 'Medicina General',       anio: 'Segundo Año', codigo: 'CAR-002' }
+        {
+            id: 'car-1',
+            nombre: 'Ingeniería en Sistemas',
+            codigo: 'CAR-001',
+            codigoClase: 'CLS-IES001',
+            creado: new Date().toISOString()
+        },
+        {
+            id: 'car-2',
+            nombre: 'Medicina General',
+            codigo: 'CAR-002',
+            codigoClase: 'CLS-MG0002',
+            creado: new Date().toISOString()
+        }
+    ],
+    anios: [
+        {
+            id: 'anio-1',
+            idCarrera: 'car-1',
+            nombre: 'Primer Año',
+            estado: 'activo',
+            creado: new Date().toISOString()
+        },
+        {
+            id: 'anio-2',
+            idCarrera: 'car-2',
+            nombre: 'Primer Año',
+            estado: 'activo',
+            creado: new Date().toISOString()
+        }
     ],
     estudiantes: [],
-    temas: [],         
+    temas: [],
     evaluaciones: [],
     resultados: []
 };
@@ -72,6 +94,9 @@ const datosIniciales = {
 export function inicializarBaseDatos() {
     if (!bd.obtener(CLAVES.CARRERAS)) {
         bd.guardar(CLAVES.CARRERAS, datosIniciales.carreras);
+    }
+    if (!bd.obtener(CLAVES.ANIOS)) {
+        bd.guardar(CLAVES.ANIOS, datosIniciales.anios);
     }
     if (!bd.obtener(CLAVES.ESTUDIANTES)) {
         bd.guardar(CLAVES.ESTUDIANTES, datosIniciales.estudiantes);
@@ -85,29 +110,46 @@ export function inicializarBaseDatos() {
     if (!bd.obtener(CLAVES.RESULTADOS)) {
         bd.guardar(CLAVES.RESULTADOS, datosIniciales.resultados);
     }
+
+    // Migraciones de versiones anteriores (si hubiera)
     migrarCarreras();
     migrarEvaluaciones();
     migrarResultados();
+    migrarAIdAnio(); 
 }
 
+/* MIGRACIONES (versiones anteriores) */
+
 /**
- * Migra las carreras existentes para añadir campos nuevos
- * que no tenían en versiones anteriores de la app.
- * 
- * Se ejecuta al arrancar la app. Es idempotente:
- * si las carreras ya tienen los campos, no hace nada.
+ * Migra carreras antiguas que tenían el campo "anio".
+ * Crea un año por defecto para cada carrera y quita el campo "anio".
  */
 export function migrarCarreras() {
     const carreras = bd.obtener(CLAVES.CARRERAS) || [];
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
     let cambios = false;
 
     carreras.forEach(c => {
+        // Si la carrera tiene "anio" (modelo viejo), migrarla
+        if (c.anio) {
+            const yaTieneAnio = anios.some(a => a.idCarrera === c.id);
+            if (!yaTieneAnio) {
+                anios.push({
+                    id: 'anio-' + c.id,
+                    idCarrera: c.id,
+                    nombre: c.anio || 'Primer Año',
+                    estado: 'activo',
+                    creado: c.creado || new Date().toISOString()
+                });
+            }
+            delete c.anio;
+            cambios = true;
+        }
         // Añadir codigoClase si no existe
         if (!c.codigoClase) {
             c.codigoClase = generarCodigoClaseParaMigracion();
             cambios = true;
         }
-        // Añadir fecha de creación si no existe
         if (!c.creado) {
             c.creado = new Date().toISOString();
             cambios = true;
@@ -116,35 +158,11 @@ export function migrarCarreras() {
 
     if (cambios) {
         bd.guardar(CLAVES.CARRERAS, carreras);
-        console.log('Carreras migradas: campos nuevos añadidos');
+        bd.guardar(CLAVES.ANIOS, anios);
+        console.log('Carreras y años migrados');
     }
 }
 
-/**
- * Genera un código de clase (versión simplificada para migración).
- * Debe coincidir con el formato de carreras.js.
- */
-function generarCodigoClaseParaMigracion() {
-    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let codigo = 'CLS-';
-    for (let i = 0; i < 6; i++) {
-        codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-    }
-    return codigo;
-}
-
-/**
- * Migra las evaluaciones existentes para añadir el campo `puntos`
- * a cada pregunta si no lo tienen.
- * 
- * Reglas:
- * - Si una evaluación no tiene preguntas → se omite
- * - Si una pregunta no tiene `puntos` → se le asigna 10
- * - Si el total no es 100 → se ajusta el `puntajeMinimo` proporcionalmente
- *   (ej: si antes era 60% y el nuevo total es 50, el mínimo pasa a 30)
- * 
- * Es idempotente: si las evaluaciones ya tienen puntos, no hace nada.
- */
 export function migrarEvaluaciones() {
     const evaluaciones = bd.obtener(CLAVES.EVALUACIONES) || [];
     let cambios = false;
@@ -152,7 +170,6 @@ export function migrarEvaluaciones() {
     evaluaciones.forEach(ev => {
         if (!ev.preguntas || ev.preguntas.length === 0) return;
 
-        // ¿Ya tiene puntos? ¿Cuál es el total?
         let totalPuntos = 0;
         let necesitaMigracion = false;
 
@@ -165,7 +182,6 @@ export function migrarEvaluaciones() {
         });
 
         if (necesitaMigracion) {
-            // Recalcular el puntaje mínimo proporcionalmente
             const minimoAnterior = ev.puntajeMinimo || 60;
             const porcentajeMinimo = minimoAnterior / 100;
             ev.puntajeMinimo = Math.round(porcentajeMinimo * totalPuntos);
@@ -179,75 +195,114 @@ export function migrarEvaluaciones() {
     }
 }
 
-/**
- * Migra los resultados existentes para añadir el campo `puntosObtenidos`
- * y `puntosTotal` si no lo tienen.
- * 
- * Los resultados viejos ya tienen `puntaje` (que era un porcentaje).
- * Los mantenemos como están. Los nuevos tendrán los campos nuevos.
- */
 export function migrarResultados() {
     const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
-    const evaluaciones = bd.obtener(CLAVES.EVALUACIONES) || [];
     let cambios = false;
 
     resultados.forEach(r => {
-        // Si ya tiene puntosObtenidos → ya está migrado
-        if (typeof r.puntosObtenidos === 'number') return;
-
-        // Buscar la evaluación correspondiente
-        const ev = evaluaciones.find(e => String(e.id) === String(r.idEvaluacion));
-        if (!ev || !ev.preguntas) {
-            // No se puede migrar sin la evaluación
-            return;
+        if (typeof r.puntosObtenidos !== 'number') {
+            r.puntosObtenidos = null;
+            cambios = true;
         }
-
-        // Calcular puntos basándose en las respuestas guardadas
-        let puntosObtenidos = 0;
-        let puntosTotal = 0;
-        let pendientes = 0;
-
-        ev.preguntas.forEach(p => {
-            const puntos = typeof p.puntos === 'number' && p.puntos > 0 ? p.puntos : 10;
-            puntosTotal += puntos;
-
-            const respuesta = r.respuestas?.[p.id];
-
-            if (p.tipo === 'multiple') {
-                if (respuesta === p.correcta) puntosObtenidos += puntos;
-            } else if (p.tipo === 'vf') {
-                if (respuesta === p.correcta) puntosObtenidos += puntos;
-            } else if (p.tipo === 'corta') {
-                const esperada = (p.respuestaEsperada || '').trim();
-                if (!esperada) {
-                    // Ver si el profesor la calificó
-                    const manual = r.calificacionesManuales?.[p.id];
-                    if (manual === true) puntosObtenidos += puntos;
-                    else if (manual !== false) pendientes++;
-                } else {
-                    if (String(respuesta).trim().toUpperCase() === esperada.toUpperCase()) {
-                        puntosObtenidos += puntos;
-                    }
-                }
-            }
-        });
-
-        // Guardar en el resultado
-        r.puntosObtenidos = puntosObtenidos;
-        r.puntosTotal = puntosTotal;
-        r.puntajeMinimo = ev.puntajeMinimo;
-        r.aprobado = puntosObtenidos >= ev.puntajeMinimo;
-        r.pendientes = pendientes;
-        r.estado = pendientes > 0 ? 'pendiente' : 'calificada';
-
-        // Eliminar el campo viejo (opcional)
-        // delete r.puntaje;
-
-        cambios = true;
+        if (typeof r.puntosTotal !== 'number') {
+            r.puntosTotal = null;
+            cambios = true;
+        }
     });
 
     if (cambios) {
         bd.guardar(CLAVES.RESULTADOS, resultados);
-        console.log('Resultados migrados a puntos');
+        console.log('Resultados migrados');
+    }
+}
+
+/* UTILIDADES */
+
+/**
+ * Genera un código de clase para migración (temporal).
+ */
+function generarCodigoClaseParaMigracion() {
+    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let codigo = 'CLS-';
+    for (let i = 0; i < 6; i++) {
+        codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return codigo;
+}
+
+/* MIGRACIÓN: idCarrera → idAnio */
+
+/**
+ * Migra los módulos, temas, evaluaciones y resultados
+ * del modelo viejo (idCarrera) al nuevo (idAnio).
+ * 
+ * Asigna a cada elemento el idAnio del año activo
+ * de su carrera correspondiente.
+ */
+export function migrarAIdAnio() {
+    const anios = bd.obtener(CLAVES.ANIOS) || [];
+    const carreras = bd.obtener(CLAVES.CARRERAS) || [];
+    let cambiosTemas = false;
+    let cambiosEvals = false;
+    let cambiosRes = false;
+
+    // Mapa: idCarrera → idAnio (del año activo)
+    const mapaCarreraAAnio = {};
+    carreras.forEach(c => {
+        const anioActivo = anios.find(a => 
+            String(a.idCarrera) === String(c.id) && a.estado === 'activo'
+        );
+        if (anioActivo) {
+            mapaCarreraAAnio[c.id] = anioActivo.id;
+        }
+    });
+
+    // Migrar temas (módulos y temas)
+    const temas = bd.obtener(CLAVES.TEMAS) || [];
+    temas.forEach(t => {
+        if (t.idCarrera && !t.idAnio) {
+            const idAnio = mapaCarreraAAnio[t.idCarrera];
+            if (idAnio) {
+                t.idAnio = idAnio;
+                cambiosTemas = true;
+            }
+        }
+    });
+    if (cambiosTemas) {
+        bd.guardar(CLAVES.TEMAS, temas);
+    }
+
+    // Migrar evaluaciones
+    const evaluaciones = bd.obtener(CLAVES.EVALUACIONES) || [];
+    evaluaciones.forEach(e => {
+        if (e.idCarrera && !e.idAnio) {
+            const idAnio = mapaCarreraAAnio[e.idCarrera];
+            if (idAnio) {
+                e.idAnio = idAnio;
+                cambiosEvals = true;
+            }
+        }
+    });
+    if (cambiosEvals) {
+        bd.guardar(CLAVES.EVALUACIONES, evaluaciones);
+    }
+
+    // Migrar resultados
+    const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
+    resultados.forEach(r => {
+        if (r.idCarrera && !r.idAnio) {
+            const idAnio = mapaCarreraAAnio[r.idCarrera];
+            if (idAnio) {
+                r.idAnio = idAnio;
+                cambiosRes = true;
+            }
+        }
+    });
+    if (cambiosRes) {
+        bd.guardar(CLAVES.RESULTADOS, resultados);
+    }
+
+    if (cambiosTemas || cambiosEvals || cambiosRes) {
+        console.log('Datos migrados: idCarrera → idAnio');
     }
 }

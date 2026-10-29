@@ -21,7 +21,7 @@ const MAX_PREGUNTAS = 50;
 
 /* ESTADO INTERNO */
 
-let idCarreraActiva = null;
+let idAnioActivo = null;
 let modulos = [];              // módulos de la carrera activa
 let evaluaciones = [];         // evaluaciones de la carrera activa
 
@@ -45,17 +45,21 @@ export function inicializarEvaluaciones() {
 }
 
 /**
- * Carga los módulos y evaluaciones de una carrera.
- * Se llama al abrir el panel de una carrera.
+ * Carga las evaluaciones de un año específico.
+ * @param {string} idAnio
  */
-export function cargarEvaluacionesDeCarrera(idCarrera) {
-    idCarreraActiva = idCarrera;
+export function cargarEvaluacionesDeAnio(idAnio) {
+    idAnioActivo = idAnio;
 
     const todosTemas = bd.obtener(CLAVES.TEMAS) || [];
-    modulos = todosTemas.filter(x => x.tipo === 'modulo' && x.idCarrera === idCarrera);
+    modulos = todosTemas.filter(x => 
+        x.tipo === 'modulo' && String(x.idAnio) === String(idAnio)
+    );
 
     const todasEvals = bd.obtener(CLAVES.EVALUACIONES) || [];
-    evaluaciones = todasEvals.filter(e => e.idCarrera === idCarrera);
+    evaluaciones = todasEvals.filter(e => 
+        String(e.idAnio) === String(idAnio)
+    );
 
     renderizarEvaluaciones();
 }
@@ -71,7 +75,7 @@ function renderizarEvaluaciones() {
             <div class="carreras-vacio">
                 <i class="fa-solid fa-folder-open"></i>
                 <h3>No hay módulos todavía</h3>
-                <p>Crea primero un módulo en la pestaña "Temas" para poder añadir evaluaciones.</p>
+                <p>Crea primero un módulo en la pestaña "Juegos" para poder añadir apuestas.</p>
             </div>
         `;
         return;
@@ -97,13 +101,13 @@ function renderizarModuloConEvaluaciones(m) {
                 ${evalsDelModulo.length === 0
                     ? `<div class="modulo-vacio">
                         <i class="fa-solid fa-file-pen"></i>
-                        Este módulo no tiene evaluaciones todavía.
+                        Este módulo no tiene apuestas todavía.
                        </div>`
                     : evalsDelModulo.map(e => renderizarEvaluacionItem(e)).join('')
                 }
                 <button class="modulo-add-tema" type="button"
                         data-accion="nueva-evaluacion" data-id="${m.id}">
-                    <i class="fa-solid fa-plus"></i> Crear Evaluación en este Módulo
+                    <i class="fa-solid fa-plus"></i> Crear Apuesta en este Módulo
                 </button>
             </div>
         </div>
@@ -182,7 +186,7 @@ function conectarBotonNuevaEvaluacion() {
     document.getElementById('btn-nueva-evaluacion')
         ?.addEventListener('click', () => {
             if (modulos.length === 0) {
-                mostrarNotificacion('Primero crea un módulo en la pestaña "Temas"', 'error');
+                mostrarNotificacion('Primero crea un módulo en la pestaña "Juegos"', 'error');
                 return;
             }
             // Abrir para el primer módulo (el usuario puede cambiarlo)
@@ -227,8 +231,8 @@ function conectarModalEvaluacion() {
 }
 
 function abrirModalCrear(idModulo) {
-    if (!idCarreraActiva) {
-        mostrarNotificacion('No hay carrera activa', 'error');
+    if (!idAnioActivo) {
+        mostrarNotificacion('No hay año activo', 'error');
         return;
     }
     
@@ -376,7 +380,7 @@ function guardarEvaluacion() {
         // CREAR
         const nueva = {
             id: generarId(),
-            idCarrera: idCarreraActiva,
+            idAnio: idAnioActivo,
             idModulo,
             titulo,
             descripcion,
@@ -824,7 +828,7 @@ function confirmarEliminar() {
 
     cerrarModalEliminar();
     renderizarEvaluaciones();
-    mostrarNotificacion('Evaluación eliminada');
+    mostrarNotificacion('Apuesta eliminada');
 }
 
 /* MODAL VER EVALUACIÓN */
@@ -1047,3 +1051,5 @@ function validarInputPuntajeMinimo() {
         input.style.boxShadow = '';
     }
 }
+
+window.cargarEvaluacionesDeAnio = cargarEvaluacionesDeAnio;

@@ -1,13 +1,19 @@
-/* Estructura general */
+/* Estructura general - Estética Casino / Vegas VIP con Barra Lateral */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
 .main-header {
-    background-color: var(--primary-color);
-    border-bottom: 1px solid var(--primary-hover);
-    padding: 1rem 1.5rem;
+    background-color: var(--sidebar-bg);
+    border-bottom: 2px solid var(--border-color);
+    padding: 0.9rem 1.8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9), 0 2px 12px rgba(212, 175, 55, 0.2);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -17,33 +23,38 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: #ffffff;
+    color: var(--text-color);
 }
 
 .logo-container i {
     font-size: 1.8rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
 }
 
 .logo-container h1 {
     font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: var(--text-color);
+    text-transform: uppercase;
 }
 
+/* Contenedor expandido para aprovechar mejor el espacio horizontal de la pantalla */
 .container {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1380px; /* Ampliado para mejor distribución visual */
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
     flex: 1;
 }
 
 .view-section {
-    animation: fadeIn 0.25s ease-in;
+    animation: fadeIn 0.3s ease-in;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -52,5 +63,214 @@
     align-items: center;
     gap: 1rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text-muted);
+    background: rgba(22, 22, 28, 0.8);
+    padding: 0.4rem 1.2rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.session-info span {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+/* ==========================================================================
+   BARRA LATERAL DE NAVEGACIÓN (Transformación de pestañas horizontales a Sidebar)
+   ========================================================================== */
+
+/* Estilos para convertir las pestañas internas en un menú lateral vertical */
+.tabs-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: none;
+    border-right: 2px solid var(--border-color);
+    padding-right: 1.2rem;
+    margin-bottom: 0;
+    min-width: 240px;
+}
+
+.tab-btn {
+    padding: 0.9rem 1.1rem;
+    background: linear-gradient(145deg, #16161c, #101015);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid transparent;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    text-align: left;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+    background: rgba(212, 175, 55, 0.08);
+    border-color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(16, 16, 21, 0.9));
+    border-left-color: var(--primary-color);
+    border-color: var(--primary-color);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Estructura Grid de 2 columnas para los paneles principales de Profesor y Estudiante */
+#view-panel-carrera,
+#view-panel-estudiante {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* La cabecera de la carrera ocupa todo el ancho superior */
+#view-panel-carrera > .carrera-header,
+#view-panel-estudiante > .carrera-header {
+    grid-column: 1 / -1;
+}
+
+/* La barra lateral se posiciona fija a la izquierda mientras se navega */
+#view-panel-carrera > .tabs-nav,
+#view-panel-estudiante > .tabs-nav {
+    grid-column: 1 / 2;
+    position: sticky;
+    top: 5.5rem;
+}
+
+/* El contenido dinámico de cada pestaña ocupa el espacio restante a la derecha */
+#view-panel-carrera > .tab-content,
+#view-panel-estudiante > .tab-content {
+    grid-column: 2 / 3;
+    width: 100%;
+    min-width: 0; /* Previene desbordamiento en tablas grandes */
+}
+
+/* Adaptación responsive para pantallas medianas y dispositivos móviles */
+@media (max-width: 950px) {
+    #view-panel-carrera,
+    #view-panel-estudiante {
+        grid-template-columns: 1fr;
+    }
+    
+    .tabs-nav {
+        flex-direction: row;
+        border-right: none;
+        border-bottom: 2px solid var(--border-color);
+        padding-right: 0;
+        padding-bottom: 0.75rem;
+        overflow-x: auto;
+        min-width: 100%;
+    }
+
+    #view-panel-carrera > .tabs-nav,
+    #view-panel-estudiante > .tabs-nav {
+        position: static;
+    }
+
+    .tab-btn {
+        width: auto;
+        white-space: nowrap;
+        border-left: 1px solid var(--border-color);
+        border-bottom: 3px solid transparent;
+    }
+
+    .tab-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+        border-bottom-color: var(--primary-color);
+        border-left-color: var(--border-color);
+        background: rgba(212, 175, 55, 0.12);
+    }
+}
+
+/* LUCES DE CASINO EN EL HEADER (bombillas) */
+
+.main-header {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 1.5rem; /* espacio extra para las luces */
+}
+
+/* Contenedor de luces */
+.header-luces {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Cada bombilla individual */
+.luz-bombilla {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    box-shadow: 
+        0 0 8px var(--primary-color),
+        0 0 16px var(--primary-color),
+        inset 0 0 4px rgba(255, 255, 255, 0.5);
+    animation: parpadearBombilla 1s ease-in-out infinite;
+}
+
+/* Animación de parpadeo con delays escalonados */
+.luz-bombilla:nth-child(1) { animation-delay: 0s; }
+.luz-bombilla:nth-child(2) { animation-delay: 0.2s; }
+.luz-bombilla:nth-child(3) { animation-delay: 0.4s; }
+.luz-bombilla:nth-child(4) { animation-delay: 0.6s; }
+.luz-bombilla:nth-child(5) { animation-delay: 0.8s; }
+.luz-bombilla:nth-child(6) { animation-delay: 1s; }
+.luz-bombilla:nth-child(7) { animation-delay: 1.2s; }
+.luz-bombilla:nth-child(8) { animation-delay: 1.4s; }
+.luz-bombilla:nth-child(9) { animation-delay: 1.6s; }
+.luz-bombilla:nth-child(10) { animation-delay: 1.8s; }
+.luz-bombilla:nth-child(11) { animation-delay: 2s; }
+.luz-bombilla:nth-child(12) { animation-delay: 2.2s; }
+.luz-bombilla:nth-child(13) { animation-delay: 2.4s; }
+.luz-bombilla:nth-child(14) { animation-delay: 2.6s; }
+
+@keyframes parpadearBombilla {
+    0%, 40%, 100% {
+        opacity: 1;
+        box-shadow: 
+            0 0 8px var(--primary-color),
+            0 0 16px var(--primary-color),
+            inset 0 0 4px rgba(255, 255, 255, 0.5);
+    }
+    20%, 60% {
+        opacity: 0.3;
+        box-shadow: 
+            0 0 4px var(--primary-color),
+            inset 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* Responsive: menos bombillas en móvil */
+@media (max-width: 600px) {
+    .luz-bombilla {
+        width: 8px;
+        height: 8px;
+    }
 }

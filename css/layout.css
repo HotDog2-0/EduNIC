@@ -19,6 +19,9 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 1.5rem;
 }
 
 .logo-container {
@@ -42,7 +45,6 @@ body {
     text-transform: uppercase;
 }
 
-/* Contenedor expandido para aprovechar mejor el espacio horizontal */
 .container {
     width: 100%;
     max-width: 1380px;
@@ -142,13 +144,11 @@ body {
     align-items: start;
 }
 
-/* La cabecera de la carrera ocupa todo el ancho superior */
 #view-panel-carrera > .carrera-header,
 #view-panel-estudiante > .carrera-header {
     grid-column: 1 / -1;
 }
 
-/* La barra lateral se posiciona fija a la izquierda mientras se navega */
 #view-panel-carrera > .tabs-nav,
 #view-panel-estudiante > .tabs-nav {
     grid-column: 1 / 2;
@@ -156,7 +156,6 @@ body {
     top: 5.5rem;
 }
 
-/* El contenido dinámico de cada pestaña ocupa el espacio restante a la derecha */
 #view-panel-carrera > .tab-content,
 #view-panel-estudiante > .tab-content {
     grid-column: 2 / 3;
@@ -231,12 +230,6 @@ body {
 /* ==========================================================================
    LUCES DE CASINO EN EL HEADER (bombillas)
    ========================================================================== */
-
-.main-header {
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 1.5rem;
-}
 
 .header-luces {
     position: absolute;

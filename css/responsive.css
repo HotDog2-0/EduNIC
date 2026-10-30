@@ -21,7 +21,6 @@
         font-size: 1.2rem;
     }
 
-    /* Luces del header: más pequeñas y menos cantidad */
     .header-luces {
         bottom: 0.4rem;
         padding: 0 0.5rem;
@@ -32,12 +31,10 @@
         height: 8px;
     }
 
-    /* Ocultar la mitad de las bombillas en móvil (opcional) */
     .luz-bombilla:nth-child(n+9) {
         display: none;
     }
 
-    /* ----- Sesión / Botones del header ----- */
     .session-info {
         flex-direction: column;
         gap: 0.5rem;
@@ -85,7 +82,7 @@
     }
 
     .tab-btn i {
-        display: none;  /* Ocultar iconos en móvil para ahorrar espacio */
+        display: none;
     }
 
     /* ----- Formularios ----- */
@@ -97,7 +94,157 @@
     .form-group input,
     .form-group textarea,
     .form-group select {
-        font-size: 1rem;  /* Evitar zoom automático en iOS */
+        font-size: 1rem;
+    }
+
+    /* ----- Tipografía general ----- */
+    body {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    h2 { font-size: 1.3rem; }
+    h3 { font-size: 1.1rem; }
+    h4 { font-size: 1rem; }
+
+    p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* ----- Cards ----- */
+    .card {
+        padding: 1rem;
+        overflow: hidden;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .card h3 {
+        font-size: 1rem;
+        line-height: 1.3;
+        margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .card p {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* ----- Formularios (labels) ----- */
+    .form-group label {
+        font-size: 0.85rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 0.95rem;
+        padding: 0.65rem 0.8rem;
+    }
+
+    .form-hint {
+        font-size: 0.75rem;
+    }
+
+    /* ----- Tablas ----- */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tabla-estudiantes {
+        font-size: 0.8rem;
+    }
+
+    .tabla-estudiantes th,
+    .tabla-estudiantes td {
+        padding: 0.5rem 0.6rem;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* ----- Tarjetas de carrera, tema, evaluación ----- */
+    .carrera-card,
+    .tema-card,
+    .evaluacion-item,
+    .evaluacion-estudiante,
+    .resultado-item {
+        padding: 0.85rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .carrera-card-body h3,
+    .tema-card-titulo,
+    .evaluacion-item-titulo,
+    .evaluacion-estudiante-titulo,
+    .resultado-item-titulo {
+        font-size: 0.9rem;
+        line-height: 1.3;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .carrera-card-anio,
+    .tema-card-descripcion,
+    .evaluacion-item-meta,
+    .resultado-item-meta {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .tema-card-ejemplo {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.7rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* ----- Stats ----- */
+    .resultado-stat-valor {
+        font-size: 1.2rem;
+    }
+
+    .resultado-stat-etiqueta {
+        font-size: 0.65rem;
+    }
+
+    /* ----- Modales ----- */
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .modal-body h4 {
+        font-size: 1rem;
+    }
+
+    .modal-body p {
+        font-size: 0.85rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* ----- Textos largos ----- */
+    .card,
+    .card * {
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .recurso-chip-texto {
+        max-width: 140px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     /* ----- Resumen del estudiante (cabecera) ----- */
@@ -125,66 +272,41 @@
     .estudiante-resumen .resultado-stat-etiqueta {
         font-size: 0.65rem;
     }
-}
 
-    @media (max-width: 600px) {
-
-    /* ============================================
-       CABECERA DE LA CARRERA (reorganizada)
-       ============================================ */
+    /* ----- Carreras ----- */
+    .carreras-grid {
+        grid-template-columns: 1fr;
+    }
 
     .carrera-header {
-        display: flex;
-        flex-direction: column;
-        padding: 0.5rem 0;
-        margin-bottom: 0.75rem;
-        gap: 0.5rem;
-        align-items: stretch;
-    }
-
-    /* Botón volver: pequeño y alineado a la izquierda */
-    .carrera-header .btn-back {
-        align-self: flex-start;
-        margin-bottom: 0.25rem;
-        font-size: 0.75rem;
-        padding: 0.3rem 0.6rem;
-    }
-
-    /* Info de la carrera: compacta */
-    .carrera-header-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.15rem;
-        text-align: center;
-    }
-
-    .carrera-header-codigo {
-        font-size: 0.65rem;
-        padding: 0.1rem 0.4rem;
-    }
-
-    .carrera-header-nombre {
-        font-size: 1.1rem;
-        line-height: 1.2;
-        max-width: 100%;
-    }
-
-    .carrera-header-anio {
-        font-size: 0.75rem;
-    }
-
-    /* ============================================
-       SELECTOR DE AÑO (FORZADO A CABER)
-       ============================================ */
-
-    .carrera-header {
-        padding: 0.5rem 0.75rem !important;   /* ← padding lateral para que el selector quepa */
+        padding: 0.5rem 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+        gap: 0.5rem !important;
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
 
+    .carrera-header-nombre {
+        font-size: 1.1rem;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    .carrera-header-anio {
+        font-size: 0.75rem;
+        text-align: center;
+    }
+
+    .carreras-toolbar {
+        justify-content: stretch;
+    }
+
+    .carreras-toolbar .btn {
+        width: 100%;
+    }
+
+    /* ----- Selector de año ----- */
     .anio-selector {
         display: flex !important;
         flex-wrap: wrap !important;
@@ -196,7 +318,7 @@
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
-        overflow: hidden !important;   /* ← evitar desbordamiento */
+        overflow: hidden !important;
     }
 
     .anio-selector-label {
@@ -211,10 +333,12 @@
         flex: 1 1 100% !important;
         font-size: 0.8rem !important;
         padding: 0.4rem 0.6rem !important;
-        min-width: 0 !important;   /* ← clave: sin min-width */
+        min-width: 0 !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
         width: 100% !important;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     .anio-selector .btn {
@@ -229,172 +353,7 @@
         box-sizing: border-box !important;
     }
 
-    /* ─── Código de clase: compacto en una fila ─── */
-    .codigo-clase-bloque {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        padding: 0.5rem;
-        margin-top: 0.25rem;
-    }
-
-    .codigo-clase-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    .codigo-clase-label {
-        font-size: 0.65rem;
-    }
-
-    .codigo-clase-valor {
-        font-size: 0.85rem;
-        padding: 0.2rem 0.5rem;
-        letter-spacing: 0.5px;
-    }
-
-    .codigo-clase-acciones {
-        display: flex;
-        gap: 0.25rem;
-        justify-content: center;
-    }
-
-    .codigo-clase-acciones .btn {
-        flex: 1;
-        font-size: 0.65rem;
-        padding: 0.3rem 0.4rem;
-        min-width: 0;
-    }
-
-    /* ─── Pestañas: scroll horizontal, chips compactos ─── */
-    .tabs-nav {
-        display: flex;
-        gap: 0.25rem;
-        padding: 0.25rem 0;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        -webkit-overflow-scrolling: touch;
-        border-bottom: 2px solid var(--border-color);
-        margin-bottom: 0.75rem;
-    }
-
-    .tab-btn {
-        padding: 0.45rem 0.65rem;
-        font-size: 0.7rem;
-        white-space: nowrap;
-        flex-shrink: 0;
-        background: rgba(212, 175, 55, 0.08);
-        border-radius: var(--radius) var(--radius) 0 0;
-    }
-
-    .tab-btn i {
-        display: none;
-    }
-
-    .tab-btn.active {
-        background: rgba(212, 175, 55, 0.2);
-    }
-
-        /* ============================================
-       CONTENEDOR PRINCIPAL (margen lateral)
-       ============================================ */
-
-    .container {
-        padding: 0 1rem;   /* ← margen lateral de 16px */
-        margin: 1rem auto;
-    }
-
-  @media (max-width: 600px) {
-
-    /* ============================================
-       CABECERA DE LA CARRERA (centrada)
-       ============================================ */
-
-   .carrera-header {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-        padding: 0.5rem 0 !important;
-        margin-bottom: 0.75rem !important;
-        gap: 0.5rem !important;
-        width: 100% !important;          /* ← ANCHO COMPLETO */
-        max-width: 100% !important;      /* ← MÁXIMO COMPLETO */
-        box-sizing: border-box !important;
-    }
-
-    /* Botón volver: alineado a la izquierda, pero sin romper el centrado */
-    .carrera-header .btn-back {
-        align-self: flex-start !important;
-        margin-bottom: 0.25rem !important;
-        font-size: 0.75rem !important;
-        padding: 0.3rem 0.6rem !important;
-    }
-
-    /* Info de la carrera: centrada */
-    .carrera-header-info {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-        gap: 0.15rem !important;
-        width: 100% !important;
-    }
-
-    .carrera-header-codigo {
-        font-size: 0.65rem !important;
-        padding: 0.1rem 0.4rem !important;
-    }
-
-    .carrera-header-nombre {
-        font-size: 1.1rem !important;
-        line-height: 1.2 !important;
-        text-align: center !important;
-        margin: 0 !important;
-    }
-
-    .carrera-header-anio {
-        font-size: 0.75rem !important;
-        text-align: center !important;
-    }
-
-    /* ─── Selector de año: centrado, en una fila ─── */
-    .anio-selector {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 0.35rem !important;
-        padding: 0.5rem !important;
-        margin-top: 0.25rem !important;
-        justify-content: center !important;
-        align-items: center !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .anio-selector-label {
-        font-size: 0.65rem !important;
-        width: 100% !important;
-        text-align: center !important;
-        margin-bottom: 0.25rem !important;
-    }
-
-    .anio-selector-dropdown {
-        flex: 1 !important;
-        font-size: 0.75rem !important;
-        padding: 0.35rem 0.5rem !important;
-        min-width: 120px !important;
-        max-width: 100% !important;
-    }
-
-    .anio-selector .btn {
-        font-size: 0.65rem !important;
-        padding: 0.35rem 0.5rem !important;
-        flex: 0 0 auto !important;
-    }
-
-    /* ─── Código de clase: centrado ─── */
+    /* ----- Código de clase ----- */
     .codigo-clase-bloque {
         display: flex !important;
         flex-direction: column !important;
@@ -440,84 +399,7 @@
         min-width: 0 !important;
     }
 
-    /* ─── Pestañas: scroll horizontal ─── */
-    .tabs-nav {
-        display: flex !important;
-        gap: 0.25rem !important;
-        padding: 0.25rem 0 !important;
-        overflow-x: auto !important;
-        flex-wrap: nowrap !important;
-        -webkit-overflow-scrolling: touch !important;
-        border-bottom: 2px solid var(--border-color) !important;
-        margin-bottom: 0.75rem !important;
-        width: 100% !important;
-        justify-content: flex-start !important;
-    }
-
-    .tab-btn {
-        padding: 0.45rem 0.65rem !important;
-        font-size: 0.7rem !important;
-        white-space: nowrap !important;
-        flex-shrink: 0 !important;
-        background: rgba(212, 175, 55, 0.08) !important;
-        border-radius: var(--radius) var(--radius) 0 0 !important;
-    }
-
-    .tab-btn i {
-        display: none !important;
-    }
-
-    .tab-btn.active {
-        background: rgba(212, 175, 55, 0.2) !important;
-    }
-}
-
-    /* ----- Selector de año ----- */
-    .anio-selector {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .anio-selector-dropdown {
-        width: 100%;
-    }
-
-    .anio-selector .btn {
-        width: 100%;
-    }
-
-    /* ----- Código de clase ----- */
-    .codigo-clase-bloque {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .codigo-clase-info {
-        justify-content: center;
-    }
-
-    .codigo-clase-acciones {
-        justify-content: center;
-    }
-
-    .codigo-clase-acciones .btn {
-        flex: 1;
-    }
-
-    /* ----- Tablas ----- */
-    .tabla-estudiantes th,
-    .tabla-estudiantes td {
-        padding: 0.5rem 0.6rem;
-        font-size: 0.85rem;
-    }
-
-    .btn-icon {
-        width: 30px;
-        height: 30px;
-        font-size: 0.85rem;
-    }
-
-    /* ----- Card header con acciones ----- */
+    /* ----- Tabla estudiantes ----- */
     .card-header-row {
         flex-direction: column;
         align-items: stretch;
@@ -540,7 +422,6 @@
        JUEGOS
        ============================================ */
 
-    /* Selector de juegos */
     .juegos-grid {
         grid-template-columns: 1fr;
     }
@@ -553,7 +434,6 @@
         font-size: 2.5rem;
     }
 
-    /* ----- Piedra, papel o tijera ----- */
     .juego-ppt-titulo {
         font-size: 1.2rem;
     }
@@ -576,12 +456,10 @@
         font-size: 1.5rem;
     }
 
-    /* ----- Blackjack ----- */
     .juego-blackjack-titulo {
         font-size: 1.2rem;
     }
 
-    /* Barra superior: apilar marcador y botones */
     .blackjack-barra-superior > div:last-child {
         flex-direction: column;
     }
@@ -590,7 +468,6 @@
         width: 100%;
     }
 
-    /* Tapete: baraja debajo de las manos */
     .blackjack-tapete-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -601,7 +478,6 @@
         justify-content: center;
     }
 
-    /* Cartas más pequeñas */
     .carta {
         width: 55px;
         height: 80px;
@@ -620,7 +496,6 @@
         font-size: 0.65rem;
     }
 
-    /* Baraja más pequeña */
     .blackjack-baraja-cartas {
         width: 55px;
         height: 80px;
@@ -635,7 +510,6 @@
         font-size: 2rem;
     }
 
-    /* Botones del blackjack: apilar si no caben */
     .blackjack-botones {
         flex-wrap: wrap;
         gap: 0.5rem;
@@ -646,7 +520,6 @@
         font-size: 0.8rem;
     }
 
-    /* ----- Ruleta ----- */
     .ruleta-container {
         width: 220px;
         height: 220px;
@@ -679,7 +552,6 @@
         font-size: 1.2rem;
     }
 
-    /* ----- Calificasaurio ----- */
     .calificasaurio-img {
         width: 160px;
         height: 160px;
@@ -800,7 +672,6 @@
    ============================================ */
 
 @media (min-width: 601px) and (max-width: 900px) {
-
     .estudiante-resumen {
         max-width: 700px;
     }
@@ -823,7 +694,6 @@
    ============================================ */
 
 @media (max-width: 380px) {
-
     .logo-container h1 {
         font-size: 1rem;
     }

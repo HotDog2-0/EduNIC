@@ -1,13 +1,8 @@
-/* ============================================
-   APP.JS
-   Punto de entrada de la aplicación
-   ============================================ */
+/* Punto de entrada de la aplicación*/
 
 console.log('🔵 app.js: archivo cargado');
 
-/* ==========================================
-   IMPORTS
-   ========================================== */
+/* IMPORTS */
 
 import { bd, CLAVES, inicializarBaseDatos } from './storage.js';
 import { inicializarLanding } from './vistas/landing.js';
@@ -32,10 +27,9 @@ import { inicializarRegistro } from './vistas/estudiante/registro.js';
 import { inicializarAsistente } from './vistas/profesor/asistente.js';
 import { toggleSilencio, estaSilenciado } from './sonidos.js';
 import { inicializarRuleta } from './ruleta.js';
+import { iniciarMusicaFondo, toggleMusicaFondo } from './sonidos.js';
 
-/* ==========================================
-   INICIALIZACIÓN
-   ========================================== */
+/* INICIALIZACIÓN */
 
 async function iniciarApp() {
     console.log('🟢 iniciarApp: ejecutándose');
@@ -62,9 +56,42 @@ async function iniciarApp() {
     configurarPestanas('view-panel-estudiante');
     configurarCierreModalVideo();
     configurarAperturaVideos();
-    configurarAperturaVideos();
 
-    // 4. Login del profesor (temporal)
+    // 4. EVENTOS DE AUDIO Y MÚSICA
+
+    // Botón de silenciar sonidos (efectos)
+    document.getElementById('btn-silenciar')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const silenciado = toggleSilencio();
+        const icono = e.currentTarget.querySelector('i');
+        if (icono) {
+            icono.className = silenciado ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+        }
+        mostrarNotificacion(silenciado ? 'Sonido silenciado' : 'Sonido activado');
+    });
+
+    // Botón de música (fondo)
+    document.getElementById('btn-musica')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const activa = toggleMusicaFondo();
+        const icono = e.currentTarget.querySelector('i');
+        if (icono) {
+            icono.className = activa ? 'fa-solid fa-music' : 'fa-solid fa-volume-xmark';
+        }
+        mostrarNotificacion(activa ? 'Música activada' : 'Música pausada');
+    });
+
+    // Listener global para iniciar música en el primer clic (autoplay bloqueado)
+    document.addEventListener('click', (e) => {
+        // Ignorar clics en los botones de audio
+        if (e.target.closest('#btn-musica') || e.target.closest('#btn-silenciar')) {
+            return;
+        }
+        iniciarMusicaFondo();
+    });
+
+    // 5. LOGIN DEL PROFESOR (temporal)
+
     const formProfesor = document.getElementById('form-login-profesor');
     formProfesor?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -87,14 +114,6 @@ async function iniciarApp() {
         } else {
             mostrarNotificacion('Credenciales incorrectas', 'error');
         }
-
-        // Botón de silenciar
-        document.getElementById('btn-silenciar')?.addEventListener('click', (e) => {
-            const silenciado = toggleSilencio();
-            const icono = e.currentTarget.querySelector('i');
-            icono.className = silenciado ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-            mostrarNotificacion(silenciado ? 'Sonido silenciado' : 'Sonido activado');
-        });
     });
 
     // 5. Logout global
@@ -141,12 +160,21 @@ async function iniciarApp() {
         mostrarVista('view-landing');
     }
 
-    console.log('✅ EduNIC - Listo');
+    console.log('EduNIC - Listo');
+
+    // Intentar iniciar música en cada clic hasta que funcione
+    document.addEventListener('click', (e) => {
+        // Ignorar clics en los botones de audio
+        if (e.target.closest('#btn-musica') || e.target.closest('#btn-silenciar')) {
+            return;
+        }
+        
+        iniciarMusicaFondo();
+    });
+
 }
 
-/* ==========================================
-   FUNCIONES AUXILIARES
-   ========================================== */
+/* FUNCIONES AUXILIARES */
 
 /**
  * Actualiza el header global para mostrar al profesor.
@@ -221,9 +249,7 @@ function configurarAperturaVideos() {
     });
 }
 
-/* ==========================================
-   ARRANCAR LA APP
-   ========================================== */
+/* ARRANCAR LA APP */
 
 document.addEventListener('DOMContentLoaded', () => {
     iniciarApp().catch(err => {

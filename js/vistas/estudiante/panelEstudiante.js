@@ -14,6 +14,7 @@ import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
 import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
 import { renderizarBlackjack } from '../../juegos/blackjack.js';
 import { renderizarRuletaCasino } from '../../juegos/ruletaCasino.js';
+import { iniciarMusicaFondo } from '../../sonidos.js';
 
 /* ESTADO INTERNO */
 
@@ -183,6 +184,8 @@ function iniciarSesionEstudiante(est) {
     // Cargar temas de la carrera
     cargarTemasDeCarrera();
     cargarEvaluacionesDeCarrera();
+
+    iniciarMusicaFondo();
 
     // Navegar al panel
     mostrarVista('view-panel-estudiante');

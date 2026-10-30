@@ -1,0 +1,139 @@
+/* Estilos del minijuego Ruleta de Casino (prefijo rc-) */
+
+.rc-juego {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rc-titulo {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+
+.rc-subtitulo {
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.rc-rueda canvas {
+    display: block;
+    width: min(100%, 380px);
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0 auto;
+}
+
+.rc-msg {
+    min-height: 3rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.rc-msg.rc-gana { color: var(--success-color); }
+.rc-msg.rc-pierde { color: #f87171; }
+
+/* Historial de números */
+.rc-hist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+    min-height: 34px;
+}
+
+.rc-bola {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-chip);
+    display: grid;
+    place-items: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    border: 1.5px solid var(--primary-color);
+}
+
+/* Panel de apuestas */
+.rc-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rc-saldo {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.rc-saldo strong {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.rc-grupo-titulo {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.rc-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.rc-opt {
+    min-height: 44px;
+    padding: 0.4rem 1.1rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--border-color);
+    background: transparent;
+    color: var(--text-color);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rc-opt:hover { border-color: var(--primary-color); }
+
+.rc-opt[data-tipo="rojo"] { background: var(--danger-color); border-color: var(--danger-color); }
+.rc-opt[data-tipo="negro"] { background: #000000; border-color: #4b5563; }
+
+.rc-opt[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--primary-color); }
+
+.rc-opt[data-monto][aria-pressed="true"] {
+    background: var(--primary-color);
+    color: #000000;
+    box-shadow: none;
+}
+
+.rc-opt:focus-visible,
+.rc-num:focus-visible {
+    outline: 3px solid var(--text-color);
+    outline-offset: 2px;
+}
+
+.rc-num {
+    width: 84px;
+    min-height: 44px;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border-color);
+    background: #0a0a0c;
+    color: var(--text-color);
+    font: inherit;
+}
+
+.rc-num[hidden] { display: none; }
+
+#rc-reiniciar { align-self: center; }

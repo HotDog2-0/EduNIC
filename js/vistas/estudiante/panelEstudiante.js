@@ -13,6 +13,7 @@ import { mostrarVista } from '../../navegacion.js';
 import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
 import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
 import { renderizarBlackjack } from '../../juegos/blackjack.js';
+import { renderizarRuletaCasino } from '../../juegos/ruletaCasino.js';
 
 /* ESTADO INTERNO */
 
@@ -68,6 +69,8 @@ function abrirJuego(juego) {
         renderizarPiedraPapelTijera();
     } else if(juego === 'blackjack') {
         renderizarBlackjack();
+    } else if (juego === 'ruleta-casino') {
+        renderizarRuletaCasino();
     }
 }
 

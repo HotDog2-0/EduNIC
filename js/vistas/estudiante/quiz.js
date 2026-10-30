@@ -408,38 +408,109 @@ function mostrarResultado(calificacion) {
 
     const aprobado = calificacion.puntosObtenidos >= evaluacionActiva.puntajeMinimo;
 
-    let icono, titulo, subtitulo, claseNota, imagenCalificasaurio, textoCalificasaurio;
+    // ─── DETERMINAR ESTADO ───
+    let estado, iconoCarta, textoCarta;
 
     if (calificacion.pendientes > 0) {
-        icono = 'fa-clock';
+        estado = 'pendiente';
+        iconoCarta = '⏳';
+        textoCarta = 'Pendiente';
+    } else if (aprobado) {
+        estado = 'aprobado';
+        iconoCarta = '🎉';
+        textoCarta = '¡Aprobado!';
+    } else {
+        estado = 'reprobado';
+        iconoCarta = '💀';
+        textoCarta = 'Reprobado';
+    }
+
+    // ─── MOSTRAR CARTA BOCA ABAJO ───
+    cont.innerHTML = `
+        <div class="carta-resultado-container">
+            <p class="carta-resultado-mensaje">
+                <i class="fa-solid fa-dice"></i>
+                ¡Gira la carta para ver tu resultado!
+            </p>
+
+            <div class="carta-resultado-3d">
+                <div class="carta-resultado-flip" id="carta-resultado-flip">
+                    <!-- Cara trasera -->
+                    <div class="carta-resultado-cara carta-resultado-trasera"></div>
+                    <!-- Cara delantera -->
+                    <div class="carta-resultado-cara carta-resultado-delantera ${estado}">
+                        <div class="carta-resultado-delantera-icono">${iconoCarta}</div>
+                        <div class="carta-resultado-delantera-texto">${textoCarta}</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-girar-carta" type="button" id="btn-girar-carta">
+                <i class="fa-solid fa-rotate"></i> Girar la Carta
+            </button>
+        </div>
+    `;
+
+    // ─── CONECTAR BOTÓN "GIRAR LA CARTA" ───
+    document.getElementById('btn-girar-carta')?.addEventListener('click', () => {
+        const carta = document.getElementById('carta-resultado-flip');
+        if (!carta) return;
+
+        // Ocultar el botón
+        document.getElementById('btn-girar-carta')?.remove();
+
+        // Voltear la carta
+        carta.classList.add('volteada');
+
+        // Reproducir sonido
+        reproducirSonido('ficha', 0.5);
+
+        // Después de la animación, mostrar el resultado completo
+        setTimeout(() => {
+            mostrarPantallaResultadoFinal(calificacion, aprobado, estado, iconoCarta, textoCarta);
+        }, 1000);
+    });
+}
+
+/**
+ * Muestra la pantalla de resultado completa (después de girar la carta).
+ */
+function mostrarPantallaResultadoFinal(calificacion, aprobado, estado, iconoCarta, textoCarta) {
+    const cont = document.getElementById('quiz-preguntas-container');
+
+    // ─── DETERMINAR IMAGEN Y TEXTO DEL CALIFICASAURIO ───
+    let imagenCalificasaurio, textoCalificasaurio, titulo, subtitulo, claseNota;
+
+    if (calificacion.pendientes > 0) {
         titulo = 'Evaluación enviada';
         subtitulo = 'Tu profesor calificará las respuestas pendientes.';
         claseNota = 'pendiente';
         imagenCalificasaurio = 'assets/calificasaurio/pendiente.png';
         textoCalificasaurio = 'Esperando calificación';
+    } else if (aprobado) {
+        titulo = '';
+        subtitulo = '¡Excelente trabajo!';
+        claseNota = 'aprobado';
+        imagenCalificasaurio = 'assets/calificasaurio/aprobado.png';
+        textoCalificasaurio = '¡Jackpot!';
     } else {
-        icono = aprobado ? 'fa-circle-check' : 'fa-circle-xmark';
-        titulo = aprobado ? '' : 'Esta vez no fue';  // ← vacío si aprobó (lo reemplaza el Jackpot)
-        subtitulo = aprobado
-            ? '¡Excelente trabajo!'
-            : `Necesitabas al menos ${evaluacionActiva.puntajeMinimo} puntos para aprobar.`;
-        claseNota = aprobado ? 'aprobado' : 'reprobado';
-        imagenCalificasaurio = aprobado
-            ? 'assets/calificasaurio/aprobado.png'
-            : 'assets/calificasaurio/reprobado.png';
-        textoCalificasaurio = aprobado ? '¡Jackpot!' : 'Sigue intentando';
+        titulo = 'Esta vez no fue';
+        subtitulo = `Necesitabas al menos ${evaluacionActiva.puntajeMinimo} puntos para aprobar.`;
+        claseNota = 'reprobado';
+        imagenCalificasaurio = 'assets/calificasaurio/reprobado.png';
+        textoCalificasaurio = 'Sigue intentando';
     }
 
-       cont.innerHTML = `
+    cont.innerHTML = `
         <div class="quiz-resultado">
             ${aprobado && calificacion.pendientes === 0
                 ? `<div class="jackpot-brillo"></div>`
                 : ''
             }
-        
+
             <div class="calificasaurio-grande">
-                <img src="${imagenCalificasaurio}" 
-                     alt="Calificasaurio ${claseNota}" 
+                <img src="${imagenCalificasaurio}"
+                     alt="Calificasaurio ${claseNota}"
                      class="calificasaurio-img">
                 <span class="calificasaurio-texto ${claseNota}">${textoCalificasaurio}</span>
             </div>
@@ -463,7 +534,7 @@ function mostrarResultado(calificacion) {
             `}
 
             <div class="quiz-resultado-detalle">
-                <strong>${calificacion.correctas}</strong> correctas · 
+                <strong>${calificacion.correctas}</strong> correctas ·
                 <strong>${calificacion.incorrectas}</strong> incorrectas
             </div>
 
@@ -475,21 +546,31 @@ function mostrarResultado(calificacion) {
         </div>
     `;
 
-    // Si reprobó por poco (menos de 5 puntos del mínimo), mostrar mensaje de la ruleta
-    const reproboPorPoco = !aprobado && calificacion.pendientes === 0 && 
+    // ─── CONFETI Y SONIDO ───
+    if (aprobado && calificacion.pendientes === 0) {
+        lanzarConfeti(80);
+        reproducirSonido('jackpot', 0.6);
+    } else if (calificacion.pendientes === 0) {
+        reproducirSonido('buzzer', 0.4);
+    }
+
+    // ─── BOTÓN CERRAR ───
+    document.getElementById('btn-cerrar-resultado')
+        ?.addEventListener('click', cerrarQuizYRefrescar);
+
+    // ─── SI REPROBÓ POR POCO, OFRECER RULETA ───
+    const reproboPorPoco = !aprobado && calificacion.pendientes === 0 &&
                         (evaluacionActiva.puntajeMinimo - calificacion.puntosObtenidos) < 5 &&
                         (evaluacionActiva.puntajeMinimo - calificacion.puntosObtenidos) > 0;
 
     if (reproboPorPoco) {
-        // Buscar el resultado en storage para obtener su ID
         const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
-        const miResultado = resultados.find(r => 
+        const miResultado = resultados.find(r =>
             String(r.idEvaluacion) === String(evaluacionActiva.id) &&
             String(r.idEstudiante) === String(estudianteActual.id)
         );
 
         if (miResultado) {
-            // Crear el bloque del mensaje de la ruleta
             const bloqueRuleta = document.createElement('div');
             bloqueRuleta.className = 'quiz-ruleta-invitacion';
             bloqueRuleta.innerHTML = `
@@ -503,13 +584,11 @@ function mostrarResultado(calificacion) {
                 </button>
             `;
 
-            // Insertar después del bloque de detalle (antes del botón "Cerrar")
             const detalle = cont.querySelector('.quiz-resultado-detalle');
             if (detalle) {
                 detalle.parentNode.insertBefore(bloqueRuleta, detalle.nextSibling);
             }
 
-            // Conectar "Girar la Ruleta"
             document.getElementById('btn-abrir-ruleta')
                 ?.addEventListener('click', () => {
                     abrirRuleta(miResultado, {
@@ -520,21 +599,6 @@ function mostrarResultado(calificacion) {
                 });
         }
     }
-
-    document.getElementById('btn-cerrar-resultado')
-    ?.addEventListener('click', cerrarQuizYRefrescar);
-
-    // Lanzar confeti si aprobó
-    if (aprobado && calificacion.pendientes === 0) {
-        lanzarConfeti(80);
-        reproducirSonido('jackpot', 0.6);
-    } else if (calificacion.pendientes === 0) {
-    // Reprobado
-    reproducirSonido('buzzer', 0.4);
-    }
-
-    document.getElementById('btn-cerrar-resultado')
-        ?.addEventListener('click', cerrarQuizYRefrescar);
 }
 
 function cerrarQuizYRefrescar() {

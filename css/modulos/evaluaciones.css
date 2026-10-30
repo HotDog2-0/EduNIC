@@ -2066,3 +2066,196 @@
         font-size: 1.2rem;
     }
 }
+
+/* CARTA BOCA ABAJO (antes del resultado) */
+
+.carta-resultado-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    min-height: 400px;
+}
+
+.carta-resultado-mensaje {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+/* Contenedor 3D de la carta */
+.carta-resultado-3d {
+    perspective: 1000px;
+    width: 180px;
+    height: 260px;
+    margin-bottom: 2rem;
+}
+
+/* La carta en sí */
+.carta-resultado-flip {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.carta-resultado-flip.volteada {
+    transform: rotateY(180deg);
+}
+
+/* Caras de la carta */
+.carta-resultado-cara {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    border: 3px solid var(--primary-color);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Cara trasera (boca abajo) */
+.carta-resultado-trasera {
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            #7f1d1d,
+            #7f1d1d 8px,
+            #991b1b 8px,
+            #991b1b 16px
+        );
+    transform: rotateY(0deg);
+}
+
+.carta-resultado-trasera::before {
+    content: "🂠";
+    font-size: 5rem;
+    color: #d4af37;
+    opacity: 0.9;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+}
+
+.carta-resultado-trasera::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+}
+
+/* Cara delantera (resultado) */
+.carta-resultado-delantera {
+    background: #ffffff;
+    transform: rotateY(180deg);
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.carta-resultado-delantera.aprobado {
+    background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+    border-color: #16a34a;
+}
+
+.carta-resultado-delantera.reprobado {
+    background: linear-gradient(135deg, #fee2e2, #fef2f2);
+    border-color: #dc2626;
+}
+
+.carta-resultado-delantera.pendiente {
+    background: linear-gradient(135deg, #fef3c7, #fefce8);
+    border-color: #f59e0b;
+}
+
+.carta-resultado-delantera-icono {
+    font-size: 4rem;
+    line-height: 1;
+}
+
+.carta-resultado-delantera-texto {
+    font-size: 1.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.carta-resultado-delantera.aprobado .carta-resultado-delantera-texto {
+    color: #15803d;
+}
+
+.carta-resultado-delantera.reprobado .carta-resultado-delantera-texto {
+    color: #991b1b;
+}
+
+.carta-resultado-delantera.pendiente .carta-resultado-delantera-texto {
+    color: #92400e;
+}
+
+/* Botón "Girar la carta" */
+.btn-girar-carta {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    background: linear-gradient(135deg, #f3cf55 0%, #d4af37 50%, #997a15 100%);
+    color: #000000;
+    border: none;
+    border-radius: 999px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.5);
+    transition: all 0.22s ease;
+    animation: pulsoBotonGirar 2s ease-in-out infinite;
+}
+
+.btn-girar-carta:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.7);
+}
+
+@keyframes pulsoBotonGirar {
+    0%, 100% {
+        box-shadow: 0 4px 14px rgba(212, 175, 55, 0.5);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(212, 175, 55, 0.8);
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .carta-resultado-3d {
+        width: 140px;
+        height: 200px;
+    }
+
+    .carta-resultado-trasera::before {
+        font-size: 4rem;
+    }
+
+    .carta-resultado-delantera-icono {
+        font-size: 3rem;
+    }
+
+    .carta-resultado-delantera-texto {
+        font-size: 1rem;
+    }
+
+    .carta-resultado-mensaje {
+        font-size: 1rem;
+    }
+}

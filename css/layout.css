@@ -1,4 +1,6 @@
-/* Estructura general - Estética Casino / Vegas VIP con Barra Lateral */
+/* ==========================================================================
+   ESTRUCTURA GENERAL - Estética Casino / Vegas VIP con Barra Lateral
+   ========================================================================== */
 
 body {
     display: flex;
@@ -40,10 +42,10 @@ body {
     text-transform: uppercase;
 }
 
-/* Contenedor expandido para aprovechar mejor el espacio horizontal de la pantalla */
+/* Contenedor expandido para aprovechar mejor el espacio horizontal */
 .container {
     width: 100%;
-    max-width: 1380px; /* Ampliado para mejor distribución visual */
+    max-width: 1380px;
     margin: 2rem auto;
     padding: 0 1.5rem;
     flex: 1;
@@ -78,10 +80,9 @@ body {
 }
 
 /* ==========================================================================
-   BARRA LATERAL DE NAVEGACIÓN (Transformación de pestañas horizontales a Sidebar)
+   BARRA LATERAL DE NAVEGACIÓN (Sidebar)
    ========================================================================== */
 
-/* Estilos para convertir las pestañas internas en un menú lateral vertical */
 .tabs-nav {
     display: flex;
     flex-direction: column;
@@ -129,9 +130,12 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Estructura Grid de 2 columnas para los paneles principales de Profesor y Estudiante */
-#view-panel-carrera,
-#view-panel-estudiante {
+/* ==========================================================================
+   GRID DE 2 COLUMNAS (Desktop)
+   ========================================================================== */
+
+#view-panel-carrera:not(.hidden),
+#view-panel-estudiante:not(.hidden) {
     display: grid;
     grid-template-columns: 260px 1fr;
     gap: 2rem;
@@ -157,58 +161,83 @@ body {
 #view-panel-estudiante > .tab-content {
     grid-column: 2 / 3;
     width: 100%;
-    min-width: 0; /* Previene desbordamiento en tablas grandes */
+    min-width: 0;
 }
 
-/* Adaptación responsive para pantallas medianas y dispositivos móviles */
+/* ==========================================================================
+   RESPONSIVE: MÓVIL Y TABLET (≤ 950px)
+   ========================================================================== */
+
 @media (max-width: 950px) {
-    #view-panel-carrera,
-    #view-panel-estudiante {
-        grid-template-columns: 1fr;
-    }
-    
-    .tabs-nav {
-        flex-direction: row;
-        border-right: none;
-        border-bottom: 2px solid var(--border-color);
-        padding-right: 0;
-        padding-bottom: 0.75rem;
-        overflow-x: auto;
-        min-width: 100%;
+    #view-panel-carrera:not(.hidden),
+    #view-panel-estudiante:not(.hidden) {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 1rem !important;
     }
 
-    #view-panel-carrera > .tabs-nav,
-    #view-panel-estudiante > .tabs-nav {
-        position: static;
+    #view-panel-carrera:not(.hidden) > .carrera-header,
+    #view-panel-estudiante:not(.hidden) > .carrera-header {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-column: auto !important;
+        order: 1 !important;
+    }
+
+    #view-panel-carrera:not(.hidden) > .tabs-nav,
+    #view-panel-estudiante:not(.hidden) > .tabs-nav {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-column: auto !important;
+        order: 2 !important;
+        flex-direction: row !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        padding-right: 0 !important;
+        padding-bottom: 0.75rem !important;
+        overflow-x: auto !important;
+        min-width: 100% !important;
+        position: static !important;
+    }
+
+    #view-panel-carrera:not(.hidden) > .tab-content,
+    #view-panel-estudiante:not(.hidden) > .tab-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-column: auto !important;
+        order: 3 !important;
     }
 
     .tab-btn {
-        width: auto;
-        white-space: nowrap;
-        border-left: 1px solid var(--border-color);
-        border-bottom: 3px solid transparent;
+        width: auto !important;
+        white-space: nowrap !important;
+        border-left: 1px solid var(--border-color) !important;
+        border-bottom: 3px solid transparent !important;
     }
 
     .tab-btn:hover {
-        transform: translateY(-2px);
+        transform: translateY(-2px) !important;
     }
 
     .tab-btn.active {
-        border-bottom-color: var(--primary-color);
-        border-left-color: var(--border-color);
-        background: rgba(212, 175, 55, 0.12);
+        border-bottom-color: var(--primary-color) !important;
+        border-left-color: var(--border-color) !important;
+        background: rgba(212, 175, 55, 0.12) !important;
     }
 }
 
-/* LUCES DE CASINO EN EL HEADER (bombillas) */
+/* ==========================================================================
+   LUCES DE CASINO EN EL HEADER (bombillas)
+   ========================================================================== */
 
 .main-header {
     position: relative;
     overflow: hidden;
-    padding-bottom: 1.5rem; /* espacio extra para las luces */
+    padding-bottom: 1.5rem;
 }
 
-/* Contenedor de luces */
 .header-luces {
     position: absolute;
     bottom: 0.5rem;
@@ -222,20 +251,18 @@ body {
     z-index: 1;
 }
 
-/* Cada bombilla individual */
 .luz-bombilla {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: var(--primary-color);
-    box-shadow: 
+    box-shadow:
         0 0 8px var(--primary-color),
         0 0 16px var(--primary-color),
         inset 0 0 4px rgba(255, 255, 255, 0.5);
     animation: parpadearBombilla 1s ease-in-out infinite;
 }
 
-/* Animación de parpadeo con delays escalonados */
 .luz-bombilla:nth-child(1) { animation-delay: 0s; }
 .luz-bombilla:nth-child(2) { animation-delay: 0.2s; }
 .luz-bombilla:nth-child(3) { animation-delay: 0.4s; }
@@ -254,20 +281,19 @@ body {
 @keyframes parpadearBombilla {
     0%, 40%, 100% {
         opacity: 1;
-        box-shadow: 
+        box-shadow:
             0 0 8px var(--primary-color),
             0 0 16px var(--primary-color),
             inset 0 0 4px rgba(255, 255, 255, 0.5);
     }
     20%, 60% {
         opacity: 0.3;
-        box-shadow: 
+        box-shadow:
             0 0 4px var(--primary-color),
             inset 0 0 2px rgba(255, 255, 255, 0.3);
     }
 }
 
-/* Responsive: menos bombillas en móvil */
 @media (max-width: 600px) {
     .luz-bombilla {
         width: 8px;

@@ -14,7 +14,7 @@ import { abrirQuiz, setEstudianteActual, inicializarQuiz } from './quiz.js';
 import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
 import { renderizarBlackjack } from '../../juegos/blackjack.js';
 import { renderizarRuletaCasino } from '../../juegos/ruletaCasino.js';
-import { iniciarMusicaFondo } from '../../sonidos.js';
+import { inicializarMusicaSala } from '../../juegos/musicaSala.js';
 
 /* ESTADO INTERNO */
 
@@ -30,6 +30,7 @@ export function inicializarPanelEstudiante() {
     conectarCambioDePestanaEstudiante();
     conectarFiltrosResultados();
     conectarSelectorJuegos();
+    inicializarMusicaSala();
 
     console.log('Panel Estudiante: listo');
 }
@@ -184,8 +185,6 @@ function iniciarSesionEstudiante(est) {
     // Cargar temas de la carrera
     cargarTemasDeCarrera();
     cargarEvaluacionesDeCarrera();
-
-    iniciarMusicaFondo();
 
     // Navegar al panel
     mostrarVista('view-panel-estudiante');

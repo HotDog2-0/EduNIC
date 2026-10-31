@@ -137,3 +137,30 @@
 .rc-num[hidden] { display: none; }
 
 #rc-reiniciar { align-self: center; }
+
+/* Botón de música */
+.rc-musica {
+    min-height: 40px;
+    padding: 0.3rem 1rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--border-color);
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rc-musica:hover { border-color: var(--primary-color); color: var(--primary-color); }
+
+.rc-musica[aria-pressed="true"] {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+}
+
+.rc-musica:focus-visible {
+    outline: 3px solid var(--text-color);
+    outline-offset: 2px;
+}

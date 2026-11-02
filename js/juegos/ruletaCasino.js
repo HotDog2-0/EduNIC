@@ -13,13 +13,12 @@ const SEG = TAU / ORDEN.length;
 const TAM = 420;                      
 const RADIO = TAM / 2;
 
-// Música de fondo (para cambiarla, reemplaza el archivo o cambia esta ruta)
+
 const RUTA_MUSICA = 'assets/sonidos/musica-sala.mp3';
 const VOLUMEN_MUSICA = 0.25;
-const VOLUMEN_EFECTOS = 0.6;     // sonido generado de la bola (si no hay archivo)
+const VOLUMEN_EFECTOS = 0.6;     
 
-// Sonido real del giro (opcional). Si el archivo existe, la rueda gira
-// exactamente lo que dura el audio (entre 3 y 12 segundos).
+
 const RUTA_GIRO = 'assets/sonidos/ruleta-giro.mp3';
 const VOLUMEN_GIRO = 0.7;
 
@@ -27,16 +26,13 @@ const FICHAS_INICIALES = 1000;
 const MONTOS = [10, 50, 100, 250];
 const MINIMO = MONTOS[0];
 
-// Los mismos colores del tema (el canvas no puede leer variables CSS)
 const ORO = '#d4af37';
 const MARFIL = '#f3f4f6';
 const COLOR_ROJO = '#b91c1c';
 const COLOR_NEGRO = '#111113';
 const COLOR_VERDE = '#0b6b3a';
 
-/* ==========================================
-   ESTADO
-   ========================================== */
+
 
 let fichas = FICHAS_INICIALES;   // se conserva al salir y volver al juego
 let historial = [];              // últimos números que salieron
@@ -51,14 +47,7 @@ let vigilante = null;            // detecta cuando el estudiante sale del juego
 let efectoGiro = null;           // audio real del giro (si existe el archivo)
 let efectoGiroFalla = false;     // true si el archivo no existe: se usa el sonido generado
 
-/* ==========================================
-   PUNTO DE ENTRADA
-   ========================================== */
 
-/**
- * Renderiza el minijuego de Ruleta de Casino
- * dentro de #juego-container.
- */
 export function renderizarRuletaCasino() {
     const cont = document.getElementById('juego-container');
     if (!cont) return;

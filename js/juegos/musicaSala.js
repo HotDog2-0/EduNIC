@@ -3,14 +3,15 @@
    Música de fondo de la sala de minijuegos
    (la pantalla donde se elige el juego).
 
-   - Suena solo mientras se ve la sala; al entrar a un
-     juego se pausa, y al volver continúa.
+   - Suena en toda la pestaña Minijuegos: en la sala y también
+     dentro de Piedra, Papel o Tijera y Blackjack. Solo se pausa
+     en la Ruleta, que tiene su propia música.
    - Tiene su propio botón para encenderla o apagarla
      (se recuerda la elección).
    - Se apaga si se silencia el sonido de toda la app.
    ============================================ */
 
-import { estaSilenciado } from '../sonidos.js';
+import { estaSilenciado, suspenderMusicaFondo } from '../sonidos.js';
 
 // Archivo de la música (cámbialo si tu archivo se llama distinto)
 const RUTA_MUSICA_SALA = 'assets/sonidos/musica-sala.mp3';
@@ -55,7 +56,7 @@ export function inicializarMusicaSala() {
 
     // Al hacer clic en cualquier parte (cambiar de pestaña, abrir un juego, volver)
     // se revisa enseguida; además se revisa cada segundo por si silencian la app.
-    document.addEventListener('click', () => setTimeout(sincronizar, 60));
+    document.addEventListener('click', () => setTimeout(sincronizar, 0));
     setInterval(sincronizar, 1000);
     sincronizar();
 }
@@ -63,7 +64,14 @@ export function inicializarMusicaSala() {
 function sincronizar() {
     if (!sala || !musica) return;
 
-    const salaVisible = sala.offsetParent !== null;   // false si la pestaña o la sala están ocultas
+    // La música general se pausa mientras se está en la pestaña Minijuegos
+    const pestana = document.getElementById('tab-est-juegos');
+    const enMinijuegos = pestana ? pestana.offsetParent !== null : sala.offsetParent !== null;
+    suspenderMusicaFondo(enMinijuegos);
+
+    // La Ruleta tiene su propia música, así que ahí esta se pausa
+    const enRuleta = !!document.getElementById('rc-canvas');
+    const salaVisible = enMinijuegos && !enRuleta;
     const debeSonar = salaVisible && !document.hidden && activa && !falla && !estaSilenciado();
 
     if (debeSonar && musica.paused) {

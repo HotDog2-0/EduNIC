@@ -10,13 +10,13 @@ import {
     detectarVideo,
     abrirModalVideo
 } from '../../utils.js';
-import { generarCodigoestudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoEstudiante.js';
+import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoEstudiante.js';
 
 /* ESTADO INTERNO */
 
 let estudiantes = [];             
 let idCarreraActiva = null;       
-let estudianteEditandoId = null;S   
+let estudianteEditandoId = null;  
 
 /* PUNTO DE ENTRADA */
 /**
@@ -115,7 +115,7 @@ function conectarFormularioRegistro() {
         const nuevo = {
             id: generarId(),
             nombre,
-            codigo: generarCodigoEstudiante(nombre, todos),
+            codigo: generardiante(nombre, todos),
             idCarrera: idCarreraActiva
         };
 
@@ -442,7 +442,7 @@ function importarNombres(nombres) {
         const nuevo = {
             id: generarId(),
             nombre,
-            codigo: generarCodigoEstudiante(nombre, todos),
+            codigo: generardiante(nombre, todos),
             idCarrera: idCarreraActiva
         };
 

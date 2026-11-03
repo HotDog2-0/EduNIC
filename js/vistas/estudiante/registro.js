@@ -216,7 +216,7 @@ function registrarEstudiante() {
     }
 
     // Generar código único y personal (iniciales del nombre + letras al azar)
-    const codigo = generarCodigoEstudiante(nombre, estudiantes);
+    const codigo = generardiante(nombre, estudiantes);
 
     // Crear el nuevo estudiante
     const nuevoEstudiante = {

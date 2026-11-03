@@ -16,6 +16,7 @@ import {
     limpiarNombre
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
+import { generarCodigoEstudiante, palabrasDeNombre } from '../../codigoEstudiante.js';
 
 /* ESTADO INTERNO */
 
@@ -190,6 +191,12 @@ function registrarEstudiante() {
         return;
     }
 
+    // El código se arma con el nombre y el apellido
+    if (palabrasDeNombre(nombre).length < 2) {
+        mostrarNotificacion('Escribe tu nombre y apellido', 'error');
+        return;
+    }
+
     // Cargar todos los estudiantes
     const estudiantes = bd.obtener(CLAVES.ESTUDIANTES) || [];
 
@@ -208,8 +215,8 @@ function registrarEstudiante() {
         return;
     }
 
-    // Generar código único (global, no por carrera)
-    const codigo = calcularSiguienteCodigoGlobal(estudiantes);
+    // Generar código único y personal (iniciales del nombre + letras al azar)
+    const codigo = generarCodigoEstudiante(nombre, estudiantes);
 
     // Crear el nuevo estudiante
     const nuevoEstudiante = {
@@ -228,26 +235,7 @@ function registrarEstudiante() {
     // Mostrar pantalla de éxito
     mostrarExitoRegistro();
 
-    mostrarNotificacion(`¡Bienvenido, ${nombre}!`);
-}
-
-/**
- * Calcula el siguiente código único global (EST-101, EST-102...).
- * El código es global, no por carrera.
- * 
- * @param {Array} estudiantes - Lista de todos los estudiantes
- * @returns {string} Ej: "EST-115"
- */
-function calcularSiguienteCodigoGlobal(estudiantes) {
-    if (estudiantes.length === 0) return 'EST-101';
-
-    const numeros = estudiantes
-        .map(e => parseInt((e.codigo || '').replace(/\D/g, ''), 10))
-        .filter(n => !isNaN(n));
-
-    if (numeros.length === 0) return 'EST-101';
-
-    return `EST-${Math.max(...numeros) + 1}`;
+    mostrarNotificacion(`¡Bienvenido, ${nombre}! Guarda tu código: ${codigo}`);
 }
 
 /* PASO 3: PANTALLA DE ÉXITO */

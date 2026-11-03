@@ -10,6 +10,7 @@ import {
     detectarVideo,
     abrirModalVideo
 } from '../../utils.js';
+import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoEstudiante.js';
 
 /* ESTADO INTERNO */
 
@@ -58,30 +59,18 @@ export function cargarEstudiantesDeCarrera(idCarrera) {
     actualizarCodigoPreview();
 }
 
-/* GENERACIÓN DE CÓDIGO GLOBAL */
+/* CÓDIGO PERSONAL */
 
 /**
- * Calcula el siguiente código único global.
- * Ejemplo: si existen EST-101, EST-102, EST-105 → devuelve EST-106.
+ * Muestra cómo empezará el código mientras se escribe el nombre.
+ * Las 4 letras finales se generan al azar al guardar.
  */
-function calcularSiguienteCodigo() {
-    const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
-
-    if (todos.length === 0) return 'EST-101';
-
-    const numeros = todos
-        .map(e => parseInt((e.codigo || '').replace(/\D/g, ''), 10))
-        .filter(n => !isNaN(n));
-
-    if (numeros.length === 0) return 'EST-101';
-
-    return `EST-${Math.max(...numeros) + 1}`;
-}
-
 function actualizarCodigoPreview() {
     const input = document.getElementById('new-student-codigo');
     if (!input) return;
-    input.value = calcularSiguienteCodigo();
+    const nombre = document.getElementById('new-student-name')?.value || '';
+    const prefijo = prefijoCodigo(nombre);
+    input.value = prefijo ? `${prefijo}-????` : 'Se genera al guardar';
 }
 
 /* REGISTRO MANUAL */
@@ -107,6 +96,11 @@ function conectarFormularioRegistro() {
             return;
         }
 
+        if (palabrasDeNombre(nombre).length < 2) {
+            mostrarNotificacion('Escribe nombre y apellido del estudiante', 'error');
+            return;
+        }
+
         // Verificar duplicado por nombre EN LA MISMA CARRERA
         const existe = estudiantes.some(
             e => normalizar(e.nombre) === normalizar(nombre)
@@ -116,16 +110,16 @@ function conectarFormularioRegistro() {
             return;
         }
 
-        // Crear el nuevo estudiante
+        // Crear el nuevo estudiante con su código personal
+        const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
         const nuevo = {
             id: generarId(),
             nombre,
-            codigo: calcularSiguienteCodigo(),
+            codigo: generarCodigoEstudiante(nombre, todos),
             idCarrera: idCarreraActiva
         };
 
         // Guardar en la lista global (no solo en la filtrada)
-        const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
         todos.push(nuevo);
         bd.guardar(CLAVES.ESTUDIANTES, todos);
 
@@ -431,15 +425,6 @@ function importarNombres(nombres) {
 
     const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
 
-    // Para calcular códigos consecutivos sin repetir, hacemos un seguimiento
-    let siguienteNumero = (() => {
-        if (todos.length === 0) return 101;
-        const nums = todos
-            .map(e => parseInt((e.codigo || '').replace(/\D/g, ''), 10))
-            .filter(n => !isNaN(n));
-        return nums.length === 0 ? 101 : Math.max(...nums) + 1;
-    })();
-
     nombres.forEach(nombreCrudo => {
         const nombre = limpiarNombre(nombreCrudo);
         if (!nombre) return;
@@ -457,10 +442,9 @@ function importarNombres(nombres) {
         const nuevo = {
             id: generarId(),
             nombre,
-            codigo: `EST-${siguienteNumero}`,
+            codigo: generarCodigoEstudiante(nombre, todos),
             idCarrera: idCarreraActiva
         };
-        siguienteNumero++;
 
         todos.push(nuevo);
         estudiantes.push(nuevo);

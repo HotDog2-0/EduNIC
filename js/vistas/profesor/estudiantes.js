@@ -10,13 +10,13 @@ import {
     detectarVideo,
     abrirModalVideo
 } from '../../utils.js';
-import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoEstudiante.js';
+import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoestudiante.js';
 
 /* ESTADO INTERNO */
 
 let estudiantes = [];             
 let idCarreraActiva = null;       
-let estudianteEditandoId = null;   
+let estudianteEditandoId = null;S   
 
 /* PUNTO DE ENTRADA */
 /**

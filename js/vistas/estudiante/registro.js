@@ -16,7 +16,7 @@ import {
     limpiarNombre
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
-import { generarCodigoEstudiante, palabrasDeNombre } from '../../codigoEstudiante.js';
+import { generarCodigoEstudiante, palabrasDeNombre } from '../../codigoestudiante.js';
 
 /* ESTADO INTERNO */
 

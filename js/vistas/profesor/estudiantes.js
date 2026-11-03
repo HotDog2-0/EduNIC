@@ -10,7 +10,7 @@ import {
     detectarVideo,
     abrirModalVideo
 } from '../../utils.js';
-import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoestudiante.js';
+import { generarCodigoestudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoEstudiante.js';
 
 /* ESTADO INTERNO */
 

@@ -15,6 +15,7 @@ import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
 import { renderizarBlackjack } from '../../juegos/blackjack.js';
 import { renderizarRuletaCasino } from '../../juegos/ruletaCasino.js';
 import { inicializarMusicaSala } from '../../juegos/musicaSala.js';
+import { nombreCoincide } from '../../codigoEstudiante.js';
 
 /* ESTADO INTERNO */
 
@@ -120,31 +121,84 @@ function conectarCambioDePestanaEstudiante() {
 
 /* LOGIN */
 
+// Intentos fallidos seguidos (para frenar a quien pruebe códigos al azar)
+let intentosFallidos = 0;
+let bloqueadoHasta = 0;
+const MAX_INTENTOS = 5;
+const SEGUNDOS_BLOQUEO = 30;
+
+/**
+ * Agrega al login el campo "nombre" y actualiza los textos de ayuda.
+ * Así el código solo sirve para entrar junto con el nombre de su dueño.
+ */
+function prepararCamposLogin() {
+    if (document.getElementById('student-name')) return;
+
+    const inputCodigo = document.getElementById('student-code');
+    const grupoCodigo = inputCodigo?.closest('.form-group');
+    if (!inputCodigo || !grupoCodigo) return;
+
+    inputCodigo.placeholder = 'Ej: DGL-7K4Q';
+
+    const grupoNombre = document.createElement('div');
+    grupoNombre.className = 'form-group';
+    grupoNombre.innerHTML = `
+        <label for="student-name">Tu nombre y apellido:</label>
+        <input type="text" id="student-name" required
+               placeholder="Ej: David García" autocomplete="off">
+    `;
+    grupoCodigo.after(grupoNombre);
+
+    const subtitulo = document.querySelector('#view-login-estudiante .form-subtitle');
+    if (subtitulo) subtitulo.textContent = 'Ingresa tu código personal y tu nombre:';
+
+    const ayuda = document.querySelector('#view-login-estudiante .form-hint');
+    if (ayuda) {
+        ayuda.innerHTML = '<i class="fa-solid fa-circle-info"></i> ' +
+            'Tu código es personal: solo funciona con tu nombre. Si lo perdiste, pídeselo a tu docente.';
+    }
+}
+
 function conectarLoginEstudiante() {
     const form = document.getElementById('form-login-estudiante');
     if (!form) return;
 
+    prepararCamposLogin();
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const input = document.getElementById('student-code');
-        const codigo = normalizar(input.value);
-
-        if (!codigo) {
-            mostrarNotificacion('Ingresa tu código único', 'error');
+        // Demasiados intentos fallidos: esperar un momento
+        const restante = Math.ceil((bloqueadoHasta - Date.now()) / 1000);
+        if (restante > 0) {
+            mostrarNotificacion(`Demasiados intentos. Espera ${restante} segundos.`, 'error');
             return;
         }
 
-        // Buscar al estudiante por código
+        const codigo = normalizar(document.getElementById('student-code').value);
+        const nombre = document.getElementById('student-name').value;
+
+        if (!codigo || !nombre.trim()) {
+            mostrarNotificacion('Ingresa tu código y tu nombre', 'error');
+            return;
+        }
+
+        // El código debe existir Y el nombre debe ser el de su dueño
         const estudiantes = bd.obtener(CLAVES.ESTUDIANTES) || [];
         const est = estudiantes.find(x => normalizar(x.codigo) === codigo);
 
-        if (!est) {
-            mostrarNotificacion('Código no válido. Verifica con tu docente.', 'error');
+        if (!est || !nombreCoincide(nombre, est.nombre)) {
+            intentosFallidos++;
+            if (intentosFallidos >= MAX_INTENTOS) {
+                intentosFallidos = 0;
+                bloqueadoHasta = Date.now() + SEGUNDOS_BLOQUEO * 1000;
+            }
+            // Mismo mensaje para los dos casos, así no se sabe cuál falló
+            mostrarNotificacion('Código o nombre incorrectos. Verifica con tu docente.', 'error');
             return;
         }
 
-        // Guardar sesión
+        intentosFallidos = 0;
         iniciarSesionEstudiante(est);
         form.reset();
     });

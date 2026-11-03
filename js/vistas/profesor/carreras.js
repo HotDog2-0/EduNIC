@@ -9,7 +9,7 @@ import {
     limpiarNombre
 } from '../../utils.js';
 import { mostrarVista } from '../../navegacion.js';
-import { cargarEstudiantesDeCarrera } from './estudiantes.js';
+import { cargarEstudiantesDeCarrera } from './Estudiantes.js';
 import { cargarModulosDeAnio } from './temas.js';
 import { cargarEvaluacionesDeAnio } from './evaluaciones.js';
 import { cargarCalificacionesDeAnio } from './calificaciones.js';

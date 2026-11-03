@@ -7,7 +7,7 @@ console.log('🔵 app.js: archivo cargado');
 import { bd, CLAVES, inicializarBaseDatos } from './storage.js';
 import { inicializarLanding } from './vistas/landing.js';
 import { inicializarCarreras } from './vistas/profesor/carreras.js';
-import { inicializarEstudiantes } from './vistas/profesor/Estudiantes.js';
+import { inicializarestudiantes } from './vistas/profesor/estudiantes.js';
 import { inicializarTemas } from './vistas/profesor/temas.js';
 import { inicializarEvaluaciones } from './vistas/profesor/evaluaciones.js';
 import {

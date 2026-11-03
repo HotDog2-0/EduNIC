@@ -15,8 +15,7 @@ import { renderizarPiedraPapelTijera } from '../../juegos/piedraPapelTijera.js';
 import { renderizarBlackjack } from '../../juegos/blackjack.js';
 import { renderizarRuletaCasino } from '../../juegos/ruletaCasino.js';
 import { inicializarMusicaSala } from '../../juegos/musicaSala.js';
-import { nombreCoincide } from '../../codigoestudiante.js';
-
+import { nombreCoincide } from '../../codigoEstudiante.js';
 /* ESTADO INTERNO */
 
 let estudianteActual = null;   // { id, nombre, codigo, idCarrera }

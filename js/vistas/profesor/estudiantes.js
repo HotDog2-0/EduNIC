@@ -10,13 +10,13 @@ import {
     detectarVideo,
     abrirModalVideo
 } from '../../utils.js';
-import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre } from '../../codigoEstudiante.js';
+import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre, sufijoAleatorio } from '../../codigoEstudiante.js';
 
 /* ESTADO INTERNO */
 
 let estudiantes = [];             
 let idCarreraActiva = null;       
-let estudianteEditandoId = null;  
+let estudianteEditandoId = null;   
 
 /* PUNTO DE ENTRADA */
 /**
@@ -61,16 +61,27 @@ export function cargarEstudiantesDeCarrera(idCarrera) {
 
 /* CÓDIGO PERSONAL */
 
+// Letras al azar del código: se eligen una vez y se conservan mientras se escribe el nombre
+let sufijoPendiente = null;
+
 /**
- * Muestra cómo empezará el código mientras se escribe el nombre.
- * Las 4 letras finales se generan al azar al guardar.
+ * Muestra el código completo mientras se escribe el nombre.
+ * Las iniciales cambian con el nombre; las 4 letras finales se quedan fijas.
  */
 function actualizarCodigoPreview() {
     const input = document.getElementById('new-student-codigo');
     if (!input) return;
+
     const nombre = document.getElementById('new-student-name')?.value || '';
     const prefijo = prefijoCodigo(nombre);
-    input.value = prefijo ? `${prefijo}-????` : 'Se genera al guardar';
+
+    if (!prefijo) {
+        sufijoPendiente = null;
+        input.value = 'Escribe el nombre';
+        return;
+    }
+    if (!sufijoPendiente) sufijoPendiente = sufijoAleatorio();
+    input.value = `${prefijo}-${sufijoPendiente}`;
 }
 
 /* REGISTRO MANUAL */
@@ -112,10 +123,17 @@ function conectarFormularioRegistro() {
 
         // Crear el nuevo estudiante con su código personal
         const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
+
+        // Se usa el código que se vio en pantalla (si sigue libre); si no, se genera otro
+        const previsto = (document.getElementById('new-student-codigo')?.value || '').trim().toUpperCase();
+        const prevLibre = previsto.startsWith(prefijoCodigo(nombre) + '-') &&
+            /^[A-Z]{1,4}-[A-Z2-9]{4}$/.test(previsto) &&
+            !todos.some(e => String(e.codigo || '').toUpperCase() === previsto);
+
         const nuevo = {
             id: generarId(),
             nombre,
-            codigo: generardiante(nombre, todos),
+            codigo: prevLibre ? previsto : generarCodigoEstudiante(nombre, todos),
             idCarrera: idCarreraActiva
         };
 
@@ -126,10 +144,11 @@ function conectarFormularioRegistro() {
         // Actualizar lista local
         estudiantes.push(nuevo);
         renderizarTabla();
-        actualizarCodigoPreview();
 
-        // Limpiar formulario
+        // Limpiar formulario y preparar un código nuevo para el siguiente
         form.reset();
+        sufijoPendiente = null;
+        actualizarCodigoPreview();
 
         mostrarNotificacion(`Registrado con código ${nuevo.codigo}`);
     });
@@ -442,7 +461,7 @@ function importarNombres(nombres) {
         const nuevo = {
             id: generarId(),
             nombre,
-            codigo: generardiante(nombre, todos),
+            codigo: generarCodigoEstudiante(nombre, todos),
             idCarrera: idCarreraActiva
         };
 

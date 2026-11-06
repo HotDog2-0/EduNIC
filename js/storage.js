@@ -1,28 +1,29 @@
-/* Capa de acceso a datos (localStorage)
-   
-   MODELO DE DATOS ACTUAL:
-   - carreras: { id, nombre, codigo, codigoClase, creado }
-   - anios: { id, idCarrera, nombre, estado, creado }
-   - estudiantes: { id, nombre, codigo, idCarrera }
-   - temas: módulos y temas (con idAnio)
-   - evaluaciones: con idAnio
-   - resultados: con idAnio */
+/* Capa de acceso a datos (localStorage + Supabase) */
+
+import { supabase } from './supabaseClient.js';
 
 export const CLAVES = {
     CARRERAS:        'edunic_carreras',
-    ANIOS:           'edunic_anios',           // ← NUEVA
+    ANIOS:           'edunic_anios',
     ESTUDIANTES:     'edunic_estudiantes',
     TEMAS:           'edunic_temas',
     EVALUACIONES:    'edunic_evaluaciones',
     RESULTADOS:      'edunic_resultados',
     USUARIO_ACTUAL:  'edunic_usuario_actual',
     CARRERA_ACTIVA:  'edunic_carrera_activa',
-    ANIO_ACTIVO:     'edunic_anio_activo'      // ← NUEVA
+    ANIO_ACTIVO:     'edunic_anio_activo'
 };
 
-/**
- * Objeto de acceso a datos.
- */
+// Mapeo de claves a tablas (ARRIBA para que `guardar` lo use)
+const TABLAS = {
+    'edunic_carreras':     'carreras',
+    'edunic_anios':        'anios',
+    'edunic_estudiantes':  'estudiantes',
+    'edunic_temas':        'temas',
+    'edunic_evaluaciones': 'evaluaciones',
+    'edunic_resultados':   'resultados'
+};
+
 export const bd = {
     obtener(clave) {
         try {
@@ -37,6 +38,9 @@ export const bd = {
     guardar(clave, valor) {
         try {
             localStorage.setItem(clave, JSON.stringify(valor));
+            if (TABLAS[clave]) {
+                sincronizarConSupabase(clave, valor);
+            }
         } catch (e) {
             console.error('Error al guardar en storage:', clave, e);
         }
@@ -47,8 +51,7 @@ export const bd = {
     }
 };
 
-/*  DATOS INICIALES */
-
+/* DATOS INICIALES */
 const datosIniciales = {
     carreras: [
         {
@@ -67,20 +70,8 @@ const datosIniciales = {
         }
     ],
     anios: [
-        {
-            id: 'anio-1',
-            idCarrera: 'car-1',
-            nombre: 'Primer Año',
-            estado: 'activo',
-            creado: new Date().toISOString()
-        },
-        {
-            id: 'anio-2',
-            idCarrera: 'car-2',
-            nombre: 'Primer Año',
-            estado: 'activo',
-            creado: new Date().toISOString()
-        }
+        { id: 'anio-1', idCarrera: 'car-1', nombre: 'Primer Año', estado: 'activo', creado: new Date().toISOString() },
+        { id: 'anio-2', idCarrera: 'car-2', nombre: 'Primer Año', estado: 'activo', creado: new Date().toISOString() }
     ],
     estudiantes: [],
     temas: [],
@@ -89,48 +80,65 @@ const datosIniciales = {
 };
 
 /**
- * Inicializa el almacenamiento con datos de prueba si está vacío.
+ * Carga todos los datos desde Supabase a localStorage.
+ * Devuelve true si encontró datos en Supabase.
  */
-export function inicializarBaseDatos() {
-    if (!bd.obtener(CLAVES.CARRERAS)) {
-        bd.guardar(CLAVES.CARRERAS, datosIniciales.carreras);
+export async function cargarTodoDesdeSupabase() {
+    console.log('📥 Cargando datos desde Supabase...');
+    let datosCargados = false;
+
+    for (const [clave, tabla] of Object.entries(TABLAS)) {
+        try {
+            const { data, error } = await supabase.from(tabla).select('data');
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                const array = data.map(item => item.data);
+                localStorage.setItem(clave, JSON.stringify(array));
+                console.log(`✅ ${tabla}: ${array.length} registros cargados.`);
+                datosCargados = true;
+            } else {
+                console.log(`⚠️ ${tabla}: vacía en Supabase.`);
+            }
+        } catch (e) {
+            console.error(`❌ Error al cargar ${tabla} desde Supabase:`, e);
+        }
     }
-    if (!bd.obtener(CLAVES.ANIOS)) {
-        bd.guardar(CLAVES.ANIOS, datosIniciales.anios);
-    }
-    if (!bd.obtener(CLAVES.ESTUDIANTES)) {
-        bd.guardar(CLAVES.ESTUDIANTES, datosIniciales.estudiantes);
-    }
-    if (!bd.obtener(CLAVES.TEMAS)) {
-        bd.guardar(CLAVES.TEMAS, datosIniciales.temas);
-    }
-    if (!bd.obtener(CLAVES.EVALUACIONES)) {
-        bd.guardar(CLAVES.EVALUACIONES, datosIniciales.evaluaciones);
-    }
-    if (!bd.obtener(CLAVES.RESULTADOS)) {
-        bd.guardar(CLAVES.RESULTADOS, datosIniciales.resultados);
+    return datosCargados;
+}
+
+/**
+ * Inicializa el almacenamiento (ahora es async).
+ */
+export async function inicializarBaseDatos() {
+    const datosDeSupabase = await cargarTodoDesdeSupabase();
+
+    // Si Supabase está vacío, usar datos iniciales
+    if (!datosDeSupabase) {
+        console.log('🔄 Supabase vacío. Sembrando datos iniciales...');
+        if (!bd.obtener(CLAVES.CARRERAS))        bd.guardar(CLAVES.CARRERAS, datosIniciales.carreras);
+        if (!bd.obtener(CLAVES.ANIOS))           bd.guardar(CLAVES.ANIOS, datosIniciales.anios);
+        if (!bd.obtener(CLAVES.ESTUDIANTES))     bd.guardar(CLAVES.ESTUDIANTES, datosIniciales.estudiantes);
+        if (!bd.obtener(CLAVES.TEMAS))           bd.guardar(CLAVES.TEMAS, datosIniciales.temas);
+        if (!bd.obtener(CLAVES.EVALUACIONES))    bd.guardar(CLAVES.EVALUACIONES, datosIniciales.evaluaciones);
+        if (!bd.obtener(CLAVES.RESULTADOS))      bd.guardar(CLAVES.RESULTADOS, datosIniciales.resultados);
     }
 
-    // Migraciones de versiones anteriores (si hubiera)
+    // Migraciones (siempre se ejecutan por compatibilidad)
     migrarCarreras();
     migrarEvaluaciones();
     migrarResultados();
-    migrarAIdAnio(); 
+    migrarAIdAnio();
 }
 
-/* MIGRACIONES (versiones anteriores) */
+/* MIGRACIONES */
 
-/**
- * Migra carreras antiguas que tenían el campo "anio".
- * Crea un año por defecto para cada carrera y quita el campo "anio".
- */
 export function migrarCarreras() {
     const carreras = bd.obtener(CLAVES.CARRERAS) || [];
     const anios = bd.obtener(CLAVES.ANIOS) || [];
     let cambios = false;
 
     carreras.forEach(c => {
-        // Si la carrera tiene "anio" (modelo viejo), migrarla
         if (c.anio) {
             const yaTieneAnio = anios.some(a => a.idCarrera === c.id);
             if (!yaTieneAnio) {
@@ -145,7 +153,6 @@ export function migrarCarreras() {
             delete c.anio;
             cambios = true;
         }
-        // Añadir codigoClase si no existe
         if (!c.codigoClase) {
             c.codigoClase = generarCodigoClaseParaMigracion();
             cambios = true;
@@ -159,7 +166,6 @@ export function migrarCarreras() {
     if (cambios) {
         bd.guardar(CLAVES.CARRERAS, carreras);
         bd.guardar(CLAVES.ANIOS, anios);
-        console.log('Carreras y años migrados');
     }
 }
 
@@ -183,16 +189,12 @@ export function migrarEvaluaciones() {
 
         if (necesitaMigracion) {
             const minimoAnterior = ev.puntajeMinimo || 60;
-            const porcentajeMinimo = minimoAnterior / 100;
-            ev.puntajeMinimo = Math.round(porcentajeMinimo * totalPuntos);
+            ev.puntajeMinimo = Math.round((minimoAnterior / 100) * totalPuntos);
             cambios = true;
         }
     });
 
-    if (cambios) {
-        bd.guardar(CLAVES.EVALUACIONES, evaluaciones);
-        console.log('Evaluaciones migradas: campo "puntos" añadido');
-    }
+    if (cambios) bd.guardar(CLAVES.EVALUACIONES, evaluaciones);
 }
 
 export function migrarResultados() {
@@ -200,27 +202,13 @@ export function migrarResultados() {
     let cambios = false;
 
     resultados.forEach(r => {
-        if (typeof r.puntosObtenidos !== 'number') {
-            r.puntosObtenidos = null;
-            cambios = true;
-        }
-        if (typeof r.puntosTotal !== 'number') {
-            r.puntosTotal = null;
-            cambios = true;
-        }
+        if (typeof r.puntosObtenidos !== 'number') { r.puntosObtenidos = null; cambios = true; }
+        if (typeof r.puntosTotal !== 'number')     { r.puntosTotal = null; cambios = true; }
     });
 
-    if (cambios) {
-        bd.guardar(CLAVES.RESULTADOS, resultados);
-        console.log('Resultados migrados');
-    }
+    if (cambios) bd.guardar(CLAVES.RESULTADOS, resultados);
 }
 
-/* UTILIDADES */
-
-/**
- * Genera un código de clase para migración (temporal).
- */
 function generarCodigoClaseParaMigracion() {
     const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let codigo = 'CLS-';
@@ -230,79 +218,95 @@ function generarCodigoClaseParaMigracion() {
     return codigo;
 }
 
-/* MIGRACIÓN: idCarrera → idAnio */
-
-/**
- * Migra los módulos, temas, evaluaciones y resultados
- * del modelo viejo (idCarrera) al nuevo (idAnio).
- * 
- * Asigna a cada elemento el idAnio del año activo
- * de su carrera correspondiente.
- */
 export function migrarAIdAnio() {
     const anios = bd.obtener(CLAVES.ANIOS) || [];
     const carreras = bd.obtener(CLAVES.CARRERAS) || [];
-    let cambiosTemas = false;
-    let cambiosEvals = false;
-    let cambiosRes = false;
+    let cTemas = false, cEvals = false, cRes = false;
 
-    // Mapa: idCarrera → idAnio (del año activo)
     const mapaCarreraAAnio = {};
     carreras.forEach(c => {
-        const anioActivo = anios.find(a => 
+        const anioActivo = anios.find(a =>
             String(a.idCarrera) === String(c.id) && a.estado === 'activo'
         );
-        if (anioActivo) {
-            mapaCarreraAAnio[c.id] = anioActivo.id;
-        }
+        if (anioActivo) mapaCarreraAAnio[c.id] = anioActivo.id;
     });
 
-    // Migrar temas (módulos y temas)
     const temas = bd.obtener(CLAVES.TEMAS) || [];
     temas.forEach(t => {
         if (t.idCarrera && !t.idAnio) {
             const idAnio = mapaCarreraAAnio[t.idCarrera];
-            if (idAnio) {
-                t.idAnio = idAnio;
-                cambiosTemas = true;
-            }
+            if (idAnio) { t.idAnio = idAnio; cTemas = true; }
         }
     });
-    if (cambiosTemas) {
-        bd.guardar(CLAVES.TEMAS, temas);
-    }
+    if (cTemas) bd.guardar(CLAVES.TEMAS, temas);
 
-    // Migrar evaluaciones
     const evaluaciones = bd.obtener(CLAVES.EVALUACIONES) || [];
     evaluaciones.forEach(e => {
         if (e.idCarrera && !e.idAnio) {
             const idAnio = mapaCarreraAAnio[e.idCarrera];
-            if (idAnio) {
-                e.idAnio = idAnio;
-                cambiosEvals = true;
-            }
+            if (idAnio) { e.idAnio = idAnio; cEvals = true; }
         }
     });
-    if (cambiosEvals) {
-        bd.guardar(CLAVES.EVALUACIONES, evaluaciones);
-    }
+    if (cEvals) bd.guardar(CLAVES.EVALUACIONES, evaluaciones);
 
-    // Migrar resultados
     const resultados = bd.obtener(CLAVES.RESULTADOS) || [];
     resultados.forEach(r => {
         if (r.idCarrera && !r.idAnio) {
             const idAnio = mapaCarreraAAnio[r.idCarrera];
-            if (idAnio) {
-                r.idAnio = idAnio;
-                cambiosRes = true;
-            }
+            if (idAnio) { r.idAnio = idAnio; cRes = true; }
         }
     });
-    if (cambiosRes) {
-        bd.guardar(CLAVES.RESULTADOS, resultados);
-    }
+    if (cRes) bd.guardar(CLAVES.RESULTADOS, resultados);
+}
 
-    if (cambiosTemas || cambiosEvals || cambiosRes) {
-        console.log('Datos migrados: idCarrera → idAnio');
+/* SINCRONIZACIÓN CON SUPABASE */
+
+/**
+ * Sincroniza un array local con Supabase.
+ * Estrategia: DELETE + INSERT (simple, apta para demo).
+ */
+export async function sincronizarConSupabase(clave, array) {
+    const tabla = TABLAS[clave];
+    if (!tabla) return;
+
+    try {
+        // 1. Borrar todas las filas
+        const { error: deleteError } = await supabase.from(tabla).delete().neq('id', '___nunca___');
+        if (deleteError) throw deleteError;
+
+        // 2. Insertar nuevo
+        if (Array.isArray(array) && array.length > 0) {
+            const filas = array.map(item => ({
+                id: String(item.id),
+                data: item
+            }));
+            const { error: insertError } = await supabase.from(tabla).insert(filas);
+            if (insertError) throw insertError;
+        }
+        console.log(`✅ Sincronizado: ${tabla} (${array?.length || 0})`);
+    } catch (e) {
+        console.error(`❌ Error al sincronizar ${tabla}:`, e);
     }
+}
+
+/**
+ * Suscribirse a cambios en vivo de una tabla.
+ */
+export function suscribirCambios(clave, callback) {
+    const tabla = TABLAS[clave];
+    if (!tabla) return null;
+
+    const canal = supabase
+        .channel(`cambios-${tabla}-${Date.now()}`)
+        .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: tabla },
+            (payload) => {
+                console.log(`📡 Cambio en ${tabla}:`, payload.eventType);
+                callback(payload);
+            }
+        )
+        .subscribe();
+
+    return canal;
 }

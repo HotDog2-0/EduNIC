@@ -62,6 +62,27 @@ export function estaSilenciado() {
 let musicaFondo = null;
 let musicaActiva = false;
 
+// Canciones de fondo: suenan una tras otra y al terminar la lista vuelven a empezar.
+// Para agregar más, pon el archivo en assets/musica/ y añade su ruta aquí.
+const PISTAS = [
+    'assets/musica/casino-bg.mp3',
+    'assets/musica/casino-02.mp3',
+    'assets/musica/casino-03.mp3',
+    'assets/musica/casino-04.mp3'
+];
+let pistaActual = 0;
+let fallosSeguidos = 0;
+
+/** Pasa a la siguiente canción de la lista (y sigue sonando si estaba sonando). */
+export function siguientePista() {
+    if (!musicaFondo) return;
+    pistaActual = (pistaActual + 1) % PISTAS.length;
+    musicaFondo.src = PISTAS[pistaActual];
+    if (musicaActiva && !enSeccionPropia) {
+        musicaFondo.play().catch(() => { /* si falla, el evento "error" salta a la siguiente */ });
+    }
+}
+
 // Mientras se está en la sección Minijuegos (que tiene su propia música),
 // la música general se pausa y vuelve a sonar al salir.
 let enSeccionPropia = false;
@@ -118,11 +139,18 @@ export function iniciarMusicaFondo() {
         return;
     }
 
-    // Crear nuevo audio
-    musicaFondo = new Audio('assets/musica/casino-bg.mp3');
-    musicaFondo.loop = true;
+    // Crear nuevo audio (con lista de canciones)
+    musicaFondo = new Audio(PISTAS[pistaActual]);
+    musicaFondo.loop = PISTAS.length === 1;
     musicaFondo.volume = 0.15;
     musicaFondo.preload = 'auto';
+    musicaFondo.addEventListener('ended', siguientePista);
+    musicaFondo.addEventListener('playing', () => { fallosSeguidos = 0; });
+    musicaFondo.addEventListener('error', () => {
+        // Si un archivo no existe, se salta a la siguiente (sin dar vueltas infinitas)
+        fallosSeguidos++;
+        if (fallosSeguidos < PISTAS.length) siguientePista();
+    });
 
     // Intentar reproducir
     musicaFondo.play()

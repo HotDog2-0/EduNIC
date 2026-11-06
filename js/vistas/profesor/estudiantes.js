@@ -1,6 +1,6 @@
 /* Lógica del módulo de Estudiantes (por carrera) */
 
-import { bd, CLAVES } from '../../storage.js';
+import { bd, CLAVES, suscribirCambios } from '../../storage.js';
 import {
     mostrarNotificacion,
     generarId,
@@ -14,34 +14,44 @@ import { generarCodigoEstudiante, prefijoCodigo, palabrasDeNombre, sufijoAleator
 
 /* ESTADO INTERNO */
 
-let estudiantes = [];             
-let idCarreraActiva = null;       
-let estudianteEditandoId = null;   
+let estudiantes = [];
+let idCarreraActiva = null;
+let estudianteEditandoId = null;
+
+// Letras al azar del código: se eligen una vez y se conservan mientras se escribe el nombre
+let sufijoPendiente = null;
 
 /* PUNTO DE ENTRADA */
-/**
- * Inicializa el módulo de Estudiantes.
- * Se llama una sola vez desde app.js.
- * 
- * Responsabilidades:
- * - Conectar el formulario de registro manual
- * - Conectar el input de nombre (para preview del código)
- * - Conectar la subida de archivos CSV/TXT
- * - Conectar la descarga de la plantilla
- * - Conectar el modal "Pegar lista"
- * - Conectar el modal de edición
- */
+
 export function inicializarEstudiantes() {
-    console.log('Módulo Estudiantes: iniciando');
+    console.log('👥 Módulo Estudiantes: inicializando...');
 
     conectarFormularioRegistro();
     conectarInputNombre();
     conectarSubidaArchivo();
     conectarDescargarPlantilla();
-    conectarModalPegarLista();   
+    conectarModalPegarLista();
     conectarModalEdicion();
 
-    console.log('Módulo Estudiantes: listo');
+    // ─── SUSCRIPCIÓN EN VIVO (comentada para demo) ───
+    // Al reactivar Realtime, descomentar este bloque.
+    // Advertencia: con la estrategia DELETE+INSERT actual, cada
+    // guardado dispara DOS eventos y puede causar loops de recarga.
+    //
+    // suscribirCambios('edunic_estudiantes', () => {
+    //     console.log('🔄 Estudiantes cambiaron, recargando...');
+    //     if (!idCarreraActiva) return;
+    //
+    //     const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
+    //     estudiantes = todos.filter(
+    //         e => String(e.idCarrera) === String(idCarreraActiva)
+    //     );
+    //     renderizarTabla();
+    //     actualizarContador();
+    //     actualizarCodigoPreview();
+    // });
+
+    console.log('✅ Módulo Estudiantes: listo');
 }
 
 /**
@@ -53,16 +63,13 @@ export function cargarEstudiantesDeCarrera(idCarrera) {
     idCarreraActiva = idCarrera;
 
     const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
-    estudiantes = todos.filter(e => e.idCarrera === idCarrera);
+    estudiantes = todos.filter(e => String(e.idCarrera) === String(idCarrera));
 
     renderizarTabla();
     actualizarCodigoPreview();
 }
 
 /* CÓDIGO PERSONAL */
-
-// Letras al azar del código: se eligen una vez y se conservan mientras se escribe el nombre
-let sufijoPendiente = null;
 
 /**
  * Muestra el código completo mientras se escribe el nombre.
@@ -93,7 +100,6 @@ function conectarFormularioRegistro() {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Verificar que haya carrera activa
         if (!idCarreraActiva) {
             mostrarNotificacion('No hay carrera activa', 'error');
             return;
@@ -121,7 +127,6 @@ function conectarFormularioRegistro() {
             return;
         }
 
-        // Crear el nuevo estudiante con su código personal
         const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
 
         // Se usa el código que se vio en pantalla (si sigue libre); si no, se genera otro
@@ -137,15 +142,12 @@ function conectarFormularioRegistro() {
             idCarrera: idCarreraActiva
         };
 
-        // Guardar en la lista global (no solo en la filtrada)
         todos.push(nuevo);
         bd.guardar(CLAVES.ESTUDIANTES, todos);
 
-        // Actualizar lista local
         estudiantes.push(nuevo);
         renderizarTabla();
 
-        // Limpiar formulario y preparar un código nuevo para el siguiente
         form.reset();
         sufijoPendiente = null;
         actualizarCodigoPreview();
@@ -201,7 +203,6 @@ function renderizarTabla() {
         </tr>
     `).join('');
 
-    // Delegación de eventos
     tbody.onclick = manejarClicTabla;
 
     actualizarContador();
@@ -254,7 +255,7 @@ function conectarModalEdicion() {
 }
 
 function abrirModalEdicion(id) {
-    const est = estudiantes.find(e => e.id === id);
+    const est = estudiantes.find(e => String(e.id) === String(id));
     if (!est) return;
 
     estudianteEditandoId = id;
@@ -285,9 +286,8 @@ function guardarEdicion() {
         return;
     }
 
-    // Verificar duplicado (excluyendo el mismo estudiante)
     const existe = estudiantes.some(
-        e => e.id !== estudianteEditandoId &&
+        e => String(e.id) !== String(estudianteEditandoId) &&
              normalizar(e.nombre) === normalizar(nombre)
     );
     if (existe) {
@@ -295,16 +295,14 @@ function guardarEdicion() {
         return;
     }
 
-    // Actualizar en la lista global
     const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
-    const idx = todos.findIndex(e => e.id === estudianteEditandoId);
+    const idx = todos.findIndex(e => String(e.id) === String(estudianteEditandoId));
     if (idx === -1) return;
 
     todos[idx].nombre = nombre;
     bd.guardar(CLAVES.ESTUDIANTES, todos);
 
-    // Actualizar lista local
-    const est = estudiantes.find(e => e.id === estudianteEditandoId);
+    const est = estudiantes.find(e => String(e.id) === String(estudianteEditandoId));
     if (est) est.nombre = nombre;
 
     renderizarTabla();
@@ -315,7 +313,7 @@ function guardarEdicion() {
 /* ELIMINACIÓN */
 
 function eliminarEstudiante(id) {
-    const est = estudiantes.find(e => e.id === id);
+    const est = estudiantes.find(e => String(e.id) === String(id));
     if (!est) return;
 
     const confirmar = window.confirm(
@@ -323,12 +321,10 @@ function eliminarEstudiante(id) {
     );
     if (!confirmar) return;
 
-    // Eliminar de la lista global
     const todos = bd.obtener(CLAVES.ESTUDIANTES) || [];
-    bd.guardar(CLAVES.ESTUDIANTES, todos.filter(e => e.id !== id));
+    bd.guardar(CLAVES.ESTUDIANTES, todos.filter(e => String(e.id) !== String(id)));
 
-    // Eliminar de la lista local
-    estudiantes = estudiantes.filter(e => e.id !== id);
+    estudiantes = estudiantes.filter(e => String(e.id) !== String(id));
 
     renderizarTabla();
     actualizarCodigoPreview();
@@ -390,7 +386,6 @@ function procesarArchivo(file) {
 
         const { agregados, duplicados } = importarNombres(nombres);
 
-        // Refrescar
         renderizarTabla();
         actualizarCodigoPreview();
 
@@ -423,7 +418,6 @@ function extraerNombres(contenido) {
     lineas.forEach((linea, i) => {
         const primeraCol = linea.split(/[,;]/)[0].trim();
 
-        // Saltar cabecera
         if (i === 0 && /^(nombre|name|estudiante|student)/i.test(primeraCol)) {
             return;
         }
@@ -448,7 +442,6 @@ function importarNombres(nombres) {
         const nombre = limpiarNombre(nombreCrudo);
         if (!nombre) return;
 
-        // Verificar duplicado EN ESTA CARRERA
         const yaExiste = estudiantes.some(
             e => normalizar(e.nombre) === normalizar(nombre)
         );
@@ -477,10 +470,6 @@ function importarNombres(nombres) {
 
 /* PLANTILLA CSV DESCARGABLE */
 
-/**
- * Conecta el botón "Descargar plantilla".
- * Genera y descarga un CSV de ejemplo con el formato esperado.
- */
 function conectarDescargarPlantilla() {
     const btn = document.getElementById('btn-descargar-plantilla');
     if (!btn) return;
@@ -488,18 +477,7 @@ function conectarDescargarPlantilla() {
     btn.addEventListener('click', descargarPlantilla);
 }
 
-/**
- * Genera un archivo CSV de ejemplo y lo descarga.
- * 
- * El archivo incluye un BOM UTF-8 al inicio para que
- * Excel y otras hojas de cálculo muestren correctamente
- * los acentos y caracteres especiales (á, é, í, ó, ú, ñ).
- * 
- * El formato es simple: una columna "nombre" con
- * una fila por estudiante.
- */
 function descargarPlantilla() {
-    // Contenido de la plantilla (encabezado + ejemplos)
     const contenido = [
         'Nombre del estudiante',
         'María González Rodríguez',
@@ -507,12 +485,10 @@ function descargarPlantilla() {
         'Ana Martínez Silva'
     ].join('\n');
 
-    // BOM UTF-8 (\uFEFF) + contenido, para compatibilidad con Excel
     const blob = new Blob(['\uFEFF' + contenido], {
         type: 'text/csv;charset=utf-8;'
     });
 
-    // Crear un enlace temporal y simular el clic para descargar
     const url = URL.createObjectURL(blob);
     const enlace = document.createElement('a');
     enlace.href = url;
@@ -522,18 +498,13 @@ function descargarPlantilla() {
     enlace.click();
     document.body.removeChild(enlace);
 
-    // Liberar la memoria del blob
     URL.revokeObjectURL(url);
 
     mostrarNotificacion('Plantilla descargada');
 }
 
 /* PEGAR LISTA EN MASA (MODAL) */
-/**
- * Conecta el botón "Pegar lista" y su modal.
- * Permite agregar varios estudiantes escribiendo
- * o pegando sus nombres directamente en un textarea.
- */
+
 function conectarModalPegarLista() {
     const btnAbrir = document.getElementById('btn-pegar-lista');
     const modal = document.getElementById('modal-pegar-lista');
@@ -543,7 +514,6 @@ function conectarModalPegarLista() {
 
     if (!modal || !textarea || !contador || !btnConfirmar) return;
 
-    // Abrir modal
     btnAbrir?.addEventListener('click', () => {
         textarea.value = '';
         actualizarContadorPegarLista(0);
@@ -553,7 +523,6 @@ function conectarModalPegarLista() {
         setTimeout(() => textarea.focus(), 100);
     });
 
-    // Cerrar modal (botones [data-cerrar-modal] + click fuera + ESC)
     modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
         b.addEventListener('click', () => cerrarModalPegarLista());
     });
@@ -568,14 +537,12 @@ function conectarModalPegarLista() {
         }
     });
 
-    // Actualizar contador en vivo mientras el usuario escribe
     textarea.addEventListener('input', () => {
         const cantidad = contarNombresPegados(textarea.value);
         actualizarContadorPegarLista(cantidad);
         btnConfirmar.disabled = cantidad === 0;
     });
 
-    // Confirmar y agregar
     btnConfirmar.addEventListener('click', () => {
         const nombres = extraerNombresDeLista(textarea.value);
         if (nombres.length === 0) {
@@ -587,32 +554,14 @@ function conectarModalPegarLista() {
     });
 }
 
-/**
- * Cierra el modal de "Pegar lista".
- */
 function cerrarModalPegarLista() {
     document.getElementById('modal-pegar-lista')?.classList.add('hidden');
 }
 
-/**
- * Cuenta cuántos nombres válidos hay en el textarea.
- * Un nombre válido = línea con al menos 2 caracteres.
- * 
- * @param {string} texto - Contenido del textarea
- * @returns {number}
- */
 function contarNombresPegados(texto) {
     return extraerNombresDeLista(texto).length;
 }
 
-/**
- * Extrae los nombres válidos del texto pegado.
- * Cada línea se considera un nombre.
- * Ignora líneas vacías o demasiado cortas.
- * 
- * @param {string} texto - Contenido del textarea
- * @returns {string[]} Lista de nombres limpios
- */
 function extraerNombresDeLista(texto) {
     return texto
         .split(/\r?\n/)
@@ -621,11 +570,6 @@ function extraerNombresDeLista(texto) {
         .map(l => limpiarNombre(l));
 }
 
-/**
- * Actualiza el contador visual del modal.
- * 
- * @param {number} cantidad
- */
 function actualizarContadorPegarLista(cantidad) {
     const el = document.getElementById('pegar-lista-contador');
     if (!el) return;
@@ -635,20 +579,12 @@ function actualizarContadorPegarLista(cantidad) {
         : `${cantidad} estudiantes detectados`;
 }
 
-/**
- * Importa en masa los nombres pegados en el modal.
- * Reutiliza la misma lógica que la importación por archivo.
- * 
- * @param {string[]} nombres
- */
 function importarNombresEnMasa(nombres) {
     const { agregados, duplicados } = importarNombres(nombres);
 
-    // Refrescar la tabla y el preview del código
     renderizarTabla();
     actualizarCodigoPreview();
 
-    // Notificar resultado
     if (agregados > 0) {
         let msg = `${agregados} estudiante${agregados !== 1 ? 's' : ''} agregado${agregados !== 1 ? 's' : ''}`;
         if (duplicados > 0) {

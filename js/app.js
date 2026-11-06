@@ -1,4 +1,4 @@
-/* Punto de entrada de la aplicación*/
+/* Punto de entrada de la aplicación */
 
 console.log('🔵 app.js: archivo cargado');
 
@@ -34,10 +34,18 @@ import { iniciarMusicaFondo, toggleMusicaFondo } from './sonidos.js';
 async function iniciarApp() {
     console.log('🟢 iniciarApp: ejecutándose');
 
-    // 1. Preparar base de datos
-    inicializarBaseDatos();
+    // ============================================================
+    // 1. PREPARAR BASE DE DATOS (espera a Supabase)
+    // ============================================================
+    // ⚠️ IMPORTANTE: await aquí es clave.
+    // Sin esto, los módulos arrancan con localStorage vacío
+    // y no ven los datos que vienen de Supabase.
+    await inicializarBaseDatos();
+    console.log('🟢 Base de datos lista.');
 
-    // 2. Inicializar módulos
+    // ============================================================
+    // 2. INICIALIZAR MÓDULOS
+    // ============================================================
     inicializarLanding();
     inicializarCarreras();
     inicializarEstudiantes();
@@ -50,14 +58,18 @@ async function iniciarApp() {
     await inicializarAsistente();
     inicializarRuleta();
 
-    // 3. Configurar navegación y modales
+    // ============================================================
+    // 3. CONFIGURAR NAVEGACIÓN Y MODALES
+    // ============================================================
     configurarBotonesVolver();
     configurarPestanas('view-panel-carrera');
     configurarPestanas('view-panel-estudiante');
     configurarCierreModalVideo();
     configurarAperturaVideos();
 
+    // ============================================================
     // 4. EVENTOS DE AUDIO Y MÚSICA
+    // ============================================================
 
     // Botón de silenciar sonidos (efectos)
     document.getElementById('btn-silenciar')?.addEventListener('click', (e) => {
@@ -83,15 +95,15 @@ async function iniciarApp() {
 
     // Listener global para iniciar música en el primer clic (autoplay bloqueado)
     document.addEventListener('click', (e) => {
-        // Ignorar clics en los botones de audio
         if (e.target.closest('#btn-musica') || e.target.closest('#btn-silenciar')) {
             return;
         }
         iniciarMusicaFondo();
     });
 
-    // 5. LOGIN DEL PROFESOR (temporal)
-
+    // ============================================================
+    // 5. LOGIN DEL PROFESOR (temporal, hardcodeado)
+    // ============================================================
     const formProfesor = document.getElementById('form-login-profesor');
     formProfesor?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -116,7 +128,9 @@ async function iniciarApp() {
         }
     });
 
-    // 5. Logout global
+    // ============================================================
+    // 6. LOGOUT GLOBAL
+    // ============================================================
     document.getElementById('btn-logout')?.addEventListener('click', () => {
         bd.eliminar(CLAVES.USUARIO_ACTUAL);
 
@@ -132,13 +146,14 @@ async function iniciarApp() {
         mostrarNotificacion('Sesión cerrada');
     });
 
-    // 6. Recuperar sesión activa
+    // ============================================================
+    // 7. RECUPERAR SESIÓN ACTIVA
+    // ============================================================
     const usuarioActual = bd.obtener(CLAVES.USUARIO_ACTUAL);
 
     if (usuarioActual && usuarioActual.rol === 'profesor') {
         mostrarHeaderProfesor(usuarioActual.nombre);
 
-        // Restaurar última vista si existe
         const ultimaVista = localStorage.getItem('edunic_ultima_vista');
 
         if (ultimaVista === 'view-panel-carrera') {
@@ -160,18 +175,7 @@ async function iniciarApp() {
         mostrarVista('view-landing');
     }
 
-    console.log('EduNIC - Listo');
-
-    // Intentar iniciar música en cada clic hasta que funcione
-    document.addEventListener('click', (e) => {
-        // Ignorar clics en los botones de audio
-        if (e.target.closest('#btn-musica') || e.target.closest('#btn-silenciar')) {
-            return;
-        }
-        
-        iniciarMusicaFondo();
-    });
-
+    console.log('🎰 EduNIC - Listo');
 }
 
 /* FUNCIONES AUXILIARES */
@@ -253,7 +257,10 @@ function configurarAperturaVideos() {
 
 document.addEventListener('DOMContentLoaded', () => {
     iniciarApp().catch(err => {
-        console.error('Error al iniciar la app:', err);
+        console.error('❌ Error al iniciar la app:', err);
+        // Fallback: si falla Supabase, mostrar landing igual
+        mostrarNotificacion('Error de conexión. Trabajando en modo local.', 'error');
+        mostrarVista('view-landing');
     });
 });
 

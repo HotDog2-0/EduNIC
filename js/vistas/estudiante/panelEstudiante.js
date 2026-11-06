@@ -947,9 +947,6 @@ function renderizarResultadoItem(r) {
     `;
 }
 
-/**
- * Conecta los botones de filtro.
- */
 function conectarFiltrosResultados() {
     const cont = document.getElementById('resultados-filtros');
     if (!cont) return;

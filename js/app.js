@@ -25,27 +25,26 @@ import { inicializarQuiz } from './vistas/estudiante/quiz.js';
 import { inicializarCalificaciones } from './vistas/profesor/calificaciones.js';
 import { inicializarRegistro } from './vistas/estudiante/registro.js';
 import { inicializarAsistente } from './vistas/profesor/asistente.js';
-import { toggleSilencio, estaSilenciado } from './sonidos.js';
+import { 
+    toggleSilencio, 
+    estaSilenciado, 
+    iniciarMusicaFondo, 
+    toggleMusicaFondo,
+    setVolumenMusica,
+    getVolumenMusica,
+    cambiarPista
+} from './sonidos.js';
 import { inicializarRuleta } from './ruleta.js';
-import { iniciarMusicaFondo, toggleMusicaFondo } from './sonidos.js';
 
 /* INICIALIZACIÓN */
 
 async function iniciarApp() {
     console.log('🟢 iniciarApp: ejecutándose');
 
-    // ============================================================
-    // 1. PREPARAR BASE DE DATOS (espera a Supabase)
-    // ============================================================
-    // ⚠️ IMPORTANTE: await aquí es clave.
-    // Sin esto, los módulos arrancan con localStorage vacío
-    // y no ven los datos que vienen de Supabase.
     await inicializarBaseDatos();
     console.log('🟢 Base de datos lista.');
 
-    // ============================================================
     // 2. INICIALIZAR MÓDULOS
-    // ============================================================
     inicializarLanding();
     inicializarCarreras();
     inicializarEstudiantes();
@@ -58,20 +57,14 @@ async function iniciarApp() {
     await inicializarAsistente();
     inicializarRuleta();
 
-    // ============================================================
     // 3. CONFIGURAR NAVEGACIÓN Y MODALES
-    // ============================================================
     configurarBotonesVolver();
     configurarPestanas('view-panel-carrera');
     configurarPestanas('view-panel-estudiante');
     configurarCierreModalVideo();
     configurarAperturaVideos();
 
-    // ============================================================
     // 4. EVENTOS DE AUDIO Y MÚSICA
-    // ============================================================
-
-    // Botón de silenciar sonidos (efectos)
     document.getElementById('btn-silenciar')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const silenciado = toggleSilencio();
@@ -82,7 +75,6 @@ async function iniciarApp() {
         mostrarNotificacion(silenciado ? 'Sonido silenciado' : 'Sonido activado');
     });
 
-    // Botón de música (fondo)
     document.getElementById('btn-musica')?.addEventListener('click', (e) => {
         e.stopPropagation();
         const activa = toggleMusicaFondo();
@@ -93,17 +85,55 @@ async function iniciarApp() {
         mostrarNotificacion(activa ? 'Música activada' : 'Música pausada');
     });
 
-    // Listener global para iniciar música en el primer clic (autoplay bloqueado)
     document.addEventListener('click', (e) => {
-        if (e.target.closest('#btn-musica') || e.target.closest('#btn-silenciar')) {
+        if (e.target.closest('#btn-musica') || e.target.closest('#btn-silenciar') || e.target.closest('#btn-config-audio')) {
             return;
         }
         iniciarMusicaFondo();
     });
 
-    // ============================================================
-    // 5. LOGIN DEL PROFESOR (temporal, hardcodeado)
-    // ============================================================
+    // === CONFIGURACIÓN DE AUDIO (VOLUMEN Y PISTAS) ===
+    const modalAudio = document.getElementById('modal-audio');
+    const btnConfigAudio = document.getElementById('btn-config-audio');
+    const sliderVolumen = document.getElementById('audio-volumen');
+    const textoVolumen = document.getElementById('audio-volumen-valor');
+    const selectPista = document.getElementById('audio-pista');
+
+    if (modalAudio && btnConfigAudio && sliderVolumen) {
+        // Abrir modal
+        btnConfigAudio.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const volActual = Math.round(getVolumenMusica() * 100);
+            sliderVolumen.value = volActual;
+            textoVolumen.textContent = `${volActual}%`;
+            modalAudio.classList.remove('hidden');
+        });
+
+        // Cerrar modal
+        modalAudio.querySelectorAll('[data-cerrar-modal]').forEach(b => {
+            b.addEventListener('click', () => modalAudio.classList.add('hidden'));
+        });
+        modalAudio.addEventListener('click', (e) => {
+            if (e.target === modalAudio) modalAudio.classList.add('hidden');
+        });
+
+        // Cambiar volumen en tiempo real
+        sliderVolumen.addEventListener('input', (e) => {
+            const val = e.target.value;
+            textoVolumen.textContent = `${val}%`;
+            setVolumenMusica(val / 100);
+        });
+
+        // Cambiar pista de música
+        if (selectPista) {
+            selectPista.addEventListener('change', (e) => {
+                cambiarPista(e.target.value);
+                mostrarNotificacion('Pista cambiada: ' + e.target.options[e.target.selectedIndex].text);
+            });
+        }
+    }
+
+    // 5. LOGIN DEL PROFESOR
     const formProfesor = document.getElementById('form-login-profesor');
     formProfesor?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -128,34 +158,24 @@ async function iniciarApp() {
         }
     });
 
-    // ============================================================
     // 6. LOGOUT GLOBAL
-    // ============================================================
     document.getElementById('btn-logout')?.addEventListener('click', () => {
         bd.eliminar(CLAVES.USUARIO_ACTUAL);
-
         resetearPanelEstudiante();
-
         const infoSesion = document.getElementById('session-info');
         if (infoSesion) infoSesion.classList.add('hidden');
-
         resetearPestanas('view-panel-estudiante');
         resetearPestanas('view-panel-carrera');
-
         mostrarVista('view-landing');
         mostrarNotificacion('Sesión cerrada');
     });
 
-    // ============================================================
     // 7. RECUPERAR SESIÓN ACTIVA
-    // ============================================================
     const usuarioActual = bd.obtener(CLAVES.USUARIO_ACTUAL);
 
     if (usuarioActual && usuarioActual.rol === 'profesor') {
         mostrarHeaderProfesor(usuarioActual.nombre);
-
         const ultimaVista = localStorage.getItem('edunic_ultima_vista');
-
         if (ultimaVista === 'view-panel-carrera') {
             const carreraActiva = bd.obtener(CLAVES.CARRERA_ACTIVA);
             if (carreraActiva && typeof window.abrirPanelCarrera === 'function') {
@@ -180,52 +200,35 @@ async function iniciarApp() {
 
 /* FUNCIONES AUXILIARES */
 
-/**
- * Actualiza el header global para mostrar al profesor.
- */
 function mostrarHeaderProfesor(nombre) {
     const infoSesion = document.getElementById('session-info');
     const etiquetaUsuario = document.getElementById('user-display');
     if (!infoSesion || !etiquetaUsuario) return;
-
     infoSesion.classList.remove('hidden');
     etiquetaUsuario.innerHTML = `<i class="fa-solid fa-chalkboard-user"></i> ${nombre} <span class="text-muted">(Profesor)</span>`;
 }
 
-/**
- * Resetea las pestañas de un contenedor a la primera.
- */
 function resetearPestanas(idContenedor) {
     const contenedor = document.getElementById(idContenedor);
     if (!contenedor) return;
-
     const btns = contenedor.querySelectorAll('.tab-btn');
     const contents = contenedor.querySelectorAll('.tab-content');
-
-    btns.forEach((b, i) => {
-        b.classList.toggle('active', i === 0);
-    });
+    btns.forEach((b, i) => { b.classList.toggle('active', i === 0); });
     contents.forEach((c, i) => {
         c.classList.toggle('hidden', i !== 0);
         c.classList.toggle('active', i === 0);
     });
 }
 
-/**
- * Configura el cierre del modal de video.
- */
 function configurarCierreModalVideo() {
     const modal = document.getElementById('modal-video');
     if (!modal) return;
-
     modal.querySelectorAll('[data-cerrar-modal]').forEach(b => {
         b.addEventListener('click', cerrarModalVideo);
     });
-
     modal.addEventListener('click', (e) => {
         if (e.target === modal) cerrarModalVideo();
     });
-
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
             cerrarModalVideo();
@@ -233,22 +236,15 @@ function configurarCierreModalVideo() {
     });
 }
 
-/**
- * Listener global para abrir videos de YouTube/Vimeo.
- */
 function configurarAperturaVideos() {
     document.addEventListener('click', (e) => {
         if (!e.target || typeof e.target.closest !== 'function') return;
-
         const btn = e.target.closest('[data-video-url]');
         if (!btn) return;
-
         e.preventDefault();
-
         const embedURL = btn.dataset.videoUrl;
         const titulo = btn.dataset.videoTitulo;
         const urlOriginal = btn.dataset.videoOriginal;
-
         abrirModalVideo(embedURL, titulo, urlOriginal);
     });
 }
@@ -258,7 +254,6 @@ function configurarAperturaVideos() {
 document.addEventListener('DOMContentLoaded', () => {
     iniciarApp().catch(err => {
         console.error('❌ Error al iniciar la app:', err);
-        // Fallback: si falla Supabase, mostrar landing igual
         mostrarNotificacion('Error de conexión. Trabajando en modo local.', 'error');
         mostrarVista('view-landing');
     });

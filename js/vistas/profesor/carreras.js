@@ -17,6 +17,9 @@ import { cargarEvaluacionesDeAnio } from './evaluaciones.js';
 import { cargarCalificacionesDeAnio } from './calificaciones.js';
 import { cargarAsistenteDeCarrera } from './asistente.js';
 
+// ⬇️ IMPORTACIÓN NUEVA PARA EL TEMARIO DE ESTADÍSTICA ⬇️
+import { cargarTemarioEstadistica } from '../../seedEstadistica.js'; 
+
 /* ==========================================
    ESTADO INTERNO
    ========================================== */
@@ -357,9 +360,16 @@ function abrirPanelCarrera(id) {
     cargarAniosDeCarrera(c.id);
     conectarBotonesAnio();
     conectarModalNuevoAnio();
-    conectarRefrescoPestanas();  // ⬅️ NUEVO
+    conectarRefrescoPestanas(); 
 
     if (anioActivo) {
+        // ⬇️ MAGIA: Cargar el temario de estadística automáticamente si no existe ⬇️
+        const seCargo = cargarTemarioEstadistica(anioActivo.id);
+        if (seCargo) {
+            mostrarNotificacion('¡Temario de Estadística cargado automáticamente!', 'success');
+        }
+
+        // Ahora cargamos lo que ya estaba configurado
         cargarModulosDeAnio(anioActivo.id);
         cargarEvaluacionesDeAnio(anioActivo.id);
         cargarCalificacionesDeAnio(anioActivo.id);
@@ -375,7 +385,7 @@ function abrirPanelCarrera(id) {
 }
 
 /* ==========================================
-   REFRESCO AUTOMÁTICO AL CAMBIAR DE PESTAÑA   ⬅️ NUEVO
+   REFRESCO AUTOMÁTICO AL CAMBIAR DE PESTAÑA
    ========================================== */
 /**
  * Cuando el profesor hace clic en una pestaña del panel de carrera,

@@ -1073,3 +1073,89 @@ body {
     font-size: 0.85rem;
     font-family: 'Courier New', monospace;
 }
+
+/* ============================================
+   CONFIGURACIÓN DE AUDIO (SLIDER Y BOTÓN)
+   ============================================ */
+
+/* Estilo del botón de ajustes en el header */
+#btn-config-audio i {
+    transition: transform 0.3s ease;
+}
+
+#btn-config-audio:hover i {
+    transform: rotate(90deg);
+}
+
+/* Contenedor del slider */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #0a0a0c;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    outline: none;
+    margin-top: 0.5rem;
+    cursor: pointer;
+}
+
+/* El "pulgar" (thumb) dorado del slider */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-color) 40%, #997a15 100%);
+    border: 2px solid #000;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+    margin-top: -9px; /* Centra el pulgar en la barra */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efecto al pasar el ratón por el pulgar */
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.9);
+}
+
+/* La barra por donde se desliza (track) */
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    background: linear-gradient(90deg, var(--primary-color) 0%, #16161c 100%);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-color);
+}
+
+/* Soporte para Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-color) 40%, #997a15 100%);
+    border: 2px solid #000;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    background: #16161c;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-color);
+}
+
+/* Estilo del texto que muestra el porcentaje */
+#audio-volumen-valor {
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}

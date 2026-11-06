@@ -45,6 +45,11 @@
                 <i class="fa-solid fa-music"></i>
             </button>
 
+            <!-- NUEVO: Botón de Configuración de Audio -->
+            <button id="btn-config-audio" class="btn btn-secondary btn-sm" type="button" title="Configuración de Audio">
+                <i class="fa-solid fa-sliders"></i>
+            </button>
+
             <button id="btn-logout" class="btn btn-danger" type="button">
                 <i class="fa-solid fa-right-from-bracket"></i> Salir
             </button>
@@ -1775,6 +1780,37 @@
         </div>
     </div>
 </div>
+
+    <!-- NUEVO: MODAL DE CONFIGURACIÓN DE AUDIO -->
+    <div id="modal-audio" class="modal-overlay hidden">
+        <div class="modal" role="dialog" aria-labelledby="modal-audio-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-audio-titulo">
+                    <i class="fa-solid fa-sliders"></i>
+                    Configuración de Audio VIP
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="audio-volumen">
+                        <i class="fa-solid fa-music"></i> Volumen de la Música:
+                        <span id="audio-volumen-valor" style="color: var(--primary-color);">15%</span>
+                    </label>
+                    <input type="range" id="audio-volumen" min="0" max="100" value="15" style="width: 100%;">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-cerrar-modal>
+                    <i class="fa-solid fa-check"></i> Listo
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- NOTIFICACIONES -->
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>

@@ -32,7 +32,10 @@ import {
     toggleMusicaFondo,
     setVolumenMusica,
     getVolumenMusica,
-    cambiarPista
+    cambiarPista,
+    siguientePista,
+    getPistaActual,
+    listaPistas
 } from './sonidos.js';
 import { inicializarRuleta } from './ruleta.js';
 
@@ -106,6 +109,7 @@ async function iniciarApp() {
             const volActual = Math.round(getVolumenMusica() * 100);
             sliderVolumen.value = volActual;
             textoVolumen.textContent = `${volActual}%`;
+            if (selectPista) selectPista.value = getPistaActual();   // muestra la canción actual
             modalAudio.classList.remove('hidden');
         });
 
@@ -126,9 +130,25 @@ async function iniciarApp() {
 
         // Cambiar pista de música
         if (selectPista) {
+            // Llenar el selector con todas las canciones que hay en sonidos.js
+            listaPistas().forEach(({ ruta, nombre }) => {
+                const opcion = document.createElement('option');
+                opcion.value = ruta;
+                opcion.textContent = nombre;
+                selectPista.appendChild(opcion);
+            });
+            selectPista.value = getPistaActual();
+
             selectPista.addEventListener('change', (e) => {
                 cambiarPista(e.target.value);
                 mostrarNotificacion('Pista cambiada: ' + e.target.options[e.target.selectedIndex].text);
+            });
+
+            // Botón "siguiente canción"
+            document.getElementById('audio-siguiente')?.addEventListener('click', () => {
+                siguientePista();
+                selectPista.value = getPistaActual();
+                mostrarNotificacion('Pista: ' + selectPista.options[selectPista.selectedIndex].text);
             });
         }
     }

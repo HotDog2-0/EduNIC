@@ -25,7 +25,7 @@
 </head>
 <body>
 
-        <!-- ENCABEZADO -->
+    <!-- ENCABEZADO -->
     <header class="main-header">
         <div class="logo-container">
             <i class="fa-solid fa-dice" aria-hidden="true"></i>
@@ -45,7 +45,7 @@
                 <i class="fa-solid fa-music"></i>
             </button>
 
-            <!-- NUEVO: Botón de Configuración de Audio -->
+            <!-- Botón de Configuración de Audio -->
             <button id="btn-config-audio" class="btn btn-secondary btn-sm" type="button" title="Configuración de Audio">
                 <i class="fa-solid fa-sliders"></i>
             </button>
@@ -71,6 +71,7 @@
             <span class="luz-bombilla"></span>
         </div>
     </header>
+
     <!-- CONTENEDOR PRINCIPAL-->
     <main class="container">
 
@@ -164,7 +165,7 @@
             </div>
         </section>
 
-            <!-- VISTA: REGISTRO DE ESTUDIANTE -->
+        <!-- VISTA: REGISTRO DE ESTUDIANTE -->
         <section id="view-registro-estudiante" class="view-section hidden">
             <div class="card form-card">
                 <button class="btn-back" type="button" data-volver="view-landing">
@@ -298,56 +299,7 @@
             </div>
 
             <div id="lista-carreras" class="carreras-grid">
-                <!-- Tarjeta de prueba -->
-                <article class="carrera-card">
-                    <div class="carrera-card-icon">
-                        <i class="fa-solid fa-book-bookmark"></i>
-                    </div>
-                    <div class="carrera-card-body">
-                        <span class="carrera-card-codigo">CAR-001</span>
-                        <h3>Ingeniería en Sistemas</h3>
-                        <p class="carrera-card-anio">
-                            <i class="fa-solid fa-calendar"></i>
-                            Primer Año
-                        </p>
-                    </div>
-                    <div class="carrera-card-actions">
-                        <button class="btn-icon btn-edit" type="button" title="Editar">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="btn-icon btn-delete" type="button" title="Eliminar">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                    <button class="carrera-card-open" type="button">
-                        Abrir Panel <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </article>
-
-                <article class="carrera-card">
-                    <div class="carrera-card-icon">
-                        <i class="fa-solid fa-book-bookmark"></i>
-                    </div>
-                    <div class="carrera-card-body">
-                        <span class="carrera-card-codigo">CAR-002</span>
-                        <h3>Medicina General</h3>
-                        <p class="carrera-card-anio">
-                            <i class="fa-solid fa-calendar"></i>
-                            Segundo Año
-                        </p>
-                    </div>
-                    <div class="carrera-card-actions">
-                        <button class="btn-icon btn-edit" type="button" title="Editar">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button class="btn-icon btn-delete" type="button" title="Eliminar">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                    <button class="carrera-card-open" type="button">
-                        Abrir Panel <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </article>
+                <!-- Las tarjetas se llenan con JS -->
             </div>
 
         </section>
@@ -370,7 +322,8 @@
                         <i class="fa-solid fa-calendar"></i> Primer Año
                     </p>
                 </div>
-                             <!-- Selector de año -->
+
+                <!-- Selector de año -->
                 <div class="anio-selector">
                     <label for="selector-anio" class="anio-selector-label">
                         <i class="fa-solid fa-calendar"></i> Año:
@@ -385,6 +338,7 @@
                         <i class="fa-solid fa-box-archive"></i> Archivar
                     </button>
                 </div>
+
                 <!-- Código de clase para auto-registro -->
                 <div class="codigo-clase-bloque">
                     <div class="codigo-clase-info">
@@ -407,6 +361,12 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- 👇 NUEVO: BOTÓN PARA ABRIR EL DUELO 👇 -->
+                <button class="btn btn-warning margin-top" type="button" id="btn-abrir-duelo-profesor">
+                    <i class="fa-solid fa-swords"></i> Abrir Sala de Duelo
+                </button>
+                <!-- 👆 FIN DEL BOTÓN DEL DUELO 👆 -->
             </div>
 
             <!-- Navegación de pestañas del panel de la carrera -->
@@ -461,20 +421,20 @@
                 </div>
 
                 <div class="card">
-                <div class="card-header-row">
-                    <h3>
-                        <i class="fa-solid fa-file-import"></i>
-                        Importar Jugadores
-                    </h3>
-                    <div class="card-header-acciones">
-                    <button class="btn btn-secondary btn-sm" type="button" id="btn-pegar-lista">
-                        <i class="fa-solid fa-clipboard"></i> Pegar lista
-                    </button>
-                    <button class="btn btn-secondary btn-sm" type="button" id="btn-descargar-plantilla">
-                        <i class="fa-solid fa-download"></i> Plantilla CSV
-                    </button>
-                    </div>
-                </div> 
+                    <div class="card-header-row">
+                        <h3>
+                            <i class="fa-solid fa-file-import"></i>
+                            Importar Jugadores
+                        </h3>
+                        <div class="card-header-acciones">
+                            <button class="btn btn-secondary btn-sm" type="button" id="btn-pegar-lista">
+                                <i class="fa-solid fa-clipboard"></i> Pegar lista
+                            </button>
+                            <button class="btn btn-secondary btn-sm" type="button" id="btn-descargar-plantilla">
+                                <i class="fa-solid fa-download"></i> Plantilla CSV
+                            </button>
+                        </div>
+                    </div> 
 
                     <p class="form-subtitle">
                         Sube un archivo CSV o TXT con un jugador por línea.
@@ -524,7 +484,7 @@
 
             </div>
 
-             <!-- TAB 2: TEMAS -->
+            <!-- TAB 2: TEMAS -->
             <div id="tab-temas" class="tab-content hidden" role="tabpanel">
 
                 <div class="temas-toolbar">
@@ -687,7 +647,7 @@
                 </div>
             </div>
 
-                        <!-- Resumen estadístico -->
+            <!-- Resumen estadístico -->
             <div class="card">
                 <h3>
                     <i class="fa-solid fa-chart-simple"></i>
@@ -783,48 +743,48 @@
                     </p>
                 </div>
 
-                <!-- Resumen del estudiante (NUEVO) -->
-    <div class="resultados-resumen estudiante-resumen">
-        <div class="resultado-stat">
-            <div class="resultado-stat-icono icono-total">
-                <i class="fa-solid fa-file-pen"></i>
-            </div>
-            <div class="resultado-stat-info">
-                <div class="resultado-stat-valor" id="stat-total-estudiante">0</div>
-                <div class="resultado-stat-etiqueta">Evaluaciones</div>
-            </div>
-        </div>
+                <!-- Resumen del estudiante -->
+                <div class="resultados-resumen estudiante-resumen">
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-total">
+                            <i class="fa-solid fa-file-pen"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="stat-total-estudiante">0</div>
+                            <div class="resultado-stat-etiqueta">Evaluaciones</div>
+                        </div>
+                    </div>
 
-        <div class="resultado-stat">
-            <div class="resultado-stat-icono icono-aprobadas">
-                <i class="fa-solid fa-circle-check"></i>
-            </div>
-            <div class="resultado-stat-info">
-                <div class="resultado-stat-valor" id="stat-aprobadas-estudiante">0</div>
-                <div class="resultado-stat-etiqueta">Aprobadas</div>
-            </div>
-        </div>
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-aprobadas">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="stat-aprobadas-estudiante">0</div>
+                            <div class="resultado-stat-etiqueta">Aprobadas</div>
+                        </div>
+                    </div>
 
-        <div class="resultado-stat">
-            <div class="resultado-stat-icono icono-reprobadas">
-                <i class="fa-solid fa-circle-xmark"></i>
-            </div>
-            <div class="resultado-stat-info">
-                <div class="resultado-stat-valor" id="stat-reprobadas-estudiante">0</div>
-                <div class="resultado-stat-etiqueta">Reprobadas</div>
-            </div>
-        </div>
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-reprobadas">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="stat-reprobadas-estudiante">0</div>
+                            <div class="resultado-stat-etiqueta">Reprobadas</div>
+                        </div>
+                    </div>
 
-        <div class="resultado-stat">
-            <div class="resultado-stat-icono icono-promedio">
-                <i class="fa-solid fa-star"></i>
-            </div>
-            <div class="resultado-stat-info">
-                <div class="resultado-stat-valor" id="stat-promedio-estudiante">—</div>
-                <div class="resultado-stat-etiqueta">Promedio</div>
-            </div>
-        </div>
-    </div>
+                    <div class="resultado-stat">
+                        <div class="resultado-stat-icono icono-promedio">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="resultado-stat-info">
+                            <div class="resultado-stat-valor" id="stat-promedio-estudiante">—</div>
+                            <div class="resultado-stat-etiqueta">Promedio</div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -918,8 +878,7 @@
 
             </div>
 
-            <!-- TAB 4: JUEGOS
-                Minijuegos con temática casino -->
+            <!-- TAB 4: JUEGOS -->
             <div id="tab-est-juegos" class="tab-content hidden" role="tabpanel">
 
                 <div class="card">
@@ -930,6 +889,12 @@
                     <p class="form-subtitle">
                         Elige tu juego favorito y demuestra que eres el rey de la mesa. 🎰
                     </p>
+
+                    <!-- 👇 NUEVO: BOTÓN PARA UNIRSE AL DUELO (ESTUDIANTE) 👇 -->
+                    <button class="btn btn-warning btn-block margin-bottom" type="button" id="btn-unirse-duelo">
+                        <i class="fa-solid fa-swords"></i> Unirse a Duelo con Profesor
+                    </button>
+                    <!-- 👆 FIN DEL BOTÓN DEL DUELO 👆 -->
 
                     <!-- Pantalla 1: Selección de juegos -->
                     <div id="juegos-seleccion" class="juegos-grid">
@@ -987,6 +952,52 @@
             </div>
 
         </section>
+
+        <!-- 👇 NUEVA VISTA: DUELO EN VIVO 👇 -->
+        <section id="view-duelo" class="view-section hidden">
+            <div class="card hero-card" style="max-width: 600px;">
+                <h2 class="text-center" style="color: var(--primary-color);"><i class="fa-solid fa-swords"></i> Duelo en Vivo</h2>
+                
+                <!-- Lobby (Profesor crea sala) -->
+                <div id="duelo-lobby" class="text-center margin-top">
+                    <p class="form-subtitle">Crea una sala y comparte el código con tu estudiante.</p>
+                    <button class="btn btn-primary" type="button" id="btn-crear-sala">Crear Sala de Duelo</button>
+                </div>
+
+                <!-- Espera (Muestra el código generado) -->
+                <div id="duelo-espera" class="hidden text-center margin-top">
+                    <p>Comparte este código con tu estudiante:</p>
+                    <h2 class="text-success" id="duelo-codigo" style="font-size: 3rem; letter-spacing: 5px;">----</h2>
+                    <p class="text-muted">Esperando a que se una...</p>
+                </div>
+
+                <!-- Juego -->
+                <div id="duelo-juego" class="hidden text-center margin-top">
+                    <div class="resultados-resumen" style="justify-content: center; gap: 2rem;">
+                        <div class="resultado-stat">
+                            <div class="resultado-stat-info">
+                                <div class="resultado-stat-etiqueta">Profesor</div>
+                                <div class="resultado-stat-valor" id="duelo-pts-prof">0</div>
+                            </div>
+                        </div>
+                        <div class="resultado-stat">
+                            <div class="resultado-stat-info">
+                                <div class="resultado-stat-etiqueta">Estudiante</div>
+                                <div class="resultado-stat-valor" id="duelo-pts-est">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 id="duelo-mensaje" class="margin-top">¡Elige tu jugada!</h3>
+                    <div class="ppt-opciones margin-top" style="display: flex; justify-content: center; gap: 1rem;">
+                        <button class="ppt-opcion" data-duelo-jugada="piedra" style="font-size: 3rem; cursor: pointer; background: none; border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem;">🪨</button>
+                        <button class="ppt-opcion" data-duelo-jugada="papel" style="font-size: 3rem; cursor: pointer; background: none; border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem;">📄</button>
+                        <button class="ppt-opcion" data-duelo-jugada="tijera" style="font-size: 3rem; cursor: pointer; background: none; border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem;">✂️</button>
+                    </div>
+                    <button class="btn btn-secondary margin-top" type="button" id="btn-salir-duelo">Salir del Duelo</button>
+                </div>
+            </div>
+        </section>
+        <!-- 👆 FIN DE LA VISTA DEL DUELO 👆 -->
 
     </main>
 
@@ -1341,83 +1352,85 @@
 
     <!-- MODAL: CREAR / EDITAR EVALUACIÓN -->
     <div id="modal-evaluacion" class="modal-overlay hidden">
-            <div class="modal modal-xl" role="dialog" aria-labelledby="modal-evaluacion-titulo" aria-modal="true">
-                <div class="modal-header">
-                    <h3 id="modal-evaluacion-titulo">
-                        <i class="fa-solid fa-file-pen"></i>
-                        <span id="modal-evaluacion-titulo-texto">Nueva Apuesta</span>
-                    </h3>
-                    <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
+        <div class="modal modal-xl" role="dialog" aria-labelledby="modal-evaluacion-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-evaluacion-titulo">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <span id="modal-evaluacion-titulo-texto">Nueva Apuesta</span>
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-                <div class="modal-body">
-                    <form id="form-evaluacion" autocomplete="off">
+            <div class="modal-body">
+                <form id="form-evaluacion" autocomplete="off">
 
-                        <div class="form-group">
-                            <label for="eval-titulo">Título de la Apuesta:</label>
-                            <input type="text" id="eval-titulo" required
-                                placeholder="Ej: Examen Parcial I" autocomplete="off">
+                    <div class="form-group">
+                        <label for="eval-titulo">Título de la Apuesta:</label>
+                        <input type="text" id="eval-titulo" required
+                            placeholder="Ej: Examen Parcial I" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-descripcion">
+                            Descripción
+                            <span class="label-hint">(opcional)</span>
+                        </label>
+                        <textarea id="eval-descripcion" rows="2"
+                                placeholder="Ej: Apuesta de los juegos 1 al 3..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-puntaje-minimo">Puntaje mínimo para aprobar (puntos):</label>
+                        <input type="number" id="eval-puntaje-minimo" 
+                            min="1" max="100" value="10" required>
+                        <p class="form-hint">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span id="eval-puntaje-minimo-hint">
+                                Mínimo <strong>1 punto</strong> · Máximo <strong>100 puntos</strong>.
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Builder de preguntas -->
+                    <div class="preguntas-section">
+                        <div class="preguntas-header">
+                            <div class="preguntas-header-info">
+                                <h4>
+                                    <i class="fa-solid fa-list-ol"></i>
+                                    Preguntas
+                                    <span class="badge-preguntas" id="contador-preguntas-builder">0</span>
+                                </h4>
+                                <div class="preguntas-total" id="preguntas-total">
+                                    <span class="preguntas-total-label">Total:</span>
+                                    <strong id="preguntas-total-valor">0</strong>
+                                    <span>puntos</span>
+                                    <span class="preguntas-total-badge" id="preguntas-total-badge"></span>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-pregunta">
+                                <i class="fa-solid fa-plus"></i> Añadir Pregunta
+                            </button>
                         </div>
 
-                        <div class="form-group">
-                            <label for="eval-descripcion">
-                                Descripción
-                                <span class="label-hint">(opcional)</span>
-                            </label>
-                            <textarea id="eval-descripcion" rows="2"
-                                    placeholder="Ej: Apuesta de los juegos 1 al 3..."></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="eval-puntaje-minimo">Puntaje mínimo para aprobar (puntos):</label>
-                            <input type="number" id="eval-puntaje-minimo" 
-                                min="1" max="100" value="10" required>
-                            <p class="form-hint">
-                                <i class="fa-solid fa-circle-info"></i>
-                                <span id="eval-puntaje-minimo-hint">
-                                    Mínimo <strong>1 punto</strong> · Máximo <strong>100 puntos</strong>.
-                                </span>
+                        <div id="preguntas-container" class="preguntas-container">
+                            <p class="text-muted text-center preguntas-vacio">
+                                No hay preguntas todavía. Añade la primera.
                             </p>
                         </div>
+                    </div>
 
-                        <!-- Builder de preguntas -->
-                        <div class="preguntas-section">
-                            <div class="preguntas-header">
-                                <div class="preguntas-header-info">
-                                    <h4>
-                                        <i class="fa-solid fa-list-ol"></i>
-                                        Preguntas
-                                        <span class="badge-preguntas" id="contador-preguntas-builder">0</span>
-                                    </h4>
-                                    <div class="preguntas-total" id="preguntas-total">
-                                        <span class="preguntas-total-label">Total:</span>
-                                        <strong id="preguntas-total-valor">0</strong>
-                                        <span>puntos</span>
-                                        <span class="preguntas-total-badge" id="preguntas-total-badge"></span>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-secondary btn-sm" id="btn-add-pregunta">
-                                    <i class="fa-solid fa-plus"></i> Añadir Pregunta
-                                </button>
-                            </div>
+                </form>
+            </div>
 
-                            <div id="preguntas-container" class="preguntas-container">
-                                <p class="text-muted text-center preguntas-vacio">
-                                    No hay preguntas todavía. Añade la primera.
-                                </p>
-                            </div>
-                        </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-cerrar-modal>
-                        Cancelar
-                    </button>
-                    <button class="btn btn-primary" type="submit" form="form-evaluacion">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar Apuesta
-                    </button>
-                </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-cerrar-modal>
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" type="submit" form="form-evaluacion">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Apuesta
+                </button>
             </div>
         </div>
     </div>
@@ -1689,7 +1702,6 @@
                     Al crear un año nuevo, el año activo actual se archivará automáticamente.
                 </p>
 
-                <!-- SIN <form> -->
                 <div class="form-group">
                     <label for="nuevo-anio-nombre">Nombre del Año:</label>
                     <input type="text" id="nuevo-anio-nombre"
@@ -1712,76 +1724,75 @@
         </div>
     </div>
 
-    <!-- MODAL: RULETA DEL TODO O NADA
-     Aparece cuando el estudiante reprueba por poco. -->
-<div id="modal-ruleta" class="modal-overlay hidden">
-    <div class="modal modal-ruleta" role="dialog" aria-labelledby="modal-ruleta-titulo" aria-modal="true">
-        <div class="modal-header">
-            <h3 id="modal-ruleta-titulo">
-                <i class="fa-solid fa-dice"></i>
-                Ruleta del Todo o Nada
-            </h3>
-            <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <div class="modal-body modal-ruleta-body">
-            <div class="ruleta-mensaje">
-                <p class="ruleta-titulo-mensaje">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    ¡Has reprobado por muy poco!
-                </p>
-                <p class="ruleta-subtitulo">
-                    ¿Te arriesgas? Gira la ruleta y pasa con las completas o pierde todos tus puntos.
-                    <br>
-                    <strong>¡Tú decides!</strong>
-                </p>
-            </div>
-
-            <!-- Ruleta -->
-            <div class="ruleta-container">
-                <div class="ruleta-flecha">
-                    <i class="fa-solid fa-caret-down"></i>
-                </div>
-                <div class="ruleta" id="ruleta">
-                    <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 45deg; --angulo-texto: -45deg;">
-                        <span class="ruleta-texto">PIERDES</span>
-                    </div>
-                    <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 135deg; --angulo-texto: -135deg;">
-                        <span class="ruleta-texto">PASAS</span>
-                    </div>
-                    <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 225deg; --angulo-texto: -225deg;">
-                        <span class="ruleta-texto">PIERDES</span>
-                    </div>
-                    <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 315deg; --angulo-texto: -315deg;">
-                        <span class="ruleta-texto">PASAS</span>
-                    </div>
-                </div>
-                <div class="ruleta-centro">
+    <!-- MODAL: RULETA DEL TODO O NADA -->
+    <div id="modal-ruleta" class="modal-overlay hidden">
+        <div class="modal modal-ruleta" role="dialog" aria-labelledby="modal-ruleta-titulo" aria-modal="true">
+            <div class="modal-header">
+                <h3 id="modal-ruleta-titulo">
                     <i class="fa-solid fa-dice"></i>
+                    Ruleta del Todo o Nada
+                </h3>
+                <button class="modal-close" type="button" data-cerrar-modal aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body modal-ruleta-body">
+                <div class="ruleta-mensaje">
+                    <p class="ruleta-titulo-mensaje">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        ¡Has reprobado por muy poco!
+                    </p>
+                    <p class="ruleta-subtitulo">
+                        ¿Te arriesgas? Gira la ruleta y pasa con las completas o pierde todos tus puntos.
+                        <br>
+                        <strong>¡Tú decides!</strong>
+                    </p>
                 </div>
-            </div>
 
-            <!-- Botones -->
-            <div class="ruleta-botones">
-                <button class="btn btn-secondary" type="button" id="btn-cancelar-ruleta">
-                    <i class="fa-solid fa-xmark"></i> No, gracias
-                </button>
-                <button class="btn btn-primary" type="button" id="btn-girar-ruleta">
-                    <i class="fa-solid fa-rotate"></i> ¡Girar!
-                </button>
-            </div>
+                <!-- Ruleta -->
+                <div class="ruleta-container">
+                    <div class="ruleta-flecha">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                    <div class="ruleta" id="ruleta">
+                        <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 45deg; --angulo-texto: -45deg;">
+                            <span class="ruleta-texto">PIERDES</span>
+                        </div>
+                        <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 135deg; --angulo-texto: -135deg;">
+                            <span class="ruleta-texto">PASAS</span>
+                        </div>
+                        <div class="ruleta-seccion" data-premio="pasa" style="--angulo: 225deg; --angulo-texto: -225deg;">
+                            <span class="ruleta-texto">PIERDES</span>
+                        </div>
+                        <div class="ruleta-seccion" data-premio="pierde" style="--angulo: 315deg; --angulo-texto: -315deg;">
+                            <span class="ruleta-texto">PASAS</span>
+                        </div>
+                    </div>
+                    <div class="ruleta-centro">
+                        <i class="fa-solid fa-dice"></i>
+                    </div>
+                </div>
 
-            <!-- Resultado (oculto hasta girar) -->
-            <div id="ruleta-resultado" class="ruleta-resultado hidden">
-                <!-- Se llena con JS -->
+                <!-- Botones -->
+                <div class="ruleta-botones">
+                    <button class="btn btn-secondary" type="button" id="btn-cancelar-ruleta">
+                        <i class="fa-solid fa-xmark"></i> No, gracias
+                    </button>
+                    <button class="btn btn-primary" type="button" id="btn-girar-ruleta">
+                        <i class="fa-solid fa-rotate"></i> ¡Girar!
+                    </button>
+                </div>
+
+                <!-- Resultado (oculto hasta girar) -->
+                <div id="ruleta-resultado" class="ruleta-resultado hidden">
+                    <!-- Se llena con JS -->
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-    <!-- NUEVO: MODAL DE CONFIGURACIÓN DE AUDIO -->
+    <!-- MODAL: CONFIGURACIÓN DE AUDIO -->
     <div id="modal-audio" class="modal-overlay hidden">
         <div class="modal" role="dialog" aria-labelledby="modal-audio-titulo" aria-modal="true">
             <div class="modal-header">
@@ -1795,25 +1806,32 @@
             </div>
 
             <div class="modal-body">
-                <div class="form-group" style="margin-top: 1rem;">
+                <!-- Selector de Pista -->
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="audio-pista">
+                        <i class="fa-solid fa-compact-disc"></i> Pista de Música:
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <select id="audio-pista" class="anio-selector-dropdown" style="width: 100%;">
+                            <!-- Se llena con JS -->
+                        </select>
+                        <button id="audio-siguiente" class="btn btn-secondary btn-sm" type="button" title="Siguiente canción">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                    </div>
+                    <p class="form-hint">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Selecciona la canción de fondo.
+                    </p>
+                </div>
+
+                <!-- Control de Volumen -->
+                <div class="form-group">
                     <label for="audio-volumen">
                         <i class="fa-solid fa-music"></i> Volumen de la Música:
                         <span id="audio-volumen-valor" style="color: var(--primary-color);">15%</span>
                     </label>
                     <input type="range" id="audio-volumen" min="0" max="100" value="15" style="width: 100%;">
-                </div>
-
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label for="audio-pista">
-                        <i class="fa-solid fa-compact-disc"></i> Canción:
-                    </label>
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        <select id="audio-pista" style="flex: 1;"></select>
-                        <button class="btn btn-secondary btn-sm" type="button" id="audio-siguiente"
-                                title="Siguiente canción" aria-label="Siguiente canción">
-                            <i class="fa-solid fa-forward-step"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
 

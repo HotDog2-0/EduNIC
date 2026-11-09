@@ -38,6 +38,8 @@ import {
     listaPistas
 } from './sonidos.js';
 import { inicializarRuleta } from './ruleta.js';
+// Importamos la función para limpiar el duelo al salir
+import { cerrarDuelo } from './duelo.js';
 
 /* INICIALIZACIÓN */
 
@@ -152,6 +154,47 @@ async function iniciarApp() {
             });
         }
     }
+
+    // ==========================================
+    // 4.5 CONFIGURACIÓN DEL DUELO EN VIVO
+    // ==========================================
+    
+    // Profesor: Abrir la vista del duelo
+    document.getElementById('btn-abrir-duelo-profesor')?.addEventListener('click', () => {
+        document.getElementById('duelo-lobby').classList.remove('hidden');
+        document.getElementById('duelo-espera').classList.add('hidden');
+        document.getElementById('duelo-juego').classList.add('hidden');
+        mostrarVista('view-duelo');
+    });
+
+    // Profesor: Crear la sala (genera el código)
+    document.getElementById('btn-crear-sala')?.addEventListener('click', async () => {
+        const { crearSalaDuelo } = await import('./duelo.js');
+        crearSalaDuelo();
+    });
+
+    // Cualquiera de los dos: Salir del duelo y volver
+    document.getElementById('btn-salir-duelo')?.addEventListener('click', () => {
+        cerrarDuelo();
+        if (bd.obtener(CLAVES.USUARIO_ACTUAL)?.rol === 'profesor') {
+            window.abrirPanelCarrera(bd.obtener(CLAVES.CARRERA_ACTIVA));
+        } else {
+            mostrarVista('view-panel-estudiante');
+        }
+    });
+
+    // Estudiante: Unirse al duelo con el código
+    document.getElementById('btn-unirse-duelo')?.addEventListener('click', async () => {
+        const codigo = prompt("Ingresa el código de sala que te dio tu profesor:");
+        if (codigo) {
+            const { unirseADuelo } = await import('./duelo.js');
+            unirseADuelo(codigo);
+        }
+    });
+
+    // ==========================================
+    // FIN DE LA CONFIGURACIÓN DEL DUELO
+    // ==========================================
 
     // 5. LOGIN DEL PROFESOR
     const formProfesor = document.getElementById('form-login-profesor');

@@ -1802,6 +1802,19 @@
                     </label>
                     <input type="range" id="audio-volumen" min="0" max="100" value="15" style="width: 100%;">
                 </div>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="audio-pista">
+                        <i class="fa-solid fa-compact-disc"></i> Canción:
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <select id="audio-pista" style="flex: 1;"></select>
+                        <button class="btn btn-secondary btn-sm" type="button" id="audio-siguiente"
+                                title="Siguiente canción" aria-label="Siguiente canción">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-footer">

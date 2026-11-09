@@ -41,18 +41,37 @@ export function estaSilenciado() {
 let musicaFondo = null;
 let musicaActiva = false;
 
+// Todas las canciones de fondo. Para agregar una: pon el archivo en assets/ y añade su ruta aquí
+// (y su nombre en NOMBRES_PISTAS, si no, se muestra el nombre del archivo).
 export const PISTAS = [
     'assets/musica/casino-bg.mp3',
     'assets/musica/casino-02.mp3',
     'assets/musica/casino-03.mp3',
-    'assets/musica/casino-04.mp3'
+    'assets/musica/casino-04.mp3',
+    'assets/sonidos/musica-sala.mp3'
 ];
+
+const NOMBRES_PISTAS = {
+    'assets/musica/casino-bg.mp3': 'Casino (principal)',
+    'assets/musica/casino-02.mp3': 'Swing rápido',
+    'assets/musica/casino-03.mp3': 'Bossa lounge',
+    'assets/musica/casino-04.mp3': 'Blues lento',
+    'assets/sonidos/musica-sala.mp3': 'Música de la sala'
+};
+
+/** Lista de canciones con su nombre, para llenar el selector del panel de audio. */
+export function listaPistas() {
+    return PISTAS.map(ruta => ({
+        ruta,
+        nombre: NOMBRES_PISTAS[ruta] || ruta.split('/').pop().replace(/\.[^.]+$/, '')
+    }));
+}
 let pistaActual = 0;
 let fallosSeguidos = 0;
 
 export function siguientePista() {
-    if (!musicaFondo) return;
     pistaActual = (pistaActual + 1) % PISTAS.length;
+    if (!musicaFondo) return;
     musicaFondo.src = PISTAS[pistaActual];
     if (musicaActiva && !enSeccionPropia) {
         musicaFondo.play().catch(() => {});

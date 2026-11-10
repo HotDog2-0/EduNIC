@@ -15,14 +15,20 @@ let jugadaRivalTemp = null;
 export function crearSalaDuelo() {
     const codigo = Math.floor(1000 + Math.random() * 9000).toString();
     
-    document.getElementById('duelo-lobby').classList.add('hidden');
-    document.getElementById('duelo-espera').classList.remove('hidden');
-    document.getElementById('duelo-codigo').textContent = codigo;
-
     miRol = 'profesor';
     miJugada = null;
     jugadaRivalTemp = null;
 
+    // 1. Navegar a la vista del duelo
+    mostrarVista('view-duelo');
+
+    // 2. Resetear estados visuales dentro de la vista del duelo
+    document.getElementById('duelo-lobby').classList.add('hidden');
+    document.getElementById('duelo-espera').classList.remove('hidden');
+    document.getElementById('duelo-juego').classList.add('hidden');
+    document.getElementById('duelo-codigo').textContent = codigo;
+
+    // 3. Conectar al canal
     conectarAlCanal(codigo);
 }
 

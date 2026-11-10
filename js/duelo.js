@@ -17,10 +17,8 @@ let jugadaEnviada = false;
 
 export function inicializarDuelo() {
     console.log('⚔️ Duelo: inicializando...');
-
     document.getElementById('btn-crear-sala')?.addEventListener('click', crearSala);
     document.getElementById('btn-unirse-duelo')?.addEventListener('click', unirseSala);
-
     console.log('⚔️ Duelo: listo');
 }
 
@@ -49,7 +47,7 @@ async function crearSala() {
     miIdDuelo = id;
     jugadaEnviada = false;
 
-    console.log('✅ Profesor: miIdDuelo guardado:', miIdDuelo);
+    console.log('✅ Profesor: miRol =', miRol, '· miIdDuelo =', miIdDuelo);
 
     mostrarVista('view-duelo');
     document.getElementById('duelo-lobby').classList.add('hidden');
@@ -93,7 +91,7 @@ async function unirseSala() {
     miIdDuelo = data.id;
     jugadaEnviada = false;
 
-    console.log('✅ Estudiante: miIdDuelo guardado:', miIdDuelo);
+    console.log('✅ Estudiante: miRol =', miRol, '· miIdDuelo =', miIdDuelo);
 
     document.getElementById('duelo-lobby').classList.add('hidden');
     document.getElementById('duelo-espera').classList.add('hidden');
@@ -116,16 +114,21 @@ function escucharDuelo(id) {
             { event: 'UPDATE', schema: 'public', table: 'duelos', filter: `id=eq.${id}` },
             (payload) => {
                 const fila = payload.new;
-                console.log('🔄 Duelo actualizado:', fila);
+                console.log('🔄 Duelo actualizado:', {
+                    estado: fila.estado,
+                    jugador1: fila.jugador1,
+                    jugador2: fila.jugador2,
+                    jugada1: fila.jugada1,
+                    jugada2: fila.jugada2,
+                    ganador: fila.ganador
+                });
 
-                // Profesor: cuando el estudiante se une, iniciar juego
                 if (fila.jugador2 && fila.estado === 'jugando' && miRol === 'profesor' && !document.querySelector('#duelo-juego .ppt-opciones')) {
                     document.getElementById('duelo-espera').classList.add('hidden');
                     document.getElementById('duelo-juego').classList.remove('hidden');
                     iniciarPPT();
                 }
 
-                // ¿Hay ganador? (solo si está terminado)
                 if (fila.ganador && fila.estado === 'terminado') {
                     mostrarResultado(fila);
                 }
@@ -135,11 +138,11 @@ function escucharDuelo(id) {
 }
 
 /* ============================================
-   JUEGO: PIEDRA, PAPEL O TIJERA
+   JUEGO
    ============================================ */
 
 function iniciarPPT() {
-    console.log('🎮 iniciarPPT. miIdDuelo:', miIdDuelo, 'miRol:', miRol);
+    console.log('🎮 iniciarPPT. miIdDuelo:', miIdDuelo, '· miRol:', miRol);
 
     const cont = document.getElementById('duelo-juego');
     if (!cont) return;
@@ -175,7 +178,7 @@ function iniciarPPT() {
 }
 
 async function enviarJugadaPPT(jugada) {
-    console.log('📤 Enviando jugada:', jugada, 'miIdDuelo:', miIdDuelo, 'miRol:', miRol);
+    console.log('📤 enviarJugadaPPT: jugada =', jugada, '· miRol =', miRol, '· miIdDuelo =', miIdDuelo);
 
     if (!miIdDuelo) {
         mostrarNotificacion('Error: no hay duelo activo', 'error');
@@ -186,27 +189,27 @@ async function enviarJugadaPPT(jugada) {
         return;
     }
 
-    // Verificar que el duelo sigue en estado 'jugando' antes de enviar
-    const { data: estadoActual } = await supabase
-        .from('duelos')
-        .select('estado, jugada1, jugada2')
-        .eq('id', miIdDuelo)
-        .maybeSingle();
-
-    if (!estadoActual || estadoActual.estado === 'terminado') {
-        mostrarNotificacion('El duelo ya terminó', 'error');
-        return;
-    }
-
     jugadaEnviada = true;
     const campo = miRol === 'profesor' ? 'jugada1' : 'jugada2';
 
-    const { error } = await supabase.from('duelos')
+    console.log('📝 Actualizando columna:', campo, 'con:', { tipo: 'ppt', valor: jugada });
+
+    // ⚠️ .select() para verificar que el update afectó la fila
+    const { data, error } = await supabase.from('duelos')
         .update({ [campo]: { tipo: 'ppt', valor: jugada } })
-        .eq('id', miIdDuelo);
+        .eq('id', miIdDuelo)
+        .select();
+
+    console.log('🔍 Resultado del update:', { data, error });
 
     if (error) {
         mostrarNotificacion('Error al enviar: ' + error.message, 'error');
+        jugadaEnviada = false;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        mostrarNotificacion('Error: el duelo no existe o no se actualizó', 'error');
         jugadaEnviada = false;
         return;
     }
@@ -222,9 +225,13 @@ async function comprobarResultadoPPT() {
         .eq('id', miIdDuelo)
         .maybeSingle();
 
-    if (!data || !data.jugada1 || !data.jugada2) return;
+    console.log('🔍 comprobarResultadoPPT:', {
+        jugada1: data?.jugada1,
+        jugada2: data?.jugada2,
+        ganador: data?.ganador
+    });
 
-    // Verificar que no haya ganador ya
+    if (!data || !data.jugada1 || !data.jugada2) return;
     if (data.ganador) return;
 
     const j1 = data.jugada1.valor;
@@ -236,15 +243,12 @@ async function comprobarResultadoPPT() {
     else if (opciones[j1] === j2) ganador = 'profesor';
     else ganador = 'estudiante';
 
-    // Solo actualizar si no hay ganador ya
-    const { error } = await supabase.from('duelos')
+    console.log('🏆 Ganador calculado:', ganador, '· j1:', j1, '· j2:', j2);
+
+    await supabase.from('duelos')
         .update({ ganador, estado: 'terminado' })
         .eq('id', miIdDuelo)
-        .is('ganador', null);  // ⬅️ Solo si aún no hay ganador
-
-    if (error) {
-        console.error('Error al actualizar ganador:', error);
-    }
+        .is('ganador', null);
 }
 
 function mostrarResultado(fila) {
@@ -267,27 +271,7 @@ function mostrarResultado(fila) {
    ============================================ */
 
 async function salirDuelo() {
-    // Si el duelo ya terminó, solo salir
-    if (miIdDuelo) {
-        const { data } = await supabase
-            .from('duelos')
-            .select('estado')
-            .eq('id', miIdDuelo)
-            .maybeSingle();
-
-        // Solo marcar como terminado si aún está en 'jugando'
-        if (data && data.estado === 'jugando') {
-            await supabase.from('duelos')
-                .update({ estado: 'terminado' })
-                .eq('id', miIdDuelo);
-        }
-    }
-
-    if (suscripcion) {
-        supabase.removeChannel(suscripcion);
-        suscripcion = null;
-    }
-
+    if (suscripcion) { supabase.removeChannel(suscripcion); suscripcion = null; }
     miRol = null;
     miIdDuelo = null;
     jugadaEnviada = false;

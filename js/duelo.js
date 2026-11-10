@@ -1,207 +1,235 @@
 /* ============================================
-   DUELO EN VIVO CON SUPABASE REALTIME
+   DUELO EN VIVO - Piedra, Papel o Tijera
    ============================================ */
 
 import { supabase } from './supabaseClient.js';
 import { mostrarNotificacion } from './utils.js';
 import { mostrarVista } from './navegacion.js';
 
-let canal = null;
-let miRol = null; // 'profesor' o 'estudiante'
-let miJugada = null;
-let jugadaRivalTemp = null;
+let miRol = null;
+let miIdDuelo = null;
+let suscripcion = null;
 
 /* ============================================
-   INICIALIZACIÓN (conecta los botones)
+   INICIALIZACIÓN
    ============================================ */
 
-/**
- * Conecta los botones de la vista de duelo.
- * Se llama una sola vez desde app.js.
- */
 export function inicializarDuelo() {
-    console.log('⚔️ Módulo Duelo: inicializando...');
+    console.log('⚔️ Duelo: inicializando...');
 
-    // Botón "Crear Sala de Duelo" (profesor)
-    document.getElementById('btn-crear-sala')?.addEventListener('click', crearSalaDuelo);
+    document.getElementById('btn-crear-sala')?.addEventListener('click', crearSala);
+    document.getElementById('btn-unirse-duelo')?.addEventListener('click', unirseSala);
 
-    // Botón "Salir del Duelo"
-    document.getElementById('btn-salir-duelo')?.addEventListener('click', cerrarDuelo);
-
-    console.log('⚔️ Módulo Duelo: listo');
+    console.log('⚔️ Duelo: listo');
 }
 
 /* ============================================
-   1. CREAR SALA (PROFESOR)
+   PROFESOR: CREAR SALA
    ============================================ */
 
-export function crearSalaDuelo() {
+async function crearSala() {
     const codigo = Math.floor(1000 + Math.random() * 9000).toString();
+    const id = 'duelo-' + Date.now();
+
+    const { error } = await supabase.from('duelos').insert([{
+        id,
+        codigo,
+        juego: 'ppt',
+        jugador1: 'profesor',
+        estado: 'esperando'
+    }]);
+
+    if (error) {
+        mostrarNotificacion('Error al crear sala: ' + error.message, 'error');
+        return;
+    }
 
     miRol = 'profesor';
-    miJugada = null;
-    jugadaRivalTemp = null;
+    miIdDuelo = id;
 
-    // ⚠️ CLAVE: navegar a la vista del duelo primero
     mostrarVista('view-duelo');
-
-    // Resetear estados visuales
     document.getElementById('duelo-lobby').classList.add('hidden');
     document.getElementById('duelo-espera').classList.remove('hidden');
     document.getElementById('duelo-juego').classList.add('hidden');
     document.getElementById('duelo-codigo').textContent = codigo;
 
-    conectarAlCanal(codigo);
+    escucharDuelo(id);
 }
 
 /* ============================================
-   2. UNIRSE A SALA (ESTUDIANTE)
+   ESTUDIANTE: UNIRSE
    ============================================ */
 
-export function unirseADuelo(codigo) {
-    if (!codigo) return;
+async function unirseSala() {
+    const input = document.getElementById('duelo-input-codigo');
+    const codigo = input?.value.trim();
+
+    if (!codigo || codigo.length !== 4) {
+        mostrarNotificacion('Escribe un código de 4 dígitos', 'error');
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from('duelos')
+        .select('*')
+        .eq('codigo', codigo)
+        .eq('estado', 'esperando')
+        .maybeSingle();
+
+    if (error || !data) {
+        mostrarNotificacion('Código no válido o sala cerrada', 'error');
+        return;
+    }
+
+    await supabase.from('duelos')
+        .update({ jugador2: 'estudiante', estado: 'jugando' })
+        .eq('id', data.id);
 
     miRol = 'estudiante';
-    miJugada = null;
-    jugadaRivalTemp = null;
+    miIdDuelo = data.id;
 
     mostrarVista('view-duelo');
-
-    document.getElementById('duelo-lobby').classList.add('hidden');
-    document.getElementById('duelo-espera').classList.add('hidden');
-    document.getElementById('duelo-juego').classList.add('hidden');
-
-    conectarAlCanal(codigo);
-}
-
-/* ============================================
-   3. CONEXIÓN AL CANAL DE SUPABASE
-   ============================================ */
-
-function conectarAlCanal(codigoSala, rol) {
-    if (canal) supabase.removeChannel(canal);
-
-    canal = supabase.channel(`duelo-${codigoSala}`, {
-        config: { presence: { key: rol } }
-    });
-
-    // ─── Escuchar jugadas del rival ───
-    canal.on('broadcast', { event: 'jugada' }, (payload) => {
-        if (payload.payload.rol === miRol) return;
-
-        if (miJugada) {
-            resolverDuelo(miJugada, payload.payload.jugada);
-        } else {
-            jugadaRivalTemp = payload.payload.jugada;
-            document.getElementById('duelo-mensaje').textContent = "El rival ya jugó. ¡Tu turno!";
-        }
-    });
-
-    // ─── Escuchar cambios de presencia (sync es más confiable que join) ───
-    canal.on('presence', { event: 'sync' }, () => {
-        const estado = canal.presenceState();
-        const roles = Object.keys(estado);
-        const hayProfesor = roles.includes('profesor');
-        const hayEstudiante = roles.includes('estudiante');
-
-        console.log('👥 Presence sync:', { hayProfesor, hayEstudiante, roles });
-
-        // Si ambos están conectados → iniciar juego
-        if (hayProfesor && hayEstudiante) {
-            iniciarInterfazJuego();
-        }
-    });
-
-    // ─── Suscribirse y hacer track ───
-    canal.subscribe(async (status) => {
-        console.log('🔌 Estado del canal:', status);
-
-        if (status === 'SUBSCRIBED') {
-            // ⚠️ CLAVE: ambos (profesor y estudiante) deben hacer track
-            await canal.track({
-                rol: rol,
-                online_at: new Date().toISOString()
-            });
-            console.log('✅ Track enviado como', rol);
-        }
-    });
-}
-
-/* ============================================
-   4. LÓGICA DEL JUEGO
-   ============================================ */
-
-function iniciarInterfazJuego() {
     document.getElementById('duelo-lobby').classList.add('hidden');
     document.getElementById('duelo-espera').classList.add('hidden');
     document.getElementById('duelo-juego').classList.remove('hidden');
 
-    document.getElementById('duelo-mensaje').textContent = "¡Elige tu jugada!";
-
-    document.querySelectorAll('[data-duelo-jugada]').forEach(btn => {
-        btn.onclick = () => enviarJugada(btn.dataset.dueloJugada);
-    });
-}
-
-async function enviarJugada(jugada) {
-    if (!canal || miJugada) return;
-
-    miJugada = jugada;
-    document.getElementById('duelo-mensaje').textContent = "Esperando al rival...";
-
-    await canal.send({
-        type: 'broadcast',
-        event: 'jugada',
-        payload: { jugada: jugada, rol: miRol }
-    });
-
-    if (jugadaRivalTemp) {
-        resolverDuelo(miJugada, jugadaRivalTemp);
-    }
-}
-
-function resolverDuelo(p1, p2) {
-    const opciones = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
-    let resultado = "";
-
-    if (p1 === p2) {
-        resultado = "¡Empate!";
-    } else if (opciones[p1] === p2) {
-        resultado = "¡Ganaste!";
-        const ptsEl = document.getElementById(miRol === 'profesor' ? 'duelo-pts-prof' : 'duelo-pts-est');
-        ptsEl.textContent = parseInt(ptsEl.textContent) + 1;
-    } else {
-        resultado = "¡Perdiste!";
-        const ptsElRival = document.getElementById(miRol === 'profesor' ? 'duelo-pts-est' : 'duelo-pts-prof');
-        ptsElRival.textContent = parseInt(ptsElRival.textContent) + 1;
-    }
-
-    document.getElementById('duelo-mensaje').textContent = resultado + ` (Tú: ${p1} vs Rival: ${p2})`;
-
-    setTimeout(() => {
-        miJugada = null;
-        jugadaRivalTemp = null;
-        document.getElementById('duelo-mensaje').textContent = "¡Siguiente ronda! Elige tu jugada.";
-    }, 3000);
+    iniciarPPT();
+    escucharDuelo(data.id);
 }
 
 /* ============================================
-   5. LIMPIAR AL SALIR
+   ESCUCHAR CAMBIOS
    ============================================ */
 
-export function cerrarDuelo() {
-    if (canal) {
-        supabase.removeChannel(canal);
-        canal = null;
+function escucharDuelo(id) {
+    if (suscripcion) supabase.removeChannel(suscripcion);
+
+    suscripcion = supabase
+        .channel(`duelo-${id}`)
+        .on('postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'duelos', filter: `id=eq.${id}` },
+            (payload) => {
+                const fila = payload.new;
+                console.log('🔄 Duelo actualizado:', fila);
+
+                // Profesor: cuando el estudiante se une, iniciar juego
+                if (fila.jugador2 && fila.estado === 'jugando' && miRol === 'profesor') {
+                    document.getElementById('duelo-espera').classList.add('hidden');
+                    document.getElementById('duelo-juego').classList.remove('hidden');
+                    iniciarPPT();
+                }
+
+                // ¿Hay ganador?
+                if (fila.ganador) {
+                    mostrarResultado(fila);
+                }
+            }
+        )
+        .subscribe();
+}
+
+/* ============================================
+   JUEGO: PIEDRA, PAPEL O TIJERA
+   ============================================ */
+
+function iniciarPPT() {
+    const cont = document.getElementById('duelo-juego');
+    if (!cont) return;
+
+    cont.innerHTML = `
+        <div class="resultados-resumen" style="justify-content: center; gap: 2rem; margin-bottom: 1rem;">
+            <div class="resultado-stat">
+                <div class="resultado-stat-info">
+                    <div class="resultado-stat-etiqueta">Profesor</div>
+                    <div class="resultado-stat-valor" id="duelo-pts-prof">0</div>
+                </div>
+            </div>
+            <div class="resultado-stat">
+                <div class="resultado-stat-info">
+                    <div class="resultado-stat-etiqueta">Estudiante</div>
+                    <div class="resultado-stat-valor" id="duelo-pts-est">0</div>
+                </div>
+            </div>
+        </div>
+        <h3 id="duelo-mensaje">¡Elige tu jugada!</h3>
+        <div class="ppt-opciones margin-top" style="display: flex; justify-content: center; gap: 1rem;">
+            <button class="ppt-opcion" data-ppt="piedra">🪨</button>
+            <button class="ppt-opcion" data-ppt="papel">📄</button>
+            <button class="ppt-opcion" data-ppt="tijera">✂️</button>
+        </div>
+        <button class="btn btn-secondary margin-top" type="button" id="btn-salir-duelo">Salir del Duelo</button>
+    `;
+
+    document.querySelectorAll('[data-ppt]').forEach(btn => {
+        btn.onclick = () => enviarJugadaPPT(btn.dataset.ppt);
+    });
+    document.getElementById('btn-salir-duelo')?.addEventListener('click', salirDuelo);
+}
+
+async function enviarJugadaPPT(jugada) {
+    const campo = miRol === 'profesor' ? 'jugada1' : 'jugada2';
+    await supabase.from('duelos')
+        .update({ [campo]: { tipo: 'ppt', valor: jugada } })
+        .eq('id', miIdDuelo);
+
+    document.getElementById('duelo-mensaje').textContent = `Elegiste ${jugada}. Esperando al rival...`;
+    await comprobarResultadoPPT();
+}
+
+async function comprobarResultadoPPT() {
+    const { data } = await supabase
+        .from('duelos')
+        .select('*')
+        .eq('id', miIdDuelo)
+        .maybeSingle();
+
+    if (!data || !data.jugada1 || !data.jugada2) return;
+
+    const j1 = data.jugada1.valor;
+    const j2 = data.jugada2.valor;
+    const opciones = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
+    let ganador;
+
+    if (j1 === j2) ganador = 'empate';
+    else if (opciones[j1] === j2) ganador = 'profesor';
+    else ganador = 'estudiante';
+
+    await supabase.from('duelos')
+        .update({ ganador, estado: 'terminado' })
+        .eq('id', miIdDuelo);
+}
+
+function mostrarResultado(fila) {
+    let texto = '';
+    if (fila.ganador === 'empate') texto = '¡Empate!';
+    else if (fila.ganador === miRol) texto = '¡Ganaste! 🎉';
+    else texto = '¡Perdiste! 💀';
+
+    const miJugada = miRol === 'profesor' ? fila.jugada1?.valor : fila.jugada2?.valor;
+    const rivalJugada = miRol === 'profesor' ? fila.jugada2?.valor : fila.jugada1?.valor;
+
+    const mensaje = document.getElementById('duelo-mensaje');
+    if (mensaje) {
+        mensaje.textContent = `${texto} — Tú: ${miJugada || '?'} vs Rival: ${rivalJugada || '?'}`;
+    }
+}
+
+/* ============================================
+   SALIR
+   ============================================ */
+
+async function salirDuelo() {
+    if (suscripcion) { supabase.removeChannel(suscripcion); suscripcion = null; }
+    if (miIdDuelo) {
+        await supabase.from('duelos')
+            .update({ estado: 'terminado' })
+            .eq('id', miIdDuelo);
     }
     miRol = null;
-    miJugada = null;
-    jugadaRivalTemp = null;
+    miIdDuelo = null;
 
     document.getElementById('duelo-lobby').classList.remove('hidden');
     document.getElementById('duelo-espera').classList.add('hidden');
     document.getElementById('duelo-juego').classList.add('hidden');
-
-    // Volver al panel de la carrera (o al que consideres)
     mostrarVista('view-panel-carrera');
 }

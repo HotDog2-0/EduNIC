@@ -956,15 +956,24 @@
         <!-- 👇 NUEVA VISTA: DUELO EN VIVO 👇 -->
         <section id="view-duelo" class="view-section hidden">
             <div class="card hero-card" style="max-width: 600px;">
-                <h2 class="text-center" style="color: var(--primary-color);"><i class="fa-solid fa-swords"></i> Duelo en Vivo</h2>
-                
-                <!-- Lobby (Profesor crea sala) -->
+                <h2 class="text-center" style="color: var(--primary-color);">
+                    <i class="fa-solid fa-swords"></i> Duelo en Vivo
+                </h2>
+
+                <!-- Lobby -->
                 <div id="duelo-lobby" class="text-center margin-top">
                     <p class="form-subtitle">Crea una sala y comparte el código con tu estudiante.</p>
                     <button class="btn btn-primary" type="button" id="btn-crear-sala">Crear Sala de Duelo</button>
+
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                        <p class="form-subtitle">¿Eres estudiante? Ingresa el código:</p>
+                        <input type="text" id="duelo-input-codigo" maxlength="4" placeholder="1234"
+                            style="text-align: center; font-size: 2rem; letter-spacing: 10px; width: 200px;">
+                        <button class="btn btn-secondary" type="button" id="btn-unirse-duelo">Unirse al Duelo</button>
+                    </div>
                 </div>
 
-                <!-- Espera (Muestra el código generado) -->
+                <!-- Espera -->
                 <div id="duelo-espera" class="hidden text-center margin-top">
                     <p>Comparte este código con tu estudiante:</p>
                     <h2 class="text-success" id="duelo-codigo" style="font-size: 3rem; letter-spacing: 5px;">----</h2>
@@ -972,29 +981,7 @@
                 </div>
 
                 <!-- Juego -->
-                <div id="duelo-juego" class="hidden text-center margin-top">
-                    <div class="resultados-resumen" style="justify-content: center; gap: 2rem;">
-                        <div class="resultado-stat">
-                            <div class="resultado-stat-info">
-                                <div class="resultado-stat-etiqueta">Profesor</div>
-                                <div class="resultado-stat-valor" id="duelo-pts-prof">0</div>
-                            </div>
-                        </div>
-                        <div class="resultado-stat">
-                            <div class="resultado-stat-info">
-                                <div class="resultado-stat-etiqueta">Estudiante</div>
-                                <div class="resultado-stat-valor" id="duelo-pts-est">0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 id="duelo-mensaje" class="margin-top">¡Elige tu jugada!</h3>
-                    <div class="ppt-opciones margin-top" style="display: flex; justify-content: center; gap: 1rem;">
-                        <button class="ppt-opcion" data-duelo-jugada="piedra" style="font-size: 3rem; cursor: pointer; background: none; border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem;">🪨</button>
-                        <button class="ppt-opcion" data-duelo-jugada="papel" style="font-size: 3rem; cursor: pointer; background: none; border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem;">📄</button>
-                        <button class="ppt-opcion" data-duelo-jugada="tijera" style="font-size: 3rem; cursor: pointer; background: none; border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem;">✂️</button>
-                    </div>
-                    <button class="btn btn-secondary margin-top" type="button" id="btn-salir-duelo">Salir del Duelo</button>
-                </div>
+                <div id="duelo-juego" class="hidden text-center margin-top"></div>
             </div>
         </section>
         <!-- 👆 FIN DE LA VISTA DEL DUELO 👆 -->

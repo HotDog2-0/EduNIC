@@ -33,6 +33,7 @@ export function inicializarPanelEstudiante() {
     conectarFiltrosResultados();
     conectarSelectorJuegos();
     inicializarMusicaSala();
+    conectarBotonDueloEstudiante();
 
     console.log('Panel Estudiante: listo');
 }
@@ -980,4 +981,28 @@ function conectarFiltrosResultados() {
 export function resetearPanelEstudiante() {
     estudianteActual = null;
     filtroResultados = 'todas';
+}
+
+/**
+ * Conecta el botón "Unirse a Duelo con Profesor" del panel del estudiante.
+ * Abre la vista del duelo y enfoca el input del código.
+ */
+function conectarBotonDueloEstudiante() {
+    const btn = document.getElementById('btn-abrir-duelo-est');
+    if (!btn || btn.dataset.conectado) return;
+    btn.dataset.conectado = 'true';
+
+    btn.addEventListener('click', () => {
+        mostrarVista('view-duelo');
+
+        // Resetear pantallas
+        document.getElementById('duelo-lobby')?.classList.remove('hidden');
+        document.getElementById('duelo-espera')?.classList.add('hidden');
+        document.getElementById('duelo-juego')?.classList.add('hidden');
+
+        // Enfocar el input del código
+        setTimeout(() => {
+            document.getElementById('duelo-input-codigo')?.focus();
+        }, 100);
+    });
 }

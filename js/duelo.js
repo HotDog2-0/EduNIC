@@ -11,91 +11,131 @@ let miRol = null; // 'profesor' o 'estudiante'
 let miJugada = null;
 let jugadaRivalTemp = null;
 
-// --- 1. CREAR SALA (PROFESOR) ---
+/* ============================================
+   INICIALIZACIÓN (conecta los botones)
+   ============================================ */
+
+/**
+ * Conecta los botones de la vista de duelo.
+ * Se llama una sola vez desde app.js.
+ */
+export function inicializarDuelo() {
+    console.log('⚔️ Módulo Duelo: inicializando...');
+
+    // Botón "Crear Sala de Duelo" (profesor)
+    document.getElementById('btn-crear-sala')?.addEventListener('click', crearSalaDuelo);
+
+    // Botón "Salir del Duelo"
+    document.getElementById('btn-salir-duelo')?.addEventListener('click', cerrarDuelo);
+
+    console.log('⚔️ Módulo Duelo: listo');
+}
+
+/* ============================================
+   1. CREAR SALA (PROFESOR)
+   ============================================ */
+
 export function crearSalaDuelo() {
     const codigo = Math.floor(1000 + Math.random() * 9000).toString();
-    
+
     miRol = 'profesor';
     miJugada = null;
     jugadaRivalTemp = null;
 
-    // 1. Navegar a la vista del duelo
+    // ⚠️ CLAVE: navegar a la vista del duelo primero
     mostrarVista('view-duelo');
 
-    // 2. Resetear estados visuales dentro de la vista del duelo
+    // Resetear estados visuales
     document.getElementById('duelo-lobby').classList.add('hidden');
     document.getElementById('duelo-espera').classList.remove('hidden');
     document.getElementById('duelo-juego').classList.add('hidden');
     document.getElementById('duelo-codigo').textContent = codigo;
 
-    // 3. Conectar al canal
     conectarAlCanal(codigo);
 }
 
-// --- 2. UNIRSE A SALA (ESTUDIANTE) ---
+/* ============================================
+   2. UNIRSE A SALA (ESTUDIANTE)
+   ============================================ */
+
 export function unirseADuelo(codigo) {
     if (!codigo) return;
-    
+
     miRol = 'estudiante';
     miJugada = null;
     jugadaRivalTemp = null;
 
+    mostrarVista('view-duelo');
+
     document.getElementById('duelo-lobby').classList.add('hidden');
     document.getElementById('duelo-espera').classList.add('hidden');
-    
-    mostrarVista('view-duelo');
+    document.getElementById('duelo-juego').classList.add('hidden');
+
     conectarAlCanal(codigo);
 }
 
-// --- 3. CONEXIÓN AL CANAL DE SUPABASE ---
-function conectarAlCanal(codigoSala) {
-    // Desconectar canal anterior si existe
+/* ============================================
+   3. CONEXIÓN AL CANAL DE SUPABASE
+   ============================================ */
+
+function conectarAlCanal(codigoSala, rol) {
     if (canal) supabase.removeChannel(canal);
 
     canal = supabase.channel(`duelo-${codigoSala}`, {
-        config: { presence: { key: miRol } }
+        config: { presence: { key: rol } }
     });
 
-    // Escuchar la jugada del rival
+    // ─── Escuchar jugadas del rival ───
     canal.on('broadcast', { event: 'jugada' }, (payload) => {
-        if (payload.payload.rol === miRol) return; // Ignorar mis propios mensajes
+        if (payload.payload.rol === miRol) return;
 
         if (miJugada) {
-            // Si yo ya jugué, resolvemos el duelo
             resolverDuelo(miJugada, payload.payload.jugada);
         } else {
-            // Si el rival jugó primero, guardamos su jugada
             jugadaRivalTemp = payload.payload.jugada;
             document.getElementById('duelo-mensaje').textContent = "El rival ya jugó. ¡Tu turno!";
         }
     });
 
-    // Escuchar cuando alguien se conecta (Presence)
-    canal.on('presence', { event: 'join' }, ({ newPresences }) => {
-        const seUnioEstudiante = newPresences.some(p => p.key === 'estudiante');
-        if (miRol === 'profesor' && seUnioEstudiante) {
-            mostrarNotificacion('¡Estudiante conectado!');
+    // ─── Escuchar cambios de presencia (sync es más confiable que join) ───
+    canal.on('presence', { event: 'sync' }, () => {
+        const estado = canal.presenceState();
+        const roles = Object.keys(estado);
+        const hayProfesor = roles.includes('profesor');
+        const hayEstudiante = roles.includes('estudiante');
+
+        console.log('👥 Presence sync:', { hayProfesor, hayEstudiante, roles });
+
+        // Si ambos están conectados → iniciar juego
+        if (hayProfesor && hayEstudiante) {
             iniciarInterfazJuego();
         }
     });
 
-    // Suscribirse al canal
+    // ─── Suscribirse y hacer track ───
     canal.subscribe(async (status) => {
+        console.log('🔌 Estado del canal:', status);
+
         if (status === 'SUBSCRIBED') {
-            if (miRol === 'estudiante') {
-                await canal.track({ online_at: new Date().toISOString() });
-                iniciarInterfazJuego();
-            }
+            // ⚠️ CLAVE: ambos (profesor y estudiante) deben hacer track
+            await canal.track({
+                rol: rol,
+                online_at: new Date().toISOString()
+            });
+            console.log('✅ Track enviado como', rol);
         }
     });
 }
 
-// --- 4. LÓGICA DEL JUEGO ---
+/* ============================================
+   4. LÓGICA DEL JUEGO
+   ============================================ */
+
 function iniciarInterfazJuego() {
     document.getElementById('duelo-lobby').classList.add('hidden');
     document.getElementById('duelo-espera').classList.add('hidden');
     document.getElementById('duelo-juego').classList.remove('hidden');
-    
+
     document.getElementById('duelo-mensaje').textContent = "¡Elige tu jugada!";
 
     document.querySelectorAll('[data-duelo-jugada]').forEach(btn => {
@@ -105,17 +145,16 @@ function iniciarInterfazJuego() {
 
 async function enviarJugada(jugada) {
     if (!canal || miJugada) return;
-    
+
     miJugada = jugada;
     document.getElementById('duelo-mensaje').textContent = "Esperando al rival...";
-    
+
     await canal.send({
         type: 'broadcast',
         event: 'jugada',
         payload: { jugada: jugada, rol: miRol }
     });
 
-    // Si el rival ya había jugado antes de que yo eligiera
     if (jugadaRivalTemp) {
         resolverDuelo(miJugada, jugadaRivalTemp);
     }
@@ -124,7 +163,7 @@ async function enviarJugada(jugada) {
 function resolverDuelo(p1, p2) {
     const opciones = { piedra: 'tijera', papel: 'piedra', tijera: 'papel' };
     let resultado = "";
-    
+
     if (p1 === p2) {
         resultado = "¡Empate!";
     } else if (opciones[p1] === p2) {
@@ -138,8 +177,7 @@ function resolverDuelo(p1, p2) {
     }
 
     document.getElementById('duelo-mensaje').textContent = resultado + ` (Tú: ${p1} vs Rival: ${p2})`;
-    
-    // Resetear para la siguiente ronda después de 3 segundos
+
     setTimeout(() => {
         miJugada = null;
         jugadaRivalTemp = null;
@@ -147,7 +185,10 @@ function resolverDuelo(p1, p2) {
     }, 3000);
 }
 
-// --- 5. LIMPIAR AL SALIR ---
+/* ============================================
+   5. LIMPIAR AL SALIR
+   ============================================ */
+
 export function cerrarDuelo() {
     if (canal) {
         supabase.removeChannel(canal);
@@ -156,7 +197,11 @@ export function cerrarDuelo() {
     miRol = null;
     miJugada = null;
     jugadaRivalTemp = null;
+
     document.getElementById('duelo-lobby').classList.remove('hidden');
     document.getElementById('duelo-espera').classList.add('hidden');
     document.getElementById('duelo-juego').classList.add('hidden');
+
+    // Volver al panel de la carrera (o al que consideres)
+    mostrarVista('view-panel-carrera');
 }

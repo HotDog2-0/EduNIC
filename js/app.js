@@ -38,6 +38,7 @@ import {
     listaPistas
 } from './sonidos.js';
 import { inicializarRuleta } from './ruleta.js';
+import { inicializarDuelo } from './duelo.js';
 // Importamos la función para limpiar el duelo al salir
 import { cerrarDuelo } from './duelo.js';
 
@@ -61,6 +62,7 @@ async function iniciarApp() {
     inicializarRegistro();
     await inicializarAsistente();
     inicializarRuleta();
+    inicializarDuelo();
 
     // 3. CONFIGURAR NAVEGACIÓN Y MODALES
     configurarBotonesVolver();
